@@ -20,6 +20,8 @@ public class UserDto {
 	 private String zip;
 	
 	private String [] address;
+	
+	private String role[];
 
 
 }
