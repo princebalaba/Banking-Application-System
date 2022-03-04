@@ -11,6 +11,8 @@ public class UserDto {
 	private LocalDate date;
 
 	private Long id;
+	
+	
 
 	private int password;
 
