@@ -11,17 +11,7 @@ public class UserDto {
 	
 	private LocalDate date;
 
-	private Long id;
-	
-	private int password;
 
-	private String name;
-
-	 private String zip;
-	
-	private String [] address;
-	
-	private String role[];
 
 
 }
