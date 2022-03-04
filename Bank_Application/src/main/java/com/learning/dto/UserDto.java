@@ -15,7 +15,7 @@ public class UserDto {
 	private int password;
 
 	private String name;
-	
+	 private String zip;
 	
 	private String [] address;
 
