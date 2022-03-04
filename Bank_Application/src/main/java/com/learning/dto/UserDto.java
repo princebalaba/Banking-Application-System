@@ -13,6 +13,6 @@ public class UserDto {
 	
 	private String address;
 	
-	private int number
+	private int number;
 
 }
