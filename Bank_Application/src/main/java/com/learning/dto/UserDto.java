@@ -7,22 +7,19 @@ import java.time.LocalDate;
  * @time : 2022. 3. 4.-오후 4:23:39
  */
 public class UserDto {
-<<<<<<< HEAD
-=======
-	
+
 	private LocalDate date;
 
 	private Long id;
-	
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
 	private int password;
 
 	private String name;
-	
+
 	private Long id;
-	
+
 	private String address;
-	
+
 	private int number;
 
 }
