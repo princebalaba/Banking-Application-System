@@ -12,5 +12,7 @@ public class UserDto {
 	private Long id;
 	
 	private String address;
+	
+	private int number
 
 }
