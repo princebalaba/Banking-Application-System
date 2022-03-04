@@ -7,4 +7,6 @@ package com.learning.dto;
 public class UserDto {
 	private int password;
 
+	private String name;
+
 }
