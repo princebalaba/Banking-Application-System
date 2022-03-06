@@ -1,4 +1,4 @@
-package com.learning.dto;
+package com.learning.entity;
 
 import java.time.LocalDate;
 
@@ -8,10 +8,10 @@ import java.time.LocalDate;
  */
 public class UserDto {
 
-	
 	private LocalDate date;
-
-
+  
+	// push something 
+	// your version has to be updated --> merging issue 
 
 
 }
