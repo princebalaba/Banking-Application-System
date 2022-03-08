@@ -59,7 +59,7 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-<<<<<<< HEAD
+
 		
 		<dependency>
     <groupId>io.jsonwebtoken</groupId>
