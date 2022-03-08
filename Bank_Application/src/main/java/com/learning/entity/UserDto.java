@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @MappedSuperclass
 
-public class UserDTO {
+public class UserDto {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
