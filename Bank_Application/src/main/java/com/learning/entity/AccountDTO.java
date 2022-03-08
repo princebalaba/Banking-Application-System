@@ -21,12 +21,10 @@ public class AccountDTO {
 	private long accountNumber;
 	@NotBlank
 	private Double accountBalance;
-	@NotBlank
-	private String approveStatus;
+	
 	@JsonFormat(pattern = "MM-dd-yyyy")
 	private LocalDate dateOfCreation;
-	@NotEmpty
-	private ERole roles; // role of type enum
+	// enum enable/disable
 	@NotEmpty
 	private AccountType accountType; // accountType of type enum
 

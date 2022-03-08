@@ -1,4 +1,4 @@
-package com.learning.exceptions;
+package com.learning.apierrors;
 
 public abstract class ApiSubError {
 //whatever fields or methods declared will all be 
