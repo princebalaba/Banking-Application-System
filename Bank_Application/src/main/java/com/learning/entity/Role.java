@@ -1,5 +1,6 @@
 package com.learning.entity;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,6 +21,7 @@ import lombok.NonNull;
 @AllArgsConstructor
 @Entity
 @Table
+@Embeddable
 public class Role {
 
 	@Id

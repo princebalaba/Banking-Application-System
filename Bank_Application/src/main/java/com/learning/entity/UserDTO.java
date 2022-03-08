@@ -1,21 +1,24 @@
 package com.learning.entity;
 
+import java.util.Set;
+
+import javax.persistence.Embedded;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author : Ki Beom Lee
+ * @time : 2022. 3. 8.-오후 4:20:35
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@MappedSuperclass
 
 public class UserDTO {
 	@Id
@@ -26,7 +29,11 @@ public class UserDTO {
 	@NotBlank
 	private String fullName;
 	@NotBlank
-	@JsonIgnore
 	private String password;
+	@Embedded
+	private AccountDTO account;
+	@Embedded
+	private Set<Role> roles ;
+	
 
 }

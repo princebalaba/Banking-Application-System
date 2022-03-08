@@ -2,6 +2,7 @@ package com.learning.entity;
 
 import java.time.LocalDate;
 
+import javax.persistence.Embeddable;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.learning.enums.AccountType;
 import com.learning.enums.ERole;
-
+@Embeddable
 public class AccountDTO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
