@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.learning.enums.AccountType;
 import com.learning.enums.ERole;
 
-public class Account {
+public class AccountDTO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long customerId;
