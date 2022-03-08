@@ -6,15 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.learning.enums.AccountType;
-
-
+import com.learning.enums.Types;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,6 +34,6 @@ public class AccountDTO {
 	private LocalDate dateOfCreation;
 	// enum enable/disable
 	@NotEmpty
-	private AccountType accountType; // accountType of type enum
+	private Types accountType; // accountType of type enum
 
 }
