@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @MappedSuperclass
 
-public class UserDto {
+public class UserDTO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -29,5 +29,4 @@ public class UserDto {
 	@JsonIgnore
 	private String password;
 
-}
 }
