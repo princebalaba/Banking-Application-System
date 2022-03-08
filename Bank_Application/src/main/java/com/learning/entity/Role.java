@@ -1,5 +1,6 @@
 package com.learning.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,11 +22,11 @@ import lombok.NonNull;
 @AllArgsConstructor
 @Entity
 @Table
-@Embeddable
 public class Role {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "roleId")
 	private long roleId;
 	@NonNull
 	@Enumerated(EnumType.STRING)

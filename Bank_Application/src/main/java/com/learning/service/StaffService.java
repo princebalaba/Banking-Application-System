@@ -17,6 +17,6 @@ public interface  StaffService {
 	
 	public Optional<UserDTO> getUserById(long id);
 	public List<UserDTO> getAllUsers();
-	
+	public Optional<UserDTO> getUserByUserName(String name);
 	public boolean existsById(long id);
 }
