@@ -1,4 +1,4 @@
-package com.learning.securityservice;
+package com.learning.security_service;
 
 import java.util.Collection;
 import java.util.List;

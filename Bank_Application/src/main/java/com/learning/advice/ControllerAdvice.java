@@ -26,7 +26,7 @@ import com.learning.exceptions.NoDataFoundException;
 			ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "no data found", e);
 			return buildResponseEntity(apiError);
 		}
-		// this is reponsible for handling AccountAlreadyExistsException.
+		// this is responsible for handling AccountAlreadyExistsException.
 		@ExceptionHandler(AccountAlreadyExistsException.class)
 		public ResponseEntity<?> nameAlreadyExistsException(AccountAlreadyExistsException e){
 			Map<String, String> map = new HashMap<>();
