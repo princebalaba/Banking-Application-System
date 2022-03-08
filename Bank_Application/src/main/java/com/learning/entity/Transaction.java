@@ -29,5 +29,5 @@ public class Transaction {
 	@NotNull
 	@JsonIgnore
 	private AccountDTO account;
-	
+}
 }

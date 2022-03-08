@@ -27,5 +27,5 @@ public class BeneficiaryDTO {
 	private Active active;
 	private LocalDate addedDate;
 	
-
+}
 }
