@@ -1,4 +1,4 @@
-package com.learning.exceptions;
+package com.learning.apierrors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

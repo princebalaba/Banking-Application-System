@@ -13,9 +13,9 @@ package com.learning.advice;
 	import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 	import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-	import com.learning.exceptions.AccountAlreadyExistsException;
-	import com.learning.exceptions.ApiError;
-	import com.learning.exceptions.NoDataFoundException;
+import com.learning.apierrors.ApiError;
+import com.learning.exceptions.AccountAlreadyExistsException;
+import com.learning.exceptions.NoDataFoundException;
 
 
 	public class ControllerAdvice extends ResponseEntityExceptionHandler{
