@@ -29,6 +29,8 @@ public class UserDTO {
 	@NotBlank
 	private String fullname;
 	@NotBlank
+	private String email;
+	@NotBlank
 	private String password;
 	@Embedded
 	private AccountDTO account;
