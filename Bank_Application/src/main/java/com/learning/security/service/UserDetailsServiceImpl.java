@@ -1,4 +1,4 @@
-package com.learning.security_service;
+package com.learning.security.service;
 
 import javax.transaction.Transactional;
 
