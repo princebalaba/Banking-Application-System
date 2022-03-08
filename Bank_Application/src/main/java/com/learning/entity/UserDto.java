@@ -1,18 +1,32 @@
 package com.learning.entity;
 
-import java.time.LocalDate;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotBlank;
 
-/**
- * @author : Ki Beom Lee
- * @time : 2022. 3. 4.-오후 4:23:39
- */
-public class UserDto {
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-	private LocalDate date;
-  
-	// push something 
-	// your version has to be updated --> merging issue 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@MappedSuperclass
+
+public class UserDTO {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
+	@NotBlank
+	private String userName;
+	@NotBlank
+	private String fullName;
+	@NotBlank
+	@JsonIgnore
+	private String password;
 
 }
-
