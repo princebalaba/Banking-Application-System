@@ -26,17 +26,7 @@ public class UserServiceImpl implements UserService{
 		return null;
 	}
 
-	@Override
-	public List<UserDTO> getAllUsers() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public String deleteUserById(long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public UserDTO updateUser(UserDTO user, long id) {
@@ -44,10 +34,5 @@ public class UserServiceImpl implements UserService{
 		return null;
 	}
 
-	@Override
-	public boolean existsById(long id) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 }
