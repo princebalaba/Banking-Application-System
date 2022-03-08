@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.learning.security.security_service.UserDetailsImpl;
 
 
 /**
