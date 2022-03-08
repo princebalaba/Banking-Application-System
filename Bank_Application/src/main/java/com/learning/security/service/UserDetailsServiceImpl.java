@@ -8,9 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.learning.entity.User;
+import com.learning.entity.UserDTO;
 import com.learning.exceptions.NoDataFoundException;
-import com.learning.repository.UserRepository;
 
 /**
  * @author : Ki Beom Lee
@@ -20,11 +19,11 @@ import com.learning.repository.UserRepository;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
-	UserRepository userRepo;
+	com.learning.repo.UserRepository userRepo;
 	@Transactional
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepo.findByUsername(username).orElseThrow(()-> new NoDataFoundException("username not found " + username));
+		UserDTO user = userRepo.findByUsername(username).orElseThrow(()-> new NoDataFoundException("username not found " + username));
 		
 		
 		return UserDetailsImpl.build(user);

@@ -10,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.learning.entity.User;
+import com.learning.entity.UserDTO;
 
 import lombok.Data;
 
@@ -22,7 +22,6 @@ import lombok.Data;
 public class UserDetailsImpl implements UserDetails {
 	private long id;
 	private String username;
-	private String email;
 
 	@JsonIgnore
 	private String password;
@@ -30,22 +29,21 @@ public class UserDetailsImpl implements UserDetails {
 	private Collection<? extends GrantedAuthority> authorities;
 	//Roles
 	
-	private UserDetailsImpl(Long id , String username , String email, String password, Collection<? extends GrantedAuthority> authorities) {
+	private UserDetailsImpl(Long id , String username, String password, Collection<? extends GrantedAuthority> authorities) {
 		this.id = id ; 
 		this.username = username;
-		this.email = email; 
 		this.password = password;
 		this.authorities = authorities;
 	}
 	
-	public static UserDetailsImpl build (User user) {
+	public static UserDetailsImpl build (UserDTO user) {
 		List<GrantedAuthority> authorities = user.getRoles()
 				.stream()
 				.map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
 				.collect(Collectors.toList());
 		
 		
-		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), authorities);
+		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
 		
 	}
 	

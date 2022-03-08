@@ -14,10 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.learning.advice.ControllerAdvice;
-import com.learning.security.jwt.AuthEntryPointJwt;
-import com.learning.security.jwt.AuthTokenFilter;
-import com.learning.security.security_service.UserDetailsServiceImpl;
+import com.learning.jwt.AuthEntryPointJwt;
+import com.learning.jwt.AuthTokenFilter;
+import com.learning.security.service.UserDetailsServiceImpl;
 
 /**
  * @author : Ki Beom Lee
@@ -72,9 +71,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
-		.authorizeRequests().antMatchers("/api/auth/**").permitAll()
-		.antMatchers("/api/food/**").authenticated()
-		.anyRequest().permitAll();
+		.authorizeRequests().antMatchers("/api/auth/**").permitAll();
+		
 
 		
 		
