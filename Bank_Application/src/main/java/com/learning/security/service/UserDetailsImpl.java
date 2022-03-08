@@ -10,7 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.learning.entity.User;
 
 import lombok.Data;
 
@@ -38,7 +37,7 @@ public class UserDetailsImpl implements UserDetails {
 		this.authorities = authorities;
 	}
 	
-	public static UserDetailsImpl build (User user) {
+	public static UserDetailsImpl build (UserDTO user) {
 		List<GrantedAuthority> authorities = user.getRoles()
 				.stream()
 				.map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
