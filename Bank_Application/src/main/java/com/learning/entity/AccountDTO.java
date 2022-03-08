@@ -2,6 +2,8 @@ package com.learning.entity;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,11 +26,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table
 public class AccountDTO {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
+	@Column(name = "account_customerId")
 	private long customerId;
 	@NotBlank
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long accountNumber;
 	@NotBlank
 	private Double accountBalance;

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.learning.entity.UserDTO;
 import com.learning.exceptions.NoDataFoundException;
+import com.learning.service.StaffServiceImpl;
 
 /**
  * @author : Ki Beom Lee
@@ -19,11 +20,11 @@ import com.learning.exceptions.NoDataFoundException;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
-	com.learning.repo.UserRepository userRepo;
+	StaffServiceImpl service;
 	@Transactional
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserDTO user = userRepo.findByUsername(username).orElseThrow(()-> new NoDataFoundException("username not found " + username));
+		UserDTO user = service.getUserByUserName(username).orElseThrow(()-> new NoDataFoundException("username not found " + username));
 		
 		
 		return UserDetailsImpl.build(user);
