@@ -25,9 +25,9 @@ public class UserDTO {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	@NotBlank
-	private String userName;
+	private String username;
 	@NotBlank
-	private String fullName;
+	private String fullname;
 	@NotBlank
 	private String password;
 	@Embedded
