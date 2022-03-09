@@ -7,7 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.learning.enums.AccountType;
+import com.learning.enums.Types;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,11 +23,11 @@ public class Transaction {
 	private LocalDateTime dateTime;
 	private String reference;
 	private double amount;
-	private AccountType type;
+	private Types type;
 	
 	@ManyToOne
 	@NotNull
 	@JsonIgnore
 	private AccountDTO account;
 }
-}
+

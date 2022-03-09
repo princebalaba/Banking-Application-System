@@ -28,4 +28,4 @@ public class BeneficiaryDTO {
 	private LocalDate addedDate;
 	
 }
-}
+
