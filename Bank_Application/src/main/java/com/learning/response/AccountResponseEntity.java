@@ -2,18 +2,19 @@ package com.learning.response;
 
 
 import java.time.LocalDate;
-import java.util.List;
-
-
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.learning.enums.EStatus;
 import com.learning.enums.Types;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class AccountResponseEntity {
 	@NotBlank
