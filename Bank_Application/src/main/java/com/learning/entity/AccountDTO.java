@@ -1,6 +1,7 @@
 package com.learning.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -38,8 +39,8 @@ public class AccountDTO {
 	@NotBlank
 	private Double accountBalance;
 	
-	@JsonFormat(pattern = "MM-dd-yyyy")
-	private LocalDate dateOfCreation;
+	
+	private LocalDateTime dateOfCreation;
 	// enum enable/disable
 	@NotEmpty
 	private CreditDebit type; // accountType of type enum

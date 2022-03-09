@@ -1,6 +1,10 @@
 package com.learning.controller;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +43,7 @@ import com.learning.response.AccountResponseEntity;
 import com.learning.response.CustomerRegisterResponse;
 import com.learning.response.JwtResponse;
 import com.learning.security.service.UserDetailsImpl;
+import com.learning.service.StaffService;
 import com.learning.service.UserService;
 
 @RestController
@@ -46,7 +51,8 @@ import com.learning.service.UserService;
 public class CustomerController {
 	@Autowired
 	UserService userService; 
-	
+	@Autowired
+	StaffService staffService;
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
@@ -144,8 +150,14 @@ public class CustomerController {
 			account.setAccountType(request.getAccountType());
 			account.setCustomerId(customerId);
 			account.setApproved(Approved.NO);
-		
-		return null; 
+			LocalDateTime now = LocalDateTime.now();  
+			account.setDateOfCreation(now);
+			UserDTO user = userService.getUserById(customerId).orElseThrow(()-> new IdNotFoundException("Id not found")); 
+			Set<AccountDTO> accounts = user.getAccount();
+			accounts.add(account);
+			user.setAccount(accounts);
+			UserDTO updated = userService.updateUser(user, customerId);
+			return ResponseEntity.status(200).body(updated);
 			
 	}
 	
