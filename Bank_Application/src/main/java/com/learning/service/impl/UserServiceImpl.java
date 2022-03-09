@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning.entity.UserDTO;
+import com.learning.exceptions.IdNotFoundException;
 import com.learning.repo.UserRepository;
 import com.learning.service.UserService;
 
@@ -34,8 +35,11 @@ public class UserServiceImpl implements UserService{
 	//updateUser
 	@Override
 	public UserDTO updateUser(UserDTO user, long id) {
+		UserDTO prev = userRepo.findById(id).orElseThrow(()-> new IdNotFoundException("Id not found"));
+		prev.setAccount(user.getAccount());
 		
-		return null;
+		return prev;
+
 	}
 
 
