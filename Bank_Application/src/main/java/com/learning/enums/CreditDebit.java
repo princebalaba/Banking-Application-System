@@ -1,5 +1,5 @@
 package com.learning.enums;
 
-public enum Types {
+public enum CreditDebit {
 	DEBIT, CREDIT
 }

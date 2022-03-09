@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CustomerResponseEntity {
+public class CustomerRegisterResponse {
 	
 	@NotBlank
 	private String userName;
@@ -19,6 +19,5 @@ public class CustomerResponseEntity {
 	private Long customerId;
 	
 	private String Password;
-	
 
 }
