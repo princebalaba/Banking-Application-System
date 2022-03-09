@@ -15,6 +15,7 @@ public class AccountApproaval {
 	private long accountNumber;
 	@NotBlank
 	private EStatus accountStatus;
+	//
 	
 
 }
