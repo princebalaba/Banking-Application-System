@@ -19,6 +19,7 @@ public class CustomerResponseEntity {
 	@NotBlank
 	private Long customerId;
 	
+	private String Password;
 	
 
 }
