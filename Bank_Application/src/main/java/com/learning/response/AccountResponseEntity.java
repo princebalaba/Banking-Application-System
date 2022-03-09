@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.learning.enums.EStatus;
-import com.learning.enums.Types;
+import com.learning.enums.CreditDebit;
 
 import lombok.Data;
 
@@ -18,7 +18,7 @@ public class AccountResponseEntity {
 	@NotBlank
 	private Double accountBalance;
 	@NotBlank
-	private Types accountType;
+	private CreditDebit accountType;
 	@NotBlank
 	private Long accountNumber;
 	@NotNull

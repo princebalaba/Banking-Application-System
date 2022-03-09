@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.learning.enums.Active;
+import com.learning.enums.Approved;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +24,7 @@ public class BeneficiaryDTO {
 	private long beneficiaryId;
 	private long accountNo;
 	private String name;
-	private Active active;
+	private Approved active;
 	private LocalDate addedDate;
 	
 }

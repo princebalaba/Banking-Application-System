@@ -26,15 +26,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.learning.entity.AccountDTO;
 import com.learning.entity.Role;
 import com.learning.entity.UserDTO;
+import com.learning.enums.Approved;
 import com.learning.enums.ERole;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.jwt.JwtUtils;
+import com.learning.payload.requset.AccountRequest;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.payload.requset.SignupRequest;
 import com.learning.repo.RoleRepo;
 import com.learning.repo.UserRepository;
 import com.learning.response.AccountResponseEntity;
-import com.learning.response.CustomerResponseEntity;
+import com.learning.response.CustomerRegisterResponse;
 import com.learning.response.JwtResponse;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.UserService;
@@ -75,7 +77,7 @@ public class CustomerController {
 		
 		user.setRoles(roles);
 		UserDTO newUser = userService.addUser(user);
-		CustomerResponseEntity response = new CustomerResponseEntity();
+		CustomerRegisterResponse response = new CustomerRegisterResponse();
 		response.setCustomerId(newUser.getId());
 		response.setFullName(newUser.getFullname());
 //		response.setPhoneNumber(null); // for null now 
@@ -136,9 +138,12 @@ public class CustomerController {
 	}
 	
 	@PostMapping(":{customerId}/account")
-		public ResponseEntity<?> createAccount(@PathVariable ("customerID") long customerId, @RequestBody AccountResponseEntity request) {
+		public ResponseEntity<?> createAccount(@PathVariable ("customerID") long customerId, @RequestBody AccountRequest request) {
 			AccountDTO account = new AccountDTO (); 
-			
+			account.setAccountBalance(request.getAccountBalance());
+			account.setAccountType(request.getAccountType());
+			account.setCustomerId(customerId);
+			account.setApproved(Approved.NO);
 		
 		return null; 
 			

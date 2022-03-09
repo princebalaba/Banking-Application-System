@@ -4,7 +4,7 @@ package com.learning.response;
 import java.util.List;
 
 import com.learning.enums.EStatus;
-import com.learning.enums.Types;
+import com.learning.enums.CreditDebit;
 
 import lombok.Data;
 @Data
@@ -13,13 +13,13 @@ public class JwtResponse {
 	private String type = "Bearer";
 	private Long customerId;
 	private Long accountNumber;
-	private Types accountType;
+	private CreditDebit accountType;
 	private EStatus accountStatus;
 	// Ki added 
 	private List<String> roles;
 	private String userName;
 	public JwtResponse(String accessToken, Long customerId, Long accountNumber,  
-			Types accountType, EStatus accountStatus) {
+			CreditDebit accountType, EStatus accountStatus) {
 		this.token = accessToken;
 		this.accountNumber = accountNumber;
 		this.customerId = customerId;

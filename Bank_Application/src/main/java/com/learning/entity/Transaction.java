@@ -7,7 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.learning.enums.Types;
+import com.learning.enums.CreditDebit;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class Transaction {
 	private LocalDateTime dateTime;
 	private String reference;
 	private double amount;
-	private Types type;
+	private CreditDebit type;
 	
 	@ManyToOne
 	@NotNull

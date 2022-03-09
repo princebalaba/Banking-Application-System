@@ -1,5 +1,5 @@
 package com.learning.enums;
 
-public enum Active {
+public enum Approved {
 	YES, NO
 }

@@ -1,5 +1,7 @@
 package com.learning.payload.requset;
 
+import com.learning.enums.AccountType;
+
 import lombok.Data;
 
 /**
@@ -8,7 +10,7 @@ import lombok.Data;
  */
 @Data
 public class AccountRequest {
-	private String accountType;
+	private AccountType accountType;
 	private Double accountBalance;
 	private String approved;
 	}
