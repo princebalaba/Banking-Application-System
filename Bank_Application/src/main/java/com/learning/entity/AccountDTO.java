@@ -41,6 +41,6 @@ public class AccountDTO {
 	// enum enable/disable
 	@NotEmpty
 	private Types accountType; // accountType of type enum
-	// 
+	/////
 
 }
