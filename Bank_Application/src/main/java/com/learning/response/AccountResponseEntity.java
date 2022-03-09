@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.learning.enums.EStatus;
 import com.learning.enums.Types;
@@ -20,9 +21,9 @@ public class AccountResponseEntity {
 	private Types accountType;
 	@NotBlank
 	private Long accountNumber;
-	@NotBlank
+	@NotNull
 	private EStatus accountStatus;
-	@NotEmpty
+	@NotNull
 	private List <String> transaction;
 	
 	
