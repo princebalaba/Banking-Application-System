@@ -17,8 +17,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
-
-
 /**
  * @author : Ki Beom Lee
  * @time : 2022. 2. 23.-오후 12:30:22

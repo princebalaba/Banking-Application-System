@@ -16,5 +16,5 @@ spring:
       ddl-auto: update 
 com:
   learning:
-    jwtSecret: bankapp
+    jwtSecret: bankapplicationsecret
     jwtExpirationMs: 86400000

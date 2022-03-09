@@ -3,9 +3,11 @@ package com.learning.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning.entity.UserDTO;
+import com.learning.repo.UserRepository;
 
 /**
  * @author : Ki Beom Lee
@@ -13,11 +15,12 @@ import com.learning.entity.UserDTO;
  */
 @Service
 public class UserServiceImpl implements UserService{
-
+	@Autowired
+	UserRepository userRepo ;
 	@Override
 	public UserDTO addUser(UserDTO user) {
 		// TODO Auto-generated method stub
-		return null;
+		return userRepo.save(user);
 	}
 
 	@Override

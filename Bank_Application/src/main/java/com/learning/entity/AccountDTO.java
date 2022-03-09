@@ -14,9 +14,7 @@ import javax.validation.constraints.NotEmpty;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.learning.enums.AccountType;
-import com.learning.enums.ERole;
-
+import com.learning.enums.Types;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,6 +40,7 @@ public class AccountDTO {
 	private LocalDate dateOfCreation;
 	// enum enable/disable
 	@NotEmpty
-	private AccountType accountType; // accountType of type enum
+	private Types accountType; // accountType of type enum
+	// 
 
 }
