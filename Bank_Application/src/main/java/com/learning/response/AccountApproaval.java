@@ -2,6 +2,7 @@ package com.learning.response;
 
 import javax.validation.constraints.NotBlank;
 
+import com.learning.enums.Approved;
 import com.learning.enums.EStatus;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ public class AccountApproaval {
 	private long accountNumber;
 	//approveStatus
 	@NotBlank
-	private EStatus accountStatus;
+	private Approved accountStatus;
 	
 	
 
