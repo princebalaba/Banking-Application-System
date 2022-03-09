@@ -78,7 +78,7 @@ public class CustomerController {
 		CustomerResponseEntity response = new CustomerResponseEntity();
 		response.setCustomerId(newUser.getId());
 		response.setFullName(newUser.getFullname());
-		response.setPhoneNumber(null); // for null now 
+//		response.setPhoneNumber(null); // for null now 
 		response.setPassword(newUser.getPassword());
 		response.setUserName(newUser.getUsername());
 
@@ -113,7 +113,7 @@ public class CustomerController {
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
 				.collect(Collectors.toList());
 		// return new token
-		return ResponseEntity.ok(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
+		return ResponseEntity.status(200).body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
 
 	}
 	
@@ -127,12 +127,21 @@ public class CustomerController {
 			AccountResponseEntity account = new AccountResponseEntity();
 			account.setAccountBalance(e.getAccountBalance());
 			account.setAccountNumber(e.getAccountNumber());
-			
+			// create accounts
 			
 		});
 		
 		return ResponseEntity.ok("working");
 
+	}
+	
+	@PostMapping(":{customerId}/account")
+		public ResponseEntity<?> createAccount(@PathVariable ("customerID") long customerId, @RequestBody AccountResponseEntity request) {
+			AccountDTO account = new AccountDTO (); 
+			
+		
+		return null; 
+			
 	}
 	
 	
