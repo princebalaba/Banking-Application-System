@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.learning.entity.UserDTO;
 import com.learning.exceptions.NoDataFoundException;
-import com.learning.service.StaffServiceImpl;
+import com.learning.service.impl.StaffServiceImpl;
 
 /**
  * @author : Ki Beom Lee

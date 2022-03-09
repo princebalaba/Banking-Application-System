@@ -14,8 +14,7 @@ public class CustomerResponseEntity {
 	private String userName;
 	@NotBlank
 	private String fullName;
-	@NotBlank
-	private String phoneNumber;
+	
 	@NotBlank
 	private Long customerId;
 	

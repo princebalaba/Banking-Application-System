@@ -1,5 +1,6 @@
 package com.learning.controller;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,20 +16,24 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learning.entity.AccountDTO;
 import com.learning.entity.Role;
 import com.learning.entity.UserDTO;
 import com.learning.enums.ERole;
+import com.learning.exceptions.IdNotFoundException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.payload.requset.SignupRequest;
 import com.learning.repo.RoleRepo;
 import com.learning.repo.UserRepository;
+import com.learning.response.AccountResponseEntity;
 import com.learning.response.CustomerResponseEntity;
 import com.learning.response.JwtResponse;
 import com.learning.security.service.UserDetailsImpl;
@@ -112,8 +117,19 @@ public class CustomerController {
 
 	}
 	
-	@GetMapping("/test")
-	public ResponseEntity<?> test() {
+	@GetMapping("/{customerID}/account")
+	public ResponseEntity<?> getCustomerAccuountById(@PathVariable ("customerID") long customerId) {
+		Set<AccountDTO> accounts = new HashSet<>(); 
+		UserDTO user = userService.getUserById(customerId).orElseThrow(()-> new IdNotFoundException("id has not found for the user" ));
+		accounts = user.getAccount();
+		List<AccountResponseEntity> responses = new ArrayList<>();
+		accounts.forEach(e -> {
+			AccountResponseEntity account = new AccountResponseEntity();
+			account.setAccountBalance(e.getAccountBalance());
+			account.setAccountNumber(e.getAccountNumber());
+			
+			
+		});
 		
 		return ResponseEntity.ok("working");
 
