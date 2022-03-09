@@ -11,11 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountApproaval {
+	// accNumber
 	@NotBlank
 	private long accountNumber;
+	//approveStatus
 	@NotBlank
 	private EStatus accountStatus;
-	//
+	
 	
 
 }
