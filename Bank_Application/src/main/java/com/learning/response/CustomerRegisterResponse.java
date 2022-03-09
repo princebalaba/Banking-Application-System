@@ -19,6 +19,5 @@ public class CustomerRegisterResponse {
 	private Long customerId;
 	
 	private String Password;
-	
 
 }
