@@ -36,7 +36,7 @@ public class UserDTO {
 	private String username;
 	@NotBlank
 	private String fullname;
-	@NotBlank
+//	@NotBlank
 	private String email;
 	@NotBlank
 	private String password;
