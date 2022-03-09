@@ -19,26 +19,27 @@ import com.learning.service.UserService;
 public class UserServiceImpl implements UserService{
 	@Autowired
 	UserRepository userRepo ;
+	//addUser
 	@Override
 	public UserDTO addUser(UserDTO user) {
 		// TODO Auto-generated method stub
 		return userRepo.save(user);
 	}
-
+	//getUserById
 	@Override
 	public Optional<UserDTO> getUserById(long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return userRepo.findById(id) ;
 	}
 
 
-
+	//updateUser
 	@Override
 	public UserDTO updateUser(UserDTO user, long id) {
 		UserDTO prev = userRepo.findById(id).orElseThrow(()-> new IdNotFoundException("Id not found"));
 		prev.setAccount(user.getAccount());
 		
 		return prev;
+
 	}
 
 

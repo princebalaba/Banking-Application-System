@@ -123,24 +123,7 @@ public class CustomerController {
 
 	}
 
-	@GetMapping("/{customerID}/account")
-	public ResponseEntity<?> getCustomerAccuountById(@PathVariable("customerID") long customerId) {
-		Set<AccountDTO> accounts = new HashSet<>();
-		UserDTO user = userService.getUserById(customerId)
-				.orElseThrow(() -> new IdNotFoundException("id has not found for the user"));
-		accounts = user.getAccount();
-		List<AccountResponseEntity> responses = new ArrayList<>();
-		accounts.forEach(e -> {
-			AccountResponseEntity account = new AccountResponseEntity();
-			account.setAccountBalance(e.getAccountBalance());
-			account.setAccountNumber(e.getAccountNumber());
-			// create accounts
 
-		});
-
-		return ResponseEntity.ok(responses);
-
-	}
 
 	@PostMapping("/{customerId}/account")
 	public ResponseEntity<?> createAccount(@PathVariable("customerID") long customerId,
@@ -164,7 +147,7 @@ public class CustomerController {
 		AccountResponseEntity response = new AccountResponseEntity();
 		response.setAccountBalance(account.getAccountBalance());
 		response.setAccountNumber(account.getAccountNumber());
-		response.setAccountType(account.getType());
+		response.setAccountType(account.getAccountType());
 		response.setApproved(account.getApproved());
 		response.setCustomerId(account.getCustomerId());
 		response.setDateOfCreation(account.getDateOfCreation());
@@ -201,10 +184,41 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 	}
 	@GetMapping("{customerId}/account")
-	public ResponseEntity<?> approveAccount( @PathVariable("customerId") long customerId) {
+	public ResponseEntity<?> getAccounts( @PathVariable("customerId") long customerId) {
 		UserDTO user = userService.getUserById(customerId).orElseThrow(()-> new IdNotFoundException("Id not found " ));
 		Set<AccountDTO> accounts = user.getAccount();
+		Set<AccountResponseEntity> responses = new HashSet<>();
+		accounts.forEach(e -> {
+			AccountResponseEntity response = new AccountResponseEntity();
+			response.setAccountBalance(e.getAccountBalance());
+			response.setAccountNumber(e.getAccountNumber());
+			response.setAccountType(e.getAccountType());
+			response.setApproved(e.getApproved());
+			response.setCustomerId(e.getCustomerId());
+			response.setDateOfCreation(e.getDateOfCreation());
+			responses.add(response);
+			
+		});
 		
-		return ResponseEntity.status(200).body(accounts);
+		return ResponseEntity.status(200).body(responses);
 	}
+	
+//	@GetMapping("/{customerID}/account")
+//	public ResponseEntity<?> getCustomerAccuountById(@PathVariable("customerID") long customerId) {
+//		Set<AccountDTO> accounts = new HashSet<>();
+//		UserDTO user = userService.getUserById(customerId)
+//				.orElseThrow(() -> new IdNotFoundException("id has not found for the user"));
+//		accounts = user.getAccount();
+//		List<AccountResponseEntity> responses = new ArrayList<>();
+//		accounts.forEach(e -> {
+//			AccountResponseEntity account = new AccountResponseEntity();
+//			account.setAccountBalance(e.getAccountBalance());
+//			account.setAccountNumber(e.getAccountNumber());
+//			// create accounts
+//
+//		});
+//
+//		return ResponseEntity.ok(responses);
+//
+//	}
 }

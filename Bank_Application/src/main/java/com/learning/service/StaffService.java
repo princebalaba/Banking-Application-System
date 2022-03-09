@@ -14,7 +14,7 @@ import com.learning.entity.UserDTO;
  */
 public interface  StaffService {
 
-	
+	//staffInterface
 	public Optional<UserDTO> getUserById(long id);
 	public List<UserDTO> getAllUsers();
 	public Optional<UserDTO> getUserByUserName(String name);

@@ -18,28 +18,28 @@ import com.learning.service.StaffService;
 public class StaffServiceImpl implements StaffService{
 	@Autowired
 	StaffRepository repo ;
+	//get Bu user Id
 	@Override
 	public Optional<UserDTO> getUserById(long id) {
-		// TODO Auto-generated method stub
 		return repo.findById(id);
 	}
-
+	
+	//get all users
 	@Override
 	public List<UserDTO> getAllUsers() {
-		// TODO Auto-generated method stub
-		return null;
+		return repo.findAll();
+		
 	}
-
+	//getByUserName
 	@Override
 	public Optional<UserDTO> getUserByUserName(String name) {
-		// TODO Auto-generated method stub
 		return repo.findByUsername(name);
 	}
-
+	//does user exist
 	@Override
 	public boolean existsById(long id) {
-		// TODO Auto-generated method stub
-		return false;
+		return repo.existsById(id);
+		 
 	}
 
 }
