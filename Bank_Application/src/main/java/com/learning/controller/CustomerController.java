@@ -221,22 +221,10 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(responses);
 	}
 
-//	@GetMapping("/{customerID}/account")
-//	public ResponseEntity<?> getCustomerAccuountById(@PathVariable("customerID") long customerId) {
-//		Set<AccountDTO> accounts = new HashSet<>();
-//		UserDTO user = userService.getUserById(customerId)
-//				.orElseThrow(() -> new IdNotFoundException("id has not found for the user"));
-//		accounts = user.getAccount();
-//		List<AccountResponseEntity> responses = new ArrayList<>();
-//		accounts.forEach(e -> {
-//			AccountResponseEntity account = new AccountResponseEntity();
-//			account.setAccountBalance(e.getAccountBalance());
-//			account.setAccountNumber(e.getAccountNumber());
-//			// create accounts
-//
-//		});
-//
-//		return ResponseEntity.ok(responses);
-//
-//	}
+	@PutMapping("/{customerId}")
+	public ResponseEntity<?> updateCustomer(@PathVariable("customerId") long customerId) {
+		
+		return null;
+	}
+	
 }

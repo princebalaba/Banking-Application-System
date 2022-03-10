@@ -41,7 +41,6 @@ public class AccountDTO {
 	private long customerId;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long accountNumber;
 	
 	private Double accountBalance;
