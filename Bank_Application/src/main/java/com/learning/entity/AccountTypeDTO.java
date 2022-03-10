@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table
+@Table(name = "accountType_Tbl")
 public class AccountTypeDTO {
 	
 	@Id

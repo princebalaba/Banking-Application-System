@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table
+@Table(name = "accountDTO_tbl")
 public class AccountDTO {
 	
 	@Column(name = "account_customerId")
@@ -56,7 +56,7 @@ public class AccountDTO {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinTable(name = "accountTypeDTO", joinColumns = @JoinColumn(name = "accountType_id"))
 	
-	private ApprovedDTO accountType;
+	private AccountTypeDTO accountType;
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinTable( name = "approvedDTO" , joinColumns = @JoinColumn(name = "Approved_id"))
 	

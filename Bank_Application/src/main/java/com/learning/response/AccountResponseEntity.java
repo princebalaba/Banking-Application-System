@@ -8,6 +8,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.learning.enums.EStatus;
+import com.learning.entity.AccountTypeDTO;
+import com.learning.entity.ApprovedDTO;
 import com.learning.enums.AccountType;
 import com.learning.enums.Approved;
 import com.learning.enums.CreditDebit;
@@ -22,11 +24,11 @@ public class AccountResponseEntity {
 	
 	private Double accountBalance;
 	
-	private AccountType accountType;
+	private AccountTypeDTO accountType;
 	
 	private Long accountNumber;
 	
-	private Approved approved;
+	private ApprovedDTO approved;
 
 	private LocalDateTime dateOfCreation;
 	
