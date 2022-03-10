@@ -56,15 +56,18 @@ public class AccountDTO {
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinTable(name = "accountTypeDTO", joinColumns = @JoinColumn(name = "accountType_id"))
-	
 	private AccountTypeDTO accountType;
+	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinTable( name = "approvedDTO" , joinColumns = @JoinColumn(name = "approved_id"))
-	
 	private ApprovedDTO approved;
 	
 	@OneToMany()
 	@JoinTable(name = "tranactions" , joinColumns = @JoinColumn (name = "transAction_id" ))
 	private Set<Transaction> transactions;
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinTable( name = "enabledDTO" , joinColumns = @JoinColumn(name = "enabled_id"))
+	private EnabledDisabledDTO enableDisabled;
 
 }
