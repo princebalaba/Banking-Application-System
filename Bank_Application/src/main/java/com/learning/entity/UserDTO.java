@@ -39,9 +39,11 @@ public class UserDTO {
 	private String fullname;
 	@NotBlank
 	private String password;
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "account_tbl", joinColumns = @JoinColumn(name = "account_customerId"))
 	private Set<AccountDTO> account;
+	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name="user_roles",
 	joinColumns  = @JoinColumn(name="id"),

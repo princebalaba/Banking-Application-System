@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.entity.AccountDTO;
+import com.learning.entity.AccountTypeDTO;
+import com.learning.entity.ApprovedDTO;
 import com.learning.entity.Role;
 import com.learning.entity.UserDTO;
 import com.learning.enums.AccountType;
@@ -50,6 +53,8 @@ import com.learning.response.JwtResponse;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
+import com.learning.service.impl.AccountTypeServiceImpl;
+import com.learning.service.impl.ApprovedServiceImpl;
 import com.learning.service.impl.RoleServiceImpl;
 
 @RestController
@@ -69,6 +74,11 @@ public class CustomerController {
 	private JwtUtils jwtUtils;
 	@Autowired
 	private RoleServiceImpl roleService;
+	@Autowired
+	private AccountTypeServiceImpl accountTypeService;
+	@Autowired
+	private ApprovedServiceImpl approvedService;
+	
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -76,13 +86,13 @@ public class CustomerController {
 		// can u initialize the values based on the signuprequest object?
 
 		UserDTO user = new UserDTO();
-		
-		Role role = roleService.getRoleName(ERole.ROLE_CUSTOMER).orElseThrow(()-> new RoleNotFoundException("this role has not found") );
+
+		Role role = roleService.getRoleName(ERole.ROLE_CUSTOMER)
+				.orElseThrow(() -> new RoleNotFoundException("this role has not found"));
 //		Role role = new Role();
 //		role.setRoleName(eRole);
 		Set<Role> roles = new HashSet<>();
 		roles.add(role);
-		
 
 		user.setUsername(signupRequest.getUserName());
 		user.setFullname(signupRequest.getFullName());
@@ -105,15 +115,7 @@ public class CustomerController {
 	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
-		/*
-		 * Interface defining the minimum security information associated with the
-		 * current threadof execution. The security context is stored in a
-		 * SecurityContextHolder.
-		 * 
-		 * Changes the currently authenticated principal, or removes the
-		 * authenticationinformation.
-		 * 
-		 */
+
 		System.out.println(signinRequest.toString());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		System.out.println("passed context holder");
@@ -130,58 +132,54 @@ public class CustomerController {
 
 	}
 
-
-
 	@PostMapping("/{customerId}/account")
 	public ResponseEntity<?> createAccount(@PathVariable("customerId") long customerId,
 			@RequestBody AccountRequest request) {
 		String type = request.getAccountType().name();
-		AccountType roles = null ; 
-		switch (type){
-		case ("SB"):
-			 roles = AccountType.SB ;
-			break;
-		case("CA"):
-			 roles = AccountType.CA ;
-			break;
-			default: throw new NoDataFoundException("no roles found");
+		Optional<AccountTypeDTO> roles = accountTypeService.getAccountTypeByName(request.getAccountType());
+		if(roles.isEmpty()) {
+			throw new RoleNotFoundException("role is not found ");
 		}
+		Optional<ApprovedDTO> approved = approvedService.getRoleName(Approved.NO);
+		if(approved.isEmpty()) {
+			throw new RoleNotFoundException("role is not found ");
+		}
+	
 		AccountDTO account = new AccountDTO();
 		account.setAccountBalance(request.getAccountBalance());
-//		account.setAccountType(roles);
+		account.setAccountType(roles.get());
 		account.setCustomerId(customerId);
-//		account.setApproved(Approved.NO);
+		account.setApproved(approved.get());
 		LocalDateTime now = LocalDateTime.now();
 		account.setDateOfCreation(now);
-		double accNo = Math.random()*100000000;  
-	    long roundAccNo = (long)accNo ;
-	    account.setAccountNumber(roundAccNo);
+		double accNo = Math.random() * 100000000;
+		long roundAccNo = (long) accNo;
+		account.setAccountNumber(roundAccNo);
 		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Id not found"));
 		Set<AccountDTO> accounts = user.getAccount();
 		accounts.add(account);
 		user.setAccount(accounts);
-		System.out.println(user.getAccount().toString() + "***************************************");
-		 userService.updateUser(user, customerId);
-		
+		userService.updateUser(user, customerId);
+
 		AccountResponseEntity response = new AccountResponseEntity();
 		response.setAccountBalance(account.getAccountBalance());
 		response.setAccountNumber(account.getAccountNumber());
-//		response.setAccountType(account.getAccountType());
-//		response.setApproved(account.getApproved());
+		response.setAccountType(account.getAccountType());
+		response.setApproved(account.getApproved());
 		response.setCustomerId(account.getCustomerId());
 		response.setDateOfCreation(account.getDateOfCreation());
 		return ResponseEntity.status(200).body(response);
 
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+//	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("{customerId}/account/{accountNo}")
 	public ResponseEntity<?> approveAccount(@PathVariable("customerID") long customerId,
 			@PathVariable("accountNo") long accountNo, @RequestBody AccountRequest request) {
-		//possibly user AccountRequest 
+		// possibly user AccountRequest
 		UserDTO user = staffService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Id not found"));
 		Set<AccountDTO> accounts = user.getAccount();
-		
+
 		accounts.forEach(e -> {
 			if (e.getAccountNumber() == accountNo) {
 //				e.setApproved(Approved.YES);
@@ -190,7 +188,7 @@ public class CustomerController {
 		});
 
 		user.setAccount(accounts);
-		 userService.updateUser(user, customerId);
+		userService.updateUser(user, customerId);
 		AccountApproaval response = new AccountApproaval();
 		response.setAccountNumber(accountNo);
 		accounts.forEach(e -> {
@@ -202,26 +200,27 @@ public class CustomerController {
 
 		return ResponseEntity.status(200).body(response);
 	}
+
 	@GetMapping("{customerId}/account")
-	public ResponseEntity<?> getAccounts( @PathVariable("customerId") long customerId) {
-		UserDTO user = userService.getUserById(customerId).orElseThrow(()-> new IdNotFoundException("Id not found " ));
+	public ResponseEntity<?> getAccounts(@PathVariable("customerId") long customerId) {
+		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Id not found "));
 		Set<AccountDTO> accounts = user.getAccount();
 		Set<AccountResponseEntity> responses = new HashSet<>();
 		accounts.forEach(e -> {
 			AccountResponseEntity response = new AccountResponseEntity();
 			response.setAccountBalance(e.getAccountBalance());
 			response.setAccountNumber(e.getAccountNumber());
-//			response.setAccountType(e.getAccountType());
-//			response.setApproved(e.getApproved());
+			response.setAccountType(e.getAccountType());
+			response.setApproved(e.getApproved());
 			response.setCustomerId(e.getCustomerId());
 			response.setDateOfCreation(e.getDateOfCreation());
 			responses.add(response);
-			
+
 		});
-		
+
 		return ResponseEntity.status(200).body(responses);
 	}
-	
+
 //	@GetMapping("/{customerID}/account")
 //	public ResponseEntity<?> getCustomerAccuountById(@PathVariable("customerID") long customerId) {
 //		Set<AccountDTO> accounts = new HashSet<>();

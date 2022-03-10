@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table
+@Table(name = "approvedDTO_tbl")
 public class ApprovedDTO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +33,6 @@ public class ApprovedDTO {
 	private long roleId;
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	private Approved approved ;
+	private Approved approvedStatus ;
 
 }

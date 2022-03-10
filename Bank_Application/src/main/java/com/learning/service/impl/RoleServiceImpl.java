@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.learning.entity.Role;
 import com.learning.enums.ERole;
 import com.learning.repo.RoleRepo;
-import com.learning.security.service.RoleService;
+import com.learning.service.RoleService;
 
 /**
  * @author : Ki Beom Lee
