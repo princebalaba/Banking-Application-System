@@ -62,6 +62,7 @@ public class AccountDTO {
 	@JoinTable( name = "approvedDTO" , joinColumns = @JoinColumn(name = "approved_id"))
 	
 	private ApprovedDTO approved;
+	
 	@OneToMany()
 	@JoinTable(name = "tranactions" , joinColumns = @JoinColumn (name = "transAction_id" ))
 	private Set<Transaction> transactions;

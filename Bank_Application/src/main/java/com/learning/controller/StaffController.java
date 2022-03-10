@@ -13,16 +13,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.learning.entity.UserDTO;
+import com.learning.entity.AccountDTO;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.response.JwtResponse;
 import com.learning.security.service.UserDetailsImpl;
+import com.learning.service.AccountService;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
 import com.learning.service.impl.RoleServiceImpl;
@@ -34,6 +36,10 @@ public class StaffController {
 	UserService userService;
 	@Autowired
 	StaffService staffService;
+	
+	@Autowired
+	AccountService accountService;
+	
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
@@ -75,15 +81,25 @@ public class StaffController {
 
 	}
 	@GetMapping("/account/{accountNo}")
-	public ResponseEntity<?> getStatementOfAccount(@Valid @RequestBody SigninRequest signinRequest) {
-	
-		UserDTO response = null;
+	public ResponseEntity<?> getStatementOfAccount(@PathVariable ("accountNo") Long accountNo){
+		AccountDTO response = accountService.getAccount(accountNo);
 		
 		
 		return ResponseEntity.status(200)
 				.body(response);
 		
 	}
+//	/josh is working on it 
+	
+//	@GetMapping("/beneficiary")
+//	public ResponseEntity<?> getBeneficiaryToBeApproved(){
+//		
+//		
+//		
+//		return ResponseEntity.status(200)
+//				.body(response);
+//		
+//	}
 
 
 }
