@@ -1,5 +1,6 @@
 package com.learning.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.learning.enums.CreditDebit;
 import com.learning.enums.EStatus;
 
 import lombok.AllArgsConstructor;
@@ -19,12 +21,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "typeDTO_tbl")
+@Table(name = "CreditDebit_tbl")
 public class CreditDebitTypeDTO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "credit_id")
 	private long roleId;
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	private EStatus estatus;
+	private CreditDebit estatus;
 }

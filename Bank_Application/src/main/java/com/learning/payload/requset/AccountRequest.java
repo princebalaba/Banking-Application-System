@@ -1,5 +1,8 @@
 package com.learning.payload.requset;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import com.learning.enums.AccountType;
 
 import lombok.Data;
@@ -10,7 +13,10 @@ import lombok.Data;
  */
 @Data
 public class AccountRequest {
+	@NotNull
 	private AccountType accountType;
+	@NotBlank
 	private Double accountBalance;
+	@NotNull
 	private String approved;
 	}

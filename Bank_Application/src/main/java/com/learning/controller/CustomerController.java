@@ -44,12 +44,14 @@ import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.AccountRequest;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.payload.requset.SignupRequest;
+import com.learning.payload.requset.UpdateRequest;
 import com.learning.repo.RoleRepo;
 import com.learning.repo.UserRepository;
 import com.learning.response.AccountApproaval;
 import com.learning.response.AccountResponseEntity;
 import com.learning.response.CustomerRegisterResponse;
 import com.learning.response.JwtResponse;
+import com.learning.response.UpdateResponse;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
@@ -78,7 +80,6 @@ public class CustomerController {
 	private AccountTypeServiceImpl accountTypeService;
 	@Autowired
 	private ApprovedServiceImpl approvedService;
-	
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -137,14 +138,14 @@ public class CustomerController {
 			@RequestBody AccountRequest request) {
 		String type = request.getAccountType().name();
 		Optional<AccountTypeDTO> roles = accountTypeService.getAccountTypeByName(request.getAccountType());
-		if(roles.isEmpty()) {
+		if (roles.isEmpty()) {
 			throw new RoleNotFoundException("role is not found ");
 		}
 		Optional<ApprovedDTO> approved = approvedService.getRoleName(Approved.NO);
-		if(approved.isEmpty()) {
+		if (approved.isEmpty()) {
 			throw new RoleNotFoundException("role is not found ");
 		}
-	
+
 		AccountDTO account = new AccountDTO();
 		account.setAccountBalance(request.getAccountBalance());
 		account.setAccountType(roles.get());
@@ -152,9 +153,9 @@ public class CustomerController {
 		account.setApproved(approved.get());
 		LocalDateTime now = LocalDateTime.now();
 		account.setDateOfCreation(now);
-		double accNo = Math.random() * 100000000;
-		long roundAccNo = (long) accNo;
-		account.setAccountNumber(roundAccNo);
+//		double accNo = Math.random() * 100000000;
+//		long roundAccNo = (long) accNo;
+//		account.setAccountNumber(roundAccNo);
 		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Id not found"));
 		Set<AccountDTO> accounts = user.getAccount();
 		accounts.add(account);
@@ -222,9 +223,40 @@ public class CustomerController {
 	}
 
 	@PutMapping("/{customerId}")
-	public ResponseEntity<?> updateCustomer(@PathVariable("customerId") long customerId) {
+	public ResponseEntity<?> updateCustomer(@PathVariable("customerId") long customerId,
+			@Valid @RequestBody UpdateRequest request) {
+		UserDTO user = new UserDTO();
+		 userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("id not found"));
+		user.setFullname(request.getFullname());
+		user.setPhone(request.getPhone());
+		user.setPan(request.getPan());
+		user.setAadhar(request.getAadhar());
+		user.setSecretQuestion(request.getSecretQuestion());
+		user.setSecretAnswer(request.getSecretAnswer());
+		user.setPanimage(request.getPanimage());
+		user.setAarchar(request.getAarchar());
+
+		UserDTO updated = userService.updateUser(user, customerId);
+		UpdateResponse response = new UpdateResponse();
+		response.setCustomerId(updated.getId());
+		response.setFullname(updated.getFullname());
+		response.setPhone(updated.getPhone());
+		response.setPan(updated.getPhone());
+		response.setAadhar(updated.getAadhar());
+		response.setSecretQuestion(updated.getSecretQuestion());
+		response.setSecretAnswer(updated.getSecretAnswer());
+		response.setPanimage(updated.getPanimage());
+		response.setAarchar(updated.getPanimage());
+
+		return ResponseEntity.status(200).body(response);
 		
-		return null;
 	}
 	
+	@GetMapping("{customerId}/account/{accountid}")
+	public ResponseEntity<?> getAccountFromId(@PathVariable("customerId") long customerId,@PathVariable("accountid") long accountid){
+		
+		
+		return ResponseEntity.status(200).body(null);
+	}
+
 }
