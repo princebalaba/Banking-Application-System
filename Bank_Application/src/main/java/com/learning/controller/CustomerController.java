@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -49,6 +50,7 @@ import com.learning.repo.RoleRepo;
 import com.learning.repo.UserRepository;
 import com.learning.response.AccountApproaval;
 import com.learning.response.AccountResponseEntity;
+import com.learning.response.AccountTransactionResponse;
 import com.learning.response.CustomerRegisterResponse;
 import com.learning.response.JwtResponse;
 import com.learning.response.UpdateResponse;
@@ -254,8 +256,20 @@ public class CustomerController {
 	
 	@GetMapping("{customerId}/account/{accountid}")
 	public ResponseEntity<?> getAccountFromId(@PathVariable("customerId") long customerId,@PathVariable("accountid") long accountid){
-		
-		
+		UserDTO user = userService.getUserById(customerId).orElseThrow(()-> new IdNotFoundException("ID not found"));
+		AccountDTO account = null; 
+		Iterator<AccountDTO> it = user.getAccount().iterator();
+		while(it.hasNext()) {
+			AccountDTO acc= it.next();
+			if(acc.getAccountNumber()==accountid) {
+				account = acc;
+			}
+		}
+		if(account == null) {
+			throw new IdNotFoundException("Id not found");
+		}
+		AccountTransactionResponse response = new AccountTransactionResponse();
+//		response.set
 		return ResponseEntity.status(200).body(null);
 	}
 
