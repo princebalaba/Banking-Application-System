@@ -36,10 +36,17 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public UserDTO updateUser(UserDTO user, long id) {
 		UserDTO prev = userRepo.findById(id).orElseThrow(()-> new IdNotFoundException("Id not found"));
-		System.out.println(user.getAccount().toString() +"*************************************8");
-		prev.setAccount(user.getAccount());
-		System.out.println(prev.getAccount().toString() +"*************************************8");
-		userRepo.save(prev);
+			prev.setAccount(user.getAccount());
+			prev.setAadhar(user.getAadhar());
+			prev.setAarchar(user.getPanimage());
+			prev.setFullname(user.getFullname());
+			prev.setPan(user.getPan());
+			prev.setPanimage(user.getPanimage());
+			prev.setPhone(user.getPhone());
+			prev.setSecretAnswer(user.getSecretAnswer());
+			prev.setSecretQuestion(user.getSecretQuestion());
+			
+			userRepo.save(prev);
 		return prev;
 
 	}

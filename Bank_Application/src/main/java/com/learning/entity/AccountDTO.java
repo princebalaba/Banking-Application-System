@@ -2,6 +2,7 @@ package com.learning.entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -48,7 +49,8 @@ public class AccountDTO {
 	
 	private LocalDateTime dateOfCreation;
 	// enum enable/disable
-	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinTable(name = "creditDebitTypeDTO", joinColumns = @JoinColumn(name = "credit_id"))
 	private CreditDebitTypeDTO type; // accountType of type enum
 	// 
 	
@@ -57,9 +59,11 @@ public class AccountDTO {
 	
 	private AccountTypeDTO accountType;
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinTable( name = "approvedDTO" , joinColumns = @JoinColumn(name = "Approved_id"))
+	@JoinTable( name = "approvedDTO" , joinColumns = @JoinColumn(name = "approved_id"))
 	
 	private ApprovedDTO approved;
-
+	@OneToMany()
+	@JoinTable(name = "tranactions" , joinColumns = @JoinColumn (name = "transAction_id" ))
+	private Set<Transaction> transactions;
 
 }

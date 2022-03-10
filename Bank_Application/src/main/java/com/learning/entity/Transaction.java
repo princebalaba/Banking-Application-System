@@ -1,6 +1,8 @@
 package com.learning.entity;
 
 import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import javax.persistence.GeneratedValue;
@@ -25,18 +27,13 @@ import lombok.NoArgsConstructor;
 @Table
 public class Transaction {
 	@Id
-
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
+	@Column(name = "transAction_id")
 	private long transactionId;
 	private LocalDateTime dateTime;
 	private String reference;
 	private double amount;
 	private CreditDebit type;
-	
-	@ManyToOne
-	@NotNull
-	@JsonIgnore
-	private AccountDTO account;
-}
 
+
+}

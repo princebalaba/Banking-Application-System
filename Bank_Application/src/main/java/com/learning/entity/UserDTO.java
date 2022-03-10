@@ -50,5 +50,20 @@ public class UserDTO {
 	inverseJoinColumns =  @JoinColumn(name ="role_id"))
 	private Set<Role> roles;
 	
+	private String phone;
+	
+	private String pan; 
+	
+	private String aadhar;
+	
+	private String secretQuestion;
+
+	private String secretAnswer;
+	
+	private byte[] panimage;
+	private byte[] aarchar;
+	
+	
+	
 
 }
