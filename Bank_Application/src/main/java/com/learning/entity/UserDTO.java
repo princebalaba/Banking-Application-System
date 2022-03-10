@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -36,15 +37,15 @@ public class UserDTO {
 	private String username;
 	@NotBlank
 	private String fullname;
-//	@NotBlank
-	private String email;
 	@NotBlank
 	private String password;
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "account_tbl", joinColumns = @JoinColumn(name = "account_customerId"))
 	private Set<AccountDTO> account;
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "role_tbl", joinColumns = @JoinColumn(name = "roleId"))
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name="user_roles",
+	joinColumns  = @JoinColumn(name="id"),
+	inverseJoinColumns =  @JoinColumn(name ="role_id"))
 	private Set<Role> roles;
 	
 

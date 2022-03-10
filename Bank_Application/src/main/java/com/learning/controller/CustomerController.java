@@ -31,9 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.learning.entity.AccountDTO;
 import com.learning.entity.Role;
 import com.learning.entity.UserDTO;
+import com.learning.enums.AccountType;
 import com.learning.enums.Approved;
 import com.learning.enums.ERole;
 import com.learning.exceptions.IdNotFoundException;
+import com.learning.exceptions.NoDataFoundException;
+import com.learning.exceptions.RoleNotFoundException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.AccountRequest;
 import com.learning.payload.requset.SigninRequest;
@@ -47,6 +50,7 @@ import com.learning.response.JwtResponse;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
+import com.learning.service.impl.RoleServiceImpl;
 
 @RestController
 @RequestMapping("/api/customer")
@@ -63,6 +67,8 @@ public class CustomerController {
 
 	@Autowired
 	private JwtUtils jwtUtils;
+	@Autowired
+	private RoleServiceImpl roleService;
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -70,12 +76,13 @@ public class CustomerController {
 		// can u initialize the values based on the signuprequest object?
 
 		UserDTO user = new UserDTO();
-
-		ERole eRole = ERole.ROLE_CUSTOMER;
-		Role role = new Role();
-		role.setRoleName(eRole);
+		
+		Role role = roleService.getRoleName(ERole.ROLE_CUSTOMER).orElseThrow(()-> new RoleNotFoundException("this role has not found") );
+//		Role role = new Role();
+//		role.setRoleName(eRole);
 		Set<Role> roles = new HashSet<>();
 		roles.add(role);
+		
 
 		user.setUsername(signupRequest.getUserName());
 		user.setFullname(signupRequest.getFullName());
@@ -126,13 +133,24 @@ public class CustomerController {
 
 
 	@PostMapping("/{customerId}/account")
-	public ResponseEntity<?> createAccount(@PathVariable("customerID") long customerId,
+	public ResponseEntity<?> createAccount(@PathVariable("customerId") long customerId,
 			@RequestBody AccountRequest request) {
+		String type = request.getAccountType().name();
+		AccountType roles = null ; 
+		switch (type){
+		case ("SB"):
+			 roles = AccountType.SB ;
+			break;
+		case("CA"):
+			 roles = AccountType.CA ;
+			break;
+			default: throw new NoDataFoundException("no roles found");
+		}
 		AccountDTO account = new AccountDTO();
 		account.setAccountBalance(request.getAccountBalance());
-		account.setAccountType(request.getAccountType());
+//		account.setAccountType(roles);
 		account.setCustomerId(customerId);
-		account.setApproved(Approved.NO);
+//		account.setApproved(Approved.NO);
 		LocalDateTime now = LocalDateTime.now();
 		account.setDateOfCreation(now);
 		double accNo = Math.random()*100000000;  
@@ -142,13 +160,14 @@ public class CustomerController {
 		Set<AccountDTO> accounts = user.getAccount();
 		accounts.add(account);
 		user.setAccount(accounts);
+		System.out.println(user.getAccount().toString() + "***************************************");
 		 userService.updateUser(user, customerId);
 		
 		AccountResponseEntity response = new AccountResponseEntity();
 		response.setAccountBalance(account.getAccountBalance());
 		response.setAccountNumber(account.getAccountNumber());
-		response.setAccountType(account.getAccountType());
-		response.setApproved(account.getApproved());
+//		response.setAccountType(account.getAccountType());
+//		response.setApproved(account.getApproved());
 		response.setCustomerId(account.getCustomerId());
 		response.setDateOfCreation(account.getDateOfCreation());
 		return ResponseEntity.status(200).body(response);
@@ -165,7 +184,7 @@ public class CustomerController {
 		
 		accounts.forEach(e -> {
 			if (e.getAccountNumber() == accountNo) {
-				e.setApproved(Approved.YES);
+//				e.setApproved(Approved.YES);
 
 			}
 		});
@@ -176,7 +195,7 @@ public class CustomerController {
 		response.setAccountNumber(accountNo);
 		accounts.forEach(e -> {
 			if (e.getAccountNumber() == accountNo) {
-				response.setAccountStatus(e.getApproved());
+//				response.setAccountStatus(e.getApproved());
 
 			}
 		});
@@ -192,8 +211,8 @@ public class CustomerController {
 			AccountResponseEntity response = new AccountResponseEntity();
 			response.setAccountBalance(e.getAccountBalance());
 			response.setAccountNumber(e.getAccountNumber());
-			response.setAccountType(e.getAccountType());
-			response.setApproved(e.getApproved());
+//			response.setAccountType(e.getAccountType());
+//			response.setApproved(e.getApproved());
 			response.setCustomerId(e.getCustomerId());
 			response.setDateOfCreation(e.getDateOfCreation());
 			responses.add(response);
