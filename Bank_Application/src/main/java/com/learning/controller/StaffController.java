@@ -12,11 +12,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learning.entity.UserDTO;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.response.JwtResponse;
@@ -71,6 +73,16 @@ public class StaffController {
 		return ResponseEntity.status(200)
 				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
 
+	}
+	@GetMapping("/account/{accountNo}")
+	public ResponseEntity<?> getStatementOfAccount(@Valid @RequestBody SigninRequest signinRequest) {
+	
+		UserDTO response = null;
+		
+		
+		return ResponseEntity.status(200)
+				.body(response);
+		
 	}
 
 
