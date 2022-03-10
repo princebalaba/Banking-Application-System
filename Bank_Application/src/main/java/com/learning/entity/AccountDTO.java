@@ -49,7 +49,7 @@ public class AccountDTO {
 	private LocalDateTime dateOfCreation;
 	// enum enable/disable
 	
-	private CreditDebit type; // accountType of type enum
+	private CreditDebitTypeDTO type; // accountType of type enum
 	// 
 	
 	@ManyToOne(cascade = CascadeType.ALL)
