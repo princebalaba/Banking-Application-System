@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.learning.apierrors.ApiError;
 import com.learning.exceptions.AccountAlreadyExistsException;
 import com.learning.exceptions.NoDataFoundException;
+import com.learning.exceptions.RoleNotFoundException;
 
 public class ControllerAdvice extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(NoDataFoundException.class)
@@ -77,5 +78,15 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
 		apiError.setMessage(e.getMessage());
 		return buildResponseEntity(apiError);
 
+	}
+	
+	@ExceptionHandler(RoleNotFoundException.class)
+	public ResponseEntity<?> roleNotFoundException(RoleNotFoundException e) {
+		Map<String, String> map = new HashMap<>();
+		map.put("message", "role not found");
+		System.out.println(e);
+		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+		System.out.println(apiError);
+		return buildResponseEntity(apiError);
 	}
 }
