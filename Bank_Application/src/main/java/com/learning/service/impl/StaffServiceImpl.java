@@ -83,7 +83,7 @@ public class StaffServiceImpl implements StaffService{
 		
 		List<BeneficiaryDTO>  beneficiaries = beneficiaryRepo.findAll();
 		
-		beneficiaries.removeIf(beneficiary -> beneficiary.getActive().equals(Approved.NO));
+		beneficiaries.removeIf(beneficiary -> beneficiary.getApproved().equals(Approved.NO));
 		
 		return beneficiaries;
 	}
@@ -93,7 +93,7 @@ public class StaffServiceImpl implements StaffService{
 		
 		List<BeneficiaryDTO>  beneficiaries = beneficiaryRepo.findAll();
 		
-		beneficiaries.removeIf(beneficiary -> beneficiary.getActive().equals(Approved.YES));
+		beneficiaries.removeIf(beneficiary -> beneficiary.getApproved().equals(Approved.YES));
 		
 		return beneficiaries;
 	}

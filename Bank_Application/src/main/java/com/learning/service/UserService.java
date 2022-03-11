@@ -1,6 +1,5 @@
 package com.learning.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.learning.entity.UserDTO;
@@ -16,5 +15,7 @@ public interface UserService {
 	public Optional<UserDTO> getUserById(long id);
 	
 	public UserDTO updateUser(UserDTO user, long id );
+	UserDTO getUser(Long id);
+	UserDTO updateUser(UserDTO user);
 	
 }

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.learning.entity.AccountDTO;
 import com.learning.entity.AccountTypeDTO;
 import com.learning.entity.ApprovedDTO;
+import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.Role;
 import com.learning.entity.UserDTO;
 import com.learning.enums.Approved;
@@ -38,6 +40,7 @@ import com.learning.exceptions.RoleNotFoundException;
 import com.learning.exceptions.TransactionInvalidException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.AccountRequest;
+import com.learning.payload.requset.BeneficiaryPayload;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.payload.requset.SignupRequest;
 import com.learning.payload.requset.TransferRequest;
@@ -45,13 +48,13 @@ import com.learning.payload.requset.UpdateRequest;
 import com.learning.payload.response.AccountApproaval;
 import com.learning.payload.response.AccountResponseEntity;
 import com.learning.payload.response.AccountTransactionResponse;
+import com.learning.payload.response.BeneficiaryAddedResponse;
 import com.learning.payload.response.CustomerRegisterResponse;
 import com.learning.payload.response.JwtResponse;
 import com.learning.payload.response.UpdateResponse;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.AccountService;
 import com.learning.service.StaffService;
-import com.learning.service.impl.AccountServiceImpl;
 import com.learning.service.impl.AccountTypeServiceImpl;
 import com.learning.service.impl.ApprovedServiceImpl;
 import com.learning.service.impl.RoleServiceImpl;
@@ -83,7 +86,7 @@ public class CustomerController {
 	@Autowired
 	private ApprovedServiceImpl approvedService;
 	@Autowired
-	private AccountServiceImpl accountService;
+	private AccountService accountService;
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -280,17 +283,46 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 	}
 
-	@PostMapping("{customerId}/beneficiary")
-	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") long customerId) {
+	@GetMapping("{customerId}/beneficiary")
+	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
 
 		return null;
 
 	}
 
-	@GetMapping("{customerId}/beneficiary")
-	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
+	@PostMapping("{customerId}/beneficiary")
+	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
 
-		return null;
+Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
+		
+		if(accountExists) {
+		BeneficiaryDTO ben = new BeneficiaryDTO();
+		System.out.println("Acc exists");
+		
+		ben.setAccountNo(payload.getAccountNumber());
+		Long beneficiaryAccountUserId = accountService.getAccountByAccountNumber((payload.getAccountNumber()))
+				.getCustomerId();
+		String beneficiaryName = userService.getUser(beneficiaryAccountUserId).getFullname();
+		ben.setName(beneficiaryName);
+		ben.setApproved(Approved.YES);
+		ben.setAccountType(payload.getAccountType());
+		
+		UserDTO user =userService.getUser(customerId);
+		Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
+		userBeneficiaries.add(ben);
+		UserDTO updatedUser=userService.updateUser(user);
+		
+		BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
+		response.setApproved(ben.getApproved());
+		response.setBeneficiaryAccountNo(ben.getBeneficiaryAccount());
+		response.setBeneficiaryName(ben.getName());
+		
+		return ResponseEntity.status(201).body(response);
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("something went wrong adding");
+					
+		}
 
 	}
 
