@@ -3,6 +3,7 @@ package com.learning.controller;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -88,9 +89,10 @@ public class AdminController {
 		staff.setFullname(request.getStaffFullName());
 		staff.setUsername(request.getStaffUserName());
 		staff.setPassword(passwordEncoder.encode(request.getStaffPassword()));
+//		Optional<Role> role1 = roleService.getRoleName(ERole.ROLE_STAFF);
 
-		Role role = roleService.getRoleName(ERole.ROLE_STAFF)
-				.orElseThrow(() -> new RoleNotFoundException("this role has not found"));
+			Role role = roleService.getRoleName(ERole.ROLE_STAFF)
+				.orElseThrow(() -> new RoleNotFoundException("this staff role has not found"));
 		Set<Role> roles = new HashSet<>();
 		roles.add(role);
 		staff.setRoles(roles);

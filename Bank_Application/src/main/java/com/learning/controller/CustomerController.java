@@ -90,15 +90,9 @@ public class CustomerController {
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
-		// can u create user object?
-		// can u initialize the values based on the signuprequest object?
-
 		UserDTO user = new UserDTO();
-
 		Role role = roleService.getRoleName(ERole.ROLE_CUSTOMER)
 				.orElseThrow(() -> new RoleNotFoundException("this role has not found"));
-//		Role role = new Role();
-//		role.setRoleName(eRole);
 		Set<Role> roles = new HashSet<>();
 		roles.add(role);
 
