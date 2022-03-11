@@ -3,7 +3,9 @@ package com.learning.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.UserDTO;
+import com.learning.response.StaffGetAccountResponse;
 
 
 
@@ -19,4 +21,25 @@ public interface  StaffService {
 	public List<UserDTO> getAllUsers();
 	public Optional<UserDTO> getUserByUserName(String name);
 	public boolean existsById(long id);
+	
+	
+	StaffGetAccountResponse getAccountDetails(Long accountNo);
+
+	List<BeneficiaryDTO> getUnapprovedBeneficiaries();
+	
+	List<BeneficiaryDTO> getApprovedBeneficiaries();
+
+//	ApproveBeneficiaryResponse approveBeneficiary(ApproveBeneficiaryRequest request);
+//
+//	List<AccountApprovalSummary> getUnapprovedAccounts();
+//
+//	ApproveAccountResponse approveAccount(ApproveAccountRequest request);
+//
+//	List<CustomerSummary> getCustomers();
+//
+//	String setCustomerEnabled(SetEnabledRequest request);
+//
+//	CustomerSummary getCustomer(Long customerId);
+//
+//	String staffTransferFunds(TransferRequestStaff request);
 }

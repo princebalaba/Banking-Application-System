@@ -6,8 +6,12 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.UserDTO;
+import com.learning.enums.Approved;
+import com.learning.repo.BeneficiaryRepo;
 import com.learning.repo.StaffRepository;
+import com.learning.response.StaffGetAccountResponse;
 import com.learning.service.StaffService;
 
 /**
@@ -18,6 +22,9 @@ import com.learning.service.StaffService;
 public class StaffServiceImpl implements StaffService{
 	@Autowired
 	StaffRepository repo ;
+	
+	@Autowired
+	BeneficiaryRepo beneficiaryRepo;
 	//get Bu user Id
 	@Override
 	public Optional<UserDTO> getUserById(long id) {
@@ -40,6 +47,33 @@ public class StaffServiceImpl implements StaffService{
 	public boolean existsById(long id) {
 		return repo.existsById(id);
 		 
+	}
+
+	@Override
+	public StaffGetAccountResponse getAccountDetails(Long accountNo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override 
+	public List<BeneficiaryDTO> getUnapprovedBeneficiaries() {
+		// TODO Auto-generated method stub
+		
+		List<BeneficiaryDTO>  beneficiaries = beneficiaryRepo.findAll();
+		
+		beneficiaries.removeIf(beneficiary -> beneficiary.getActive().equals(Approved.NO));
+		
+		return beneficiaries;
+	}
+	@Override 
+	public List<BeneficiaryDTO> getApprovedBeneficiaries() {
+		// TODO Auto-generated method stub
+		
+		List<BeneficiaryDTO>  beneficiaries = beneficiaryRepo.findAll();
+		
+		beneficiaries.removeIf(beneficiary -> beneficiary.getActive().equals(Approved.YES));
+		
+		return beneficiaries;
 	}
 
 }

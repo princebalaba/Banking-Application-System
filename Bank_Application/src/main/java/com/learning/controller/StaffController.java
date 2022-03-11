@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -99,7 +100,7 @@ public class StaffController {
 //	/josh is working on it 
 	
 	@GetMapping("/beneficiary")
-	public ResponseEntity<?> getBeneficiaryToBeApproved(){
+	public ResponseEntity<?> getUnapprovedBeneficiaries(){
 		
 		
 		
@@ -112,6 +113,34 @@ public class StaffController {
 				.body(response);
 		
 	}
+//	@GetMapping("/accounts/approve")
+//	public ResponseEntity<?> getUnapprovedAccounts() {
+//		return ResponseEntity.ok(staffService.getUnapprovedAccounts());
+//	}
 
+//	@PutMapping("/accounts/approve")
+//	public ResponseEntity<?> approveAccount(@RequestBody ApproveAccountRequest request) {
+//		return ResponseEntity.ok(staffService.approveAccount(request));
+//	}
+//
+//	@GetMapping("/customer")
+//	public ResponseEntity<?> listCustomers() {
+//		return ResponseEntity.ok(staffService.getCustomers());
+//	}
+//
+//	@PutMapping("/customer")
+//	public ResponseEntity<?> setCustomerEnabled(@RequestBody SetEnabledRequest request) {
+//		return ResponseEntity.ok(staffService.setCustomerEnabled(request));
+//	}
+//
+//	@GetMapping("/customer/:customerID")
+//	public ResponseEntity<?> getCustomer(@PathVariable("customerID") Long customerId) {
+//		return ResponseEntity.ok(staffService.getCustomer(customerId));
+//	}
+//
+//	@PutMapping("/transfer")
+//	public ResponseEntity<?> staffTransfer(@RequestBody TransferRequestStaff request) {
+//		return ResponseEntity.ok(staffService.staffTransferFunds(request));
+//	}
 
 }
