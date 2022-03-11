@@ -69,5 +69,9 @@ public class AccountDTO {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinTable( name = "enabledDTO" , joinColumns = @JoinColumn(name = "enabled_id"))
 	private EnabledDisabledDTO enableDisabled;
+	
+	@OneToMany()
+	@JoinTable(name = "beneficiaries" , joinColumns = @JoinColumn (name = "beneficiary_id" ))
+	private Set <BeneficiaryDTO> beneficiaries;
 
 }

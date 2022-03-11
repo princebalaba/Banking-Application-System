@@ -2,6 +2,7 @@ package com.learning.entity;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,16 +19,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table
+@Table(name = "beneficiary_tbl")
 public class BeneficiaryDTO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long beneficiaryId;
+	private long beneficiaryAccount;
 	private long accountNo;
 	private String name;
 	private Approved active;
 	private LocalDate addedDate;
+	
+
+	
 	
 }
 

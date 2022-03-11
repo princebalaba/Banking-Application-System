@@ -1,5 +1,6 @@
 package com.learning.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,11 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.entity.AccountDTO;
+import com.learning.entity.BeneficiaryDTO;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.response.JwtResponse;
+import com.learning.response.StaffGetAccountResponse;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.AccountService;
+import com.learning.service.BeneficiaryService;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
 import com.learning.service.impl.RoleServiceImpl;
@@ -39,6 +43,9 @@ public class StaffController {
 	
 	@Autowired
 	AccountService accountService;
+	
+	@Autowired
+	BeneficiaryService beneficiaryService;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -91,15 +98,20 @@ public class StaffController {
 	}
 //	/josh is working on it 
 	
-//	@GetMapping("/beneficiary")
-//	public ResponseEntity<?> getBeneficiaryToBeApproved(){
-//		
-//		
-//		
-//		return ResponseEntity.status(200)
-//				.body(response);
-//		
-//	}
+	@GetMapping("/beneficiary")
+	public ResponseEntity<?> getBeneficiaryToBeApproved(){
+		
+		
+		
+		List<StaffGetAccountResponse> response = new ArrayList<>() ;
+		List<BeneficiaryDTO> toBeApproved = beneficiaryService.getBeneficiaries();
+				
+		
+		
+		return ResponseEntity.status(200)
+				.body(response);
+		
+	}
 
 
 }
