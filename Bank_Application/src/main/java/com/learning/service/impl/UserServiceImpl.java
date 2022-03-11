@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService{
 	//addUser
 	@Override
 	public UserDTO addUser(UserDTO user) {
-		// TODO Auto-generated method stub
+		
 		return userRepo.save(user);
 	}
 	//getUserById

@@ -269,8 +269,20 @@ public class CustomerController {
 			throw new IdNotFoundException("Id not found");
 		}
 		AccountTransactionResponse response = new AccountTransactionResponse();
-//		response.set
-		return ResponseEntity.status(200).body(null);
+		response.setAccountBalance(account.getAccountBalance());
+		response.setAccountNumber(account.getAccountNumber());
+		response.setAccountType(account.getAccountType());
+		response.setEnabled(account.getEnableDisabled());
+		response.setTransactions(account.getTransactions());
+		return ResponseEntity.status(200).body(response);
+	}
+	@PostMapping("{customerId}/beneficiary")
+	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") long customerId,@PathVariable("accountid") long accountid){
+		
+		
+		
+		return null;
+		
 	}
 
 }

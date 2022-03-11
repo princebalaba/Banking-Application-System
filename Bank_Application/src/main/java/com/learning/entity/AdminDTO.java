@@ -1,9 +1,15 @@
 package com.learning.entity;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -28,7 +34,11 @@ public class AdminDTO {
 	private int id; 
 	private String username;
 	private String password ;
-	@OneToOne
-	private Role role;
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name="adminRoles",
+	joinColumns  = @JoinColumn(name="id"),
+	inverseJoinColumns =  @JoinColumn(name ="role_id"))
+	private Set<Role> roles;
+	
 
 }
