@@ -1,10 +1,6 @@
 package com.learning.controller;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +12,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -54,6 +49,7 @@ import com.learning.payload.response.CustomerRegisterResponse;
 import com.learning.payload.response.JwtResponse;
 import com.learning.payload.response.UpdateResponse;
 import com.learning.security.service.UserDetailsImpl;
+import com.learning.service.AccountService;
 import com.learning.service.StaffService;
 import com.learning.service.impl.AccountServiceImpl;
 import com.learning.service.impl.AccountTypeServiceImpl;
@@ -68,6 +64,10 @@ public class CustomerController {
 	UserServiceImpl userService;
 	@Autowired
 	StaffService staffService;
+	
+//	@Autowired
+//	AccountService accountService;
+	
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
@@ -315,11 +315,12 @@ public class CustomerController {
 		AccountDTO temp = accountFrom;
 		// deal with the user from
 		temp.setAccountBalance(accountFrom.getAccountBalance() - amount);
-		Set<AccountDTO> accountsFrom = user.getAccount();
-		accountsFrom.remove(accountFrom);
-		accountsFrom.add(temp);
-		user.setAccount(accountsFrom);
-		userService.updateUser(user, request.getCustomer());
+//		Set<AccountDTO> accountsFrom = user.getAccount();
+//		accountsFrom.remove(accountFrom);
+//		accountsFrom.add(temp);
+//		user.setAccount(accountsFrom);
+//		userService.updateUser(user, request.getCustomer());
+		accountService.updateAccount(accountFrom.getAccountNumber(), temp);
 
 		// deal with the uer to
 		UserDTO toAccountHolder = userService.getUserById(toAccount.getCustomerId())
@@ -327,12 +328,12 @@ public class CustomerController {
 						+ request.getToAccNumber() + " Account Number Not Valid"));
 		temp = toAccount;
 		temp.setAccountBalance(temp.getAccountBalance() + amount);
-
-		Set<AccountDTO> accountsTo = toAccountHolder.getAccount();
-		accountsTo.remove(toAccount);
-		accountsTo.add(temp);
-		toAccountHolder.setAccount(accountsTo);
-		userService.updateUser(toAccountHolder, toAccount.getCustomerId());
+		accountService.updateAccount(toAccount.getAccountNumber(), temp);
+//		Set<AccountDTO> accountsTo = toAccountHolder.getAccount();
+//		accountsTo.remove(toAccount);
+//		accountsTo.add(temp);
+//		toAccountHolder.setAccount(accountsTo);
+//		userService.updateUser(toAccountHolder, toAccount.getCustomerId());
 
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 

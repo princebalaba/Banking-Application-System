@@ -1,5 +1,6 @@
 package com.learning.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -68,6 +69,9 @@ public class UserDTO {
 	@Enumerated(EnumType.STRING)
 	private EStatus status;
 	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "add_beneficiary_tbl" ,  joinColumns = @JoinColumn(name ="account_no"))
+	private Set<BeneficiaryDTO> beneficiaries = new HashSet<>();
 	
 	
 
