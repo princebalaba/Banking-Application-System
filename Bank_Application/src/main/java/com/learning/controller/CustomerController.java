@@ -278,12 +278,32 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 	}
 	@PostMapping("{customerId}/beneficiary")
-	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") long customerId,@PathVariable("accountid") long accountid){
+	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") long customerId){
 		
 		
 		
 		return null;
 		
 	}
+	
+	@GetMapping("{customerId}/beneficiary")
+	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId){
+		
+		
+		
+		return null;
+		
+	}
+	
+	@GetMapping("{customerId}/beneficiary")
+	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId){
+		
+		
+		
+		return null;
+		
+	}
+	
+	
 
 }
