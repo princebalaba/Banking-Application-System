@@ -315,11 +315,12 @@ public class CustomerController {
 		AccountDTO temp = accountFrom;
 		// deal with the user from
 		temp.setAccountBalance(accountFrom.getAccountBalance() - amount);
-		Set<AccountDTO> accountsFrom = user.getAccount();
-		accountsFrom.remove(accountFrom);
-		accountsFrom.add(temp);
-		user.setAccount(accountsFrom);
-		userService.updateUser(user, request.getCustomer());
+//		Set<AccountDTO> accountsFrom = user.getAccount();
+//		accountsFrom.remove(accountFrom);
+//		accountsFrom.add(temp);
+//		user.setAccount(accountsFrom);
+//		userService.updateUser(user, request.getCustomer());
+		accountService.updateAccount(accountFrom.getAccountNumber(), temp);
 
 		// deal with the uer to
 		UserDTO toAccountHolder = userService.getUserById(toAccount.getCustomerId())
@@ -327,12 +328,12 @@ public class CustomerController {
 						+ request.getToAccNumber() + " Account Number Not Valid"));
 		temp = toAccount;
 		temp.setAccountBalance(temp.getAccountBalance() + amount);
-
-		Set<AccountDTO> accountsTo = toAccountHolder.getAccount();
-		accountsTo.remove(toAccount);
-		accountsTo.add(temp);
-		toAccountHolder.setAccount(accountsTo);
-		userService.updateUser(toAccountHolder, toAccount.getCustomerId());
+		accountService.updateAccount(toAccount.getAccountNumber(), temp);
+//		Set<AccountDTO> accountsTo = toAccountHolder.getAccount();
+//		accountsTo.remove(toAccount);
+//		accountsTo.add(temp);
+//		toAccountHolder.setAccount(accountsTo);
+//		userService.updateUser(toAccountHolder, toAccount.getCustomerId());
 
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 
