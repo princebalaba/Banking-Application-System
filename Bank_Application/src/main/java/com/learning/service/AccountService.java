@@ -18,4 +18,5 @@ public interface AccountService {
 	Boolean accountExists(Long id);
 	
 
+	public AccountDTO updateAccount(long id, AccountDTO account);
 }

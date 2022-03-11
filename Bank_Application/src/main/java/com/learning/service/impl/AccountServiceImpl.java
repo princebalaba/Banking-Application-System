@@ -98,4 +98,11 @@ public class AccountServiceImpl implements AccountService{
 				() -> new IdNotFoundException("account not found")
 				);
 	}
+
+	@Override
+	public AccountDTO updateAccount(long id, AccountDTO account) {
+			AccountDTO prev = repo.findById(id).orElseThrow(()-> new IdNotFoundException("account id not found")) ; 
+		prev.setAccountBalance(account.getAccountBalance());
+			return repo.save(prev);
+	}
 }
