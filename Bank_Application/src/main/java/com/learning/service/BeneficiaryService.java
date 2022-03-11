@@ -10,4 +10,13 @@ public interface BeneficiaryService {
 	
 	List<BeneficiaryDTO> getBeneficiaries();
 	StaffApproveBeneficiaryResponse approveBeneficiary();
+
+	BeneficiaryDTO getBeneficiaryByAccountNumber(Long id);
+	List<BeneficiaryDTO> getAllBeneficiaries();
+	List<BeneficiaryDTO> getAllApprovedBeneficiaries();
+	List<BeneficiaryDTO> getAllUnapprovedBeneficiaries();
+	void removeBeneficiaryByAccountNumber(Long id);
+	BeneficiaryDTO updateBeneficiary(BeneficiaryDTO newBeneficiary);
+	BeneficiaryDTO createBeneficiary(BeneficiaryDTO beneficiary);
+	
 }

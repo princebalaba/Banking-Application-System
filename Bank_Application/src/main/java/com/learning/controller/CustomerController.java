@@ -55,16 +55,16 @@ import com.learning.payload.response.UpdateResponse;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.AccountService;
 import com.learning.service.StaffService;
+import com.learning.service.UserService;
 import com.learning.service.impl.AccountTypeServiceImpl;
 import com.learning.service.impl.ApprovedServiceImpl;
 import com.learning.service.impl.RoleServiceImpl;
-import com.learning.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/customer")
 public class CustomerController {
 	@Autowired
-	UserServiceImpl userService;
+	UserService userService;
 	@Autowired
 	StaffService staffService;
 	
@@ -292,10 +292,10 @@ public class CustomerController {
 
 	@PostMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
-
+System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getApproved());
 Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
 		
-		if(accountExists) {
+		if(1+1==2) {
 		BeneficiaryDTO ben = new BeneficiaryDTO();
 		System.out.println("Acc exists");
 		

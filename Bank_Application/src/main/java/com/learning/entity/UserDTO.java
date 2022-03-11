@@ -66,6 +66,7 @@ public class UserDTO {
 	
 	private byte[] panimage;
 	private byte[] aarchar;
+	
 	@Enumerated(EnumType.STRING)
 	private EStatus status;
 	
