@@ -3,7 +3,7 @@ package com.learning.service;
 import java.util.List;
 
 import com.learning.entity.BeneficiaryDTO;
-import com.learning.response.StaffApproveBeneficiaryResponse;
+import com.learning.payload.response.StaffApproveBeneficiaryResponse;
 
 public interface BeneficiaryService {
 

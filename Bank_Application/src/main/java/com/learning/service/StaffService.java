@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.UserDTO;
-import com.learning.response.StaffGetAccountResponse;
+import com.learning.payload.response.StaffGetAccountResponse;
 
 
 
