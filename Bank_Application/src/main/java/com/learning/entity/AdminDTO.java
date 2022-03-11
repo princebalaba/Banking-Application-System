@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 public class AdminDTO {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id; 
+	private long id; 
 	private String username;
 	private String password ;
 	@ManyToMany(cascade = CascadeType.ALL)
