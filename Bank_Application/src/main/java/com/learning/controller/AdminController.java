@@ -24,11 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.learning.entity.Role;
 import com.learning.entity.StaffDTO;
 import com.learning.enums.ERole;
+import com.learning.enums.EStatus;
+import com.learning.exceptions.AccountDisabledException;
 import com.learning.exceptions.RoleNotFoundException;
 import com.learning.jwt.JwtUtils;
+import com.learning.payload.requset.CreateStaffRequest;
 import com.learning.payload.requset.SigninRequest;
-import com.learning.payload.requset.StaffSignupRequeset;
 import com.learning.payload.response.JwtResponse;
+import com.learning.security.service.StaffDetailsImpl;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.impl.AdminServiceImpl;
 import com.learning.service.impl.RoleServiceImpl;
@@ -65,18 +68,22 @@ public class AdminController {
 		String jwt = jwtUtils.generateToken(authentication);
 		// get user data/ principal
 	
-		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+		StaffDetailsImpl staffDetailsImpl = (StaffDetailsImpl) authentication.getPrincipal();
 
-		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
+		List<String> roles = staffDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
 				.collect(Collectors.toList());
+		EStatus status= staffDetailsImpl.getStatus();
+		if(status.equals(EStatus.DISABLED)) {
+			throw new AccountDisabledException("this account has been disabled");
+		}
 		// return new token
 		return ResponseEntity.status(200)
-				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
+				.body(new JwtResponse(jwt, staffDetailsImpl.getId(), staffDetailsImpl.getUsername(), roles));
 
 	}
 	
 	@PostMapping("/staff")
-	public ResponseEntity<?> createStaff(@Valid @RequestBody StaffSignupRequeset request) {
+	public ResponseEntity<?> createStaff(@Valid @RequestBody CreateStaffRequest request) {
 		StaffDTO staff = new StaffDTO();
 		staff.setFullname(request.getStaffFullName());
 		staff.setUsername(request.getStaffUserName());

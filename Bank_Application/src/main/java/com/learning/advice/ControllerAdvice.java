@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.learning.apierrors.ApiError;
 import com.learning.exceptions.AccountAlreadyExistsException;
+import com.learning.exceptions.AccountDisabledException;
 import com.learning.exceptions.NoDataFoundException;
 import com.learning.exceptions.RoleNotFoundException;
 import com.learning.exceptions.TransactionInvalidException;
@@ -99,6 +100,17 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
 		map.put("message", e.getMessage());
 		System.out.println(e);
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+		System.out.println(apiError);
+		return buildResponseEntity(apiError);
+	}
+	
+
+	@ExceptionHandler(AccountDisabledException.class)
+	public ResponseEntity<?> accountDisabledException(AccountDisabledException e) {
+		Map<String, String> map = new HashMap<>();
+		map.put("message", e.getMessage());
+		System.out.println(e);
+		ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, e.getMessage(), e);
 		System.out.println(apiError);
 		return buildResponseEntity(apiError);
 	}
