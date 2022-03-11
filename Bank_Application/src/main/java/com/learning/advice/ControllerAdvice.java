@@ -1,9 +1,11 @@
 package com.learning.advice;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.ConstraintViolationException;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,6 +86,16 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
 	public ResponseEntity<?> roleNotFoundException(RoleNotFoundException e) {
 		Map<String, String> map = new HashMap<>();
 		map.put("message", "role not found");
+		System.out.println(e);
+		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+		System.out.println(apiError);
+		return buildResponseEntity(apiError);
+	}
+	
+	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+	public ResponseEntity<?> SQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
+		Map<String, String> map = new HashMap<>();
+		map.put("message", "check your username");
 		System.out.println(e);
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), e);
 		System.out.println(apiError);

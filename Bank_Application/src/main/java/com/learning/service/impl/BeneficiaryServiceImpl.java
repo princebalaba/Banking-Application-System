@@ -16,19 +16,19 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 	@Autowired
 	BeneficiaryRepo repo;
 	
-	@Override
+//	@Override
 	public List<BeneficiaryDTO> getBeneficiaries() {
-		// TODO Auto-generated method stub
-		
-		List<BeneficiaryDTO> notApproved = repo.findAll()
-				.stream()
-				.filter( beneficiary -> beneficiary
-						.getActive()
-						.equals(Approved.NO))
-						.toList()
-				
-				
-				;
-		return notApproved;
+//		// TODO Auto-generated method stub
+//		
+//		List<BeneficiaryDTO> notApproved = repo.findAll()
+//				.stream()
+//				.filter( beneficiary -> beneficiary
+//						.getActive()
+//						.equals(Approved.NO))
+//						.toList()
+//				
+//				
+//				;
+		return null;
 	}
 }

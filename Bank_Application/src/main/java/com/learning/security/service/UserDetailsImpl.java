@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.learning.entity.AdminDTO;
 import com.learning.entity.UserDTO;
 
 import lombok.Data;
@@ -46,6 +47,44 @@ public class UserDetailsImpl implements UserDetails {
 		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
 		
 	}
+	
+//	public static UserDetailsImpl build (StaffDTO user) {
+//		List<GrantedAuthority> authorities = user.getRoles()
+//				.stream()
+//				.map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
+//				.collect(Collectors.toList());
+//		
+//		
+//		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
+//		
+//	}
+	
+	public static UserDetailsImpl build (AdminDTO admin) {
+		List<GrantedAuthority> authorities = admin.getRoles()
+				.stream()
+				.map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
+				.collect(Collectors.toList());
+		
+		//chekc the impl 
+		return new UserDetailsImpl(admin.getId(), admin.getUsername(), admin.getPassword(), authorities);
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
 	
