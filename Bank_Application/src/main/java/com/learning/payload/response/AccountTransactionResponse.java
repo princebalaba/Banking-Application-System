@@ -1,4 +1,4 @@
-package com.learning.response;
+package com.learning.payload.response;
 
 import java.util.Set;
 

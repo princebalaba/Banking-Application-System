@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.enums.Approved;
+import com.learning.payload.response.StaffApproveBeneficiaryResponse;
 import com.learning.repo.BeneficiaryRepo;
 import com.learning.service.BeneficiaryService;
 
@@ -29,6 +30,12 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 //				
 //				
 //				;
+		return null;
+	}
+
+	@Override
+	public StaffApproveBeneficiaryResponse approveBeneficiary() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

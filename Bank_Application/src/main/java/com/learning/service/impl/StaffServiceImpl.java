@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.UserDTO;
 import com.learning.enums.Approved;
+import com.learning.payload.response.StaffGetAccountResponse;
 import com.learning.repo.BeneficiaryRepo;
 import com.learning.repo.StaffRepository;
-import com.learning.response.StaffGetAccountResponse;
 import com.learning.service.StaffService;
 
 /**
