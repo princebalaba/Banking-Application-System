@@ -283,15 +283,15 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 	}
 
-	@PostMapping("{customerId}/beneficiary")
-	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") long customerId) {
+	@GetMapping("{customerId}/beneficiary")
+	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
 
 		return null;
 
 	}
 
-	@GetMapping("{customerId}/beneficiary")
-	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
+	@PostMapping("{customerId}/beneficiary")
+	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
 
 Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
 		
