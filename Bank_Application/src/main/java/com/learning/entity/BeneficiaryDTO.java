@@ -2,13 +2,15 @@ package com.learning.entity;
 
 import java.time.LocalDate;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.learning.enums.AccountType;
 import com.learning.enums.Approved;
 
 import lombok.AllArgsConstructor;
@@ -27,9 +29,13 @@ public class BeneficiaryDTO {
 	private long beneficiaryAccount;
 	private long accountNo;
 	private String name;
+	@Enumerated(EnumType.STRING)
 	private Approved active;
 	private LocalDate addedDate;
 	
+	@Enumerated(EnumType.STRING)
+	private AccountType accountType;
+
 
 	
 	

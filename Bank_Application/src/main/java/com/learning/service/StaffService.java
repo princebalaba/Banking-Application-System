@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.UserDTO;
+import com.learning.payload.requset.StaffSetCustomerStatusRequest;
 import com.learning.payload.response.StaffGetAccountResponse;
+import com.learning.payload.response.StaffGetCustomerResponse;
 
 
 
@@ -18,7 +20,7 @@ public interface  StaffService {
 
 	//staffInterface
 	public Optional<UserDTO> getUserById(long id);
-	public List<UserDTO> getAllUsers();
+	public List<StaffGetCustomerResponse> getAllUsers();
 	public Optional<UserDTO> getUserByUserName(String name);
 	public boolean existsById(long id);
 	
@@ -28,6 +30,9 @@ public interface  StaffService {
 	List<BeneficiaryDTO> getUnapprovedBeneficiaries();
 	
 	List<BeneficiaryDTO> getApprovedBeneficiaries();
+	
+	StaffSetCustomerStatusRequest setCustomerStatus(StaffSetCustomerStatusRequest request);
+	
 
 //	ApproveBeneficiaryResponse approveBeneficiary(ApproveBeneficiaryRequest request);
 //
