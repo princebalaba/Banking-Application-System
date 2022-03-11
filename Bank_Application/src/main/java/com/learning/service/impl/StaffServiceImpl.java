@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning.entity.BeneficiaryDTO;
+import com.learning.entity.StaffDTO;
 import com.learning.entity.UserDTO;
 import com.learning.enums.Approved;
 import com.learning.payload.requset.StaffSetCustomerStatusRequest;
@@ -102,5 +103,9 @@ public class StaffServiceImpl implements StaffService{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
+
+	
 
 }
