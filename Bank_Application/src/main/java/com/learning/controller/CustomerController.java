@@ -22,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +46,7 @@ import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.AccountRequest;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.payload.requset.SignupRequest;
+import com.learning.payload.requset.TransferRequest;
 import com.learning.payload.requset.UpdateRequest;
 import com.learning.repo.RoleRepo;
 import com.learning.repo.UserRepository;
@@ -57,6 +59,7 @@ import com.learning.response.UpdateResponse;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
+import com.learning.service.impl.AccountServiceImpl;
 import com.learning.service.impl.AccountTypeServiceImpl;
 import com.learning.service.impl.ApprovedServiceImpl;
 import com.learning.service.impl.RoleServiceImpl;
@@ -83,6 +86,8 @@ public class CustomerController {
 	private AccountTypeServiceImpl accountTypeService;
 	@Autowired
 	private ApprovedServiceImpl approvedService;
+	@Autowired
+	private AccountServiceImpl accountService;
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -295,15 +300,33 @@ public class CustomerController {
 		
 	}
 	
-	@GetMapping("{customerId}/beneficiary")
-	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId){
+	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
+	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") long customerId, @PathVariable("beneficiaryId") long beneficiaryId){
 		
-		
-		
-		return null;
+
+		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 		
 	}
 	
+	@PutMapping("/transfer")
+	public ResponseEntity<?> transfer( @Valid @RequestBody TransferRequest request ){
+		UserDTO user = userService.getUserById(request.getCustomer()).orElseThrow(()-> new IdNotFoundException("id not found"));
+		AccountDTO accountFrom = accountService.getAccount(request.getFromAccNumber());
+		AccountDTO toAccount = accountService.getAccount(request.getToAccNumber());
+		Double amount = request.getAmount();
+		String reason = request.getReason();
+		
+		double currentAmount = accountFrom.getAccountBalance();
+		if(currentAmount < amount) {
+			System.out.println("amount is lack");
+		}
+		
+		
+		
+
+		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
+		
+	}
 	
 
 }
