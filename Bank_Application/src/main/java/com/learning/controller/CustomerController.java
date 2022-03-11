@@ -60,12 +60,13 @@ import com.learning.service.UserService;
 import com.learning.service.impl.AccountTypeServiceImpl;
 import com.learning.service.impl.ApprovedServiceImpl;
 import com.learning.service.impl.RoleServiceImpl;
+import com.learning.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/customer")
 public class CustomerController {
 	@Autowired
-	UserService userService;
+	UserServiceImpl userService;
 	@Autowired
 	StaffService staffService;
 	@Autowired
@@ -177,7 +178,7 @@ public class CustomerController {
 
 //	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("{customerId}/account/{accountNo}")
-	public ResponseEntity<?> approveAccount(@PathVariable("customerID") long customerId,
+	public ResponseEntity<?> approveAccount(@PathVariable("customerId") long customerId,
 			@PathVariable("accountNo") long accountNo, @RequestBody AccountRequest request) {
 		// possibly user AccountRequest
 		UserDTO user = staffService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Id not found"));
@@ -185,7 +186,7 @@ public class CustomerController {
 
 		accounts.forEach(e -> {
 			if (e.getAccountNumber() == accountNo) {
-//				e.setApproved(Approved.YES);
+				e.setApproved(approvedService.getRoleName(Approved.YES).get());
 
 			}
 		});
@@ -196,7 +197,7 @@ public class CustomerController {
 		response.setAccountNumber(accountNo);
 		accounts.forEach(e -> {
 			if (e.getAccountNumber() == accountNo) {
-//				response.setAccountStatus(e.getApproved());
+				response.setAccountStatus(e.getApproved().getApprovedStatus());
 
 			}
 		});
