@@ -1,6 +1,5 @@
 package com.learning.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -57,5 +56,22 @@ public class UserServiceImpl implements UserService{
 
 	}
 
+	@Override
+	public UserDTO getUser(Long id) {
+		// TODO Auto-generated method stub
+		return userRepo.findById(id).orElseThrow();
+	}
 
-}
+	@Override
+	public UserDTO updateUser(UserDTO user) {
+		// TODO Auto-generated method stub
+		
+		if(userRepo.existsById(user.getId())) {
+		return	userRepo.save(user);
+		}
+		else {
+            throw new RuntimeException("Sorry user With " + user.getId() + " not found");
+        }
+
+
+}}

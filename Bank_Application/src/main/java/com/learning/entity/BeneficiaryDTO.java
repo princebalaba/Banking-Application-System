@@ -26,11 +26,11 @@ public class BeneficiaryDTO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long beneficiaryAccount;
+	private Long beneficiaryAccount;
 	private long accountNo;
 	private String name;
 	@Enumerated(EnumType.STRING)
-	private Approved active;
+	private Approved approved;
 	private LocalDate addedDate;
 	
 	@Enumerated(EnumType.STRING)
