@@ -16,13 +16,16 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 	@Autowired
 	BeneficiaryRepo repo;
 	
+	@Override
 	public List<BeneficiaryDTO> getBeneficiaries() {
 		// TODO Auto-generated method stub
 		
 		List<BeneficiaryDTO> notApproved = repo.findAll()
 				.stream()
 				.filter( beneficiary -> beneficiary
-						.getActive().equals(Approved.NO)).toList()
+						.getActive()
+						.equals(Approved.NO))
+						.toList()
 				
 				
 				;
