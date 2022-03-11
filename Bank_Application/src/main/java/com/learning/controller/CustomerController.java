@@ -36,12 +36,11 @@ import com.learning.entity.AccountTypeDTO;
 import com.learning.entity.ApprovedDTO;
 import com.learning.entity.Role;
 import com.learning.entity.UserDTO;
-import com.learning.enums.AccountType;
 import com.learning.enums.Approved;
 import com.learning.enums.ERole;
 import com.learning.exceptions.IdNotFoundException;
-import com.learning.exceptions.NoDataFoundException;
 import com.learning.exceptions.RoleNotFoundException;
+import com.learning.exceptions.TransactionInvalidException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.AccountRequest;
 import com.learning.payload.requset.SigninRequest;
@@ -54,11 +53,8 @@ import com.learning.payload.response.AccountTransactionResponse;
 import com.learning.payload.response.CustomerRegisterResponse;
 import com.learning.payload.response.JwtResponse;
 import com.learning.payload.response.UpdateResponse;
-import com.learning.repo.RoleRepo;
-import com.learning.repo.UserRepository;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.StaffService;
-import com.learning.service.UserService;
 import com.learning.service.impl.AccountServiceImpl;
 import com.learning.service.impl.AccountTypeServiceImpl;
 import com.learning.service.impl.ApprovedServiceImpl;
@@ -125,12 +121,12 @@ public class CustomerController {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
 
-		System.out.println(signinRequest.toString());
+		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		System.out.println("passed context holder");
+		
 		String jwt = jwtUtils.generateToken(authentication);
 		// get user data/ principal
-		System.out.println(jwt);
+	
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
@@ -234,7 +230,7 @@ public class CustomerController {
 	public ResponseEntity<?> updateCustomer(@PathVariable("customerId") long customerId,
 			@Valid @RequestBody UpdateRequest request) {
 		UserDTO user = new UserDTO();
-		 userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("id not found"));
+		userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("id not found"));
 		user.setFullname(request.getFullname());
 		user.setPhone(request.getPhone());
 		user.setPan(request.getPan());
@@ -257,21 +253,22 @@ public class CustomerController {
 		response.setAarchar(updated.getPanimage());
 
 		return ResponseEntity.status(200).body(response);
-		
+
 	}
-	
+
 	@GetMapping("{customerId}/account/{accountid}")
-	public ResponseEntity<?> getAccountFromId(@PathVariable("customerId") long customerId,@PathVariable("accountid") long accountid){
-		UserDTO user = userService.getUserById(customerId).orElseThrow(()-> new IdNotFoundException("ID not found"));
-		AccountDTO account = null; 
+	public ResponseEntity<?> getAccountFromId(@PathVariable("customerId") long customerId,
+			@PathVariable("accountid") long accountid) {
+		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("ID not found"));
+		AccountDTO account = null;
 		Iterator<AccountDTO> it = user.getAccount().iterator();
-		while(it.hasNext()) {
-			AccountDTO acc= it.next();
-			if(acc.getAccountNumber()==accountid) {
+		while (it.hasNext()) {
+			AccountDTO acc = it.next();
+			if (acc.getAccountNumber() == accountid) {
 				account = acc;
 			}
 		}
-		if(account == null) {
+		if (account == null) {
 			throw new IdNotFoundException("Id not found");
 		}
 		AccountTransactionResponse response = new AccountTransactionResponse();
@@ -282,51 +279,71 @@ public class CustomerController {
 		response.setTransactions(account.getTransactions());
 		return ResponseEntity.status(200).body(response);
 	}
+
 	@PostMapping("{customerId}/beneficiary")
-	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") long customerId){
-		
-		
-		
+	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") long customerId) {
+
 		return null;
-		
+
 	}
-	
+
 	@GetMapping("{customerId}/beneficiary")
-	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId){
-		
-		
-		
+	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
+
 		return null;
-		
+
 	}
-	
+
 	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
-	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") long customerId, @PathVariable("beneficiaryId") long beneficiaryId){
-		
+	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") long customerId,
+			@PathVariable("beneficiaryId") long beneficiaryId) {
 
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
-		
+
 	}
-	
+
 	@PutMapping("/transfer")
-	public ResponseEntity<?> transfer( @Valid @RequestBody TransferRequest request ){
-		UserDTO user = userService.getUserById(request.getCustomer()).orElseThrow(()-> new IdNotFoundException("id not found"));
+	public ResponseEntity<?> transfer(@Valid @RequestBody TransferRequest request) {
+		UserDTO user = userService.getUserById(request.getCustomer())
+				.orElseThrow(() -> new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
+						+ request.getToAccNumber() + " Account Number Not Valid"));
 		AccountDTO accountFrom = accountService.getAccount(request.getFromAccNumber());
 		AccountDTO toAccount = accountService.getAccount(request.getToAccNumber());
 		Double amount = request.getAmount();
 		String reason = request.getReason();
-		
-		double currentAmount = accountFrom.getAccountBalance();
-		if(currentAmount < amount) {
-			System.out.println("amount is lack");
-		}
-		
-		
-		
 
-		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
-		
+		AccountDTO temp = accountFrom;
+		// deal with the user from
+		temp.setAccountBalance(accountFrom.getAccountBalance() - amount);
+		Set<AccountDTO> accountsFrom = user.getAccount();
+		accountsFrom.remove(accountFrom);
+		accountsFrom.add(temp);
+		user.setAccount(accountsFrom);
+		userService.updateUser(user, request.getCustomer());
+
+		// deal with the uer to
+		UserDTO toAccountHolder = userService.getUserById(toAccount.getCustomerId())
+				.orElseThrow(() -> new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
+						+ request.getToAccNumber() + " Account Number Not Valid"));
+		temp = toAccount;
+		temp.setAccountBalance(temp.getAccountBalance() + amount);
+
+		Set<AccountDTO> accountsTo = toAccountHolder.getAccount();
+		accountsTo.remove(toAccount);
+		accountsTo.add(temp);
+		toAccountHolder.setAccount(accountsTo);
+		userService.updateUser(toAccountHolder, toAccount.getCustomerId());
+
+		return ResponseEntity.status(200).body("transaction Scuccessfully");
+
 	}
-	
+
+	@GetMapping("/{customerId}/forgot/question/answer")
+	public ResponseEntity<?> secretQuestionAnswer(@Valid @RequestBody TransferRequest request) {
+		
+		
+		return ResponseEntity.status(200).body("transaction Scuccessfully");
+
+	}
 
 }

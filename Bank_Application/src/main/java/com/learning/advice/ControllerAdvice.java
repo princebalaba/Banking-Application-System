@@ -19,6 +19,7 @@ import com.learning.apierrors.ApiError;
 import com.learning.exceptions.AccountAlreadyExistsException;
 import com.learning.exceptions.NoDataFoundException;
 import com.learning.exceptions.RoleNotFoundException;
+import com.learning.exceptions.TransactionInvalidException;
 
 public class ControllerAdvice extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(NoDataFoundException.class)
@@ -92,10 +93,10 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
 		return buildResponseEntity(apiError);
 	}
 	
-	@ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-	public ResponseEntity<?> SQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
+	@ExceptionHandler(TransactionInvalidException.class)
+	public ResponseEntity<?> transactionInvalidException(TransactionInvalidException e) {
 		Map<String, String> map = new HashMap<>();
-		map.put("message", "check your username");
+		map.put("message", e.getMessage());
 		System.out.println(e);
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), e);
 		System.out.println(apiError);

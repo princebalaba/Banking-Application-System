@@ -49,7 +49,7 @@ public class UserDTO {
 	@JoinTable(name="user_roles",
 	joinColumns  = @JoinColumn(name="id"),
 	inverseJoinColumns =  @JoinColumn(name ="role_id"))
-	private Set<Role> roles;
+	private Set<Role> roles;  
 	
 	private String phone;
 	
