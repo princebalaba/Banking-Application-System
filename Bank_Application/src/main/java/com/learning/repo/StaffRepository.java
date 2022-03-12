@@ -16,4 +16,5 @@ import com.learning.entity.UserDTO;
 public interface StaffRepository extends JpaRepository<StaffDTO, Long> {
 	boolean existsByUsername(String username);
 	Optional<UserDTO> findByUsername(String username);
+	
 }

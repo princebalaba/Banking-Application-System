@@ -24,7 +24,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table
 public class StaffDTO extends UserDTO{
 	
 	@Enumerated(EnumType.STRING)
