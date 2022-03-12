@@ -51,21 +51,21 @@ public class AccountDTO {
 	
 	private LocalDateTime dateOfCreation;
 	// enum enable/disable
-	
+	@Enumerated(EnumType.STRING)
 	private CreditDebit type; // accountType of type enum
 	// 
 	
-	
+	@Enumerated(EnumType.STRING)
 	private AccountType accountType;
 	
-	
+	@Enumerated(EnumType.STRING)
 	private Approved approved;
 	
 	@OneToMany()
 	@JoinTable(name = "tranactions" , joinColumns = @JoinColumn (name = "transAction_id" ))
 	private Set<Transaction> transactions;
 	
-	
+	@Enumerated(EnumType.STRING)
 	private EStatus enableDisabled;
 	
 	@OneToMany()

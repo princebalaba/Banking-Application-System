@@ -37,7 +37,6 @@ public class UserServiceImpl implements UserService{
 	//getUserById
 	@Override
 	public Optional<UserDTO> getUserById(long id) {
-	System.out.println( userRepo.findById(id).get().toString());
 		return userRepo.findById(id) ;
 	}
 

@@ -36,6 +36,7 @@ import com.learning.enums.AccountType;
 import com.learning.enums.Active;
 import com.learning.enums.Approved;
 import com.learning.enums.ERole;
+import com.learning.exceptions.BalanceNonPositiveException;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.RoleNotFoundException;
 import com.learning.exceptions.TransactionInvalidException;
@@ -137,7 +138,9 @@ public class CustomerController {
 		AccountType roles = request.getAccountType();
 		
 		Approved approved = Approved.NO;
-		
+		if(request.getAccountBalance() < 0) {
+			throw new BalanceNonPositiveException("Account cannot be created");
+		}
 
 		AccountDTO account = new AccountDTO();
 		account.setAccountBalance(request.getAccountBalance());
@@ -171,7 +174,7 @@ public class CustomerController {
 	public ResponseEntity<?> approveAccount(@PathVariable("customerId") long customerId,
 			@PathVariable("accountNo") long accountNo, @RequestBody AccountRequest request) {
 		// possibly user AccountRequest
-		UserDTO user = staffService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Id not found"));
+		UserDTO user = staffService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry Customer With " + customerId + " not found"));
 		Set<AccountDTO> accounts = user.getAccount();
 
 		accounts.forEach(e -> {
@@ -197,8 +200,13 @@ public class CustomerController {
 
 	@GetMapping("{customerId}/account")
 	public ResponseEntity<?> getAccounts(@PathVariable("customerId") long customerId) {
-		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Id not found "));
-		Set<AccountDTO> accounts = user.getAccount();
+		Optional<UserDTO> data = userService.getUserById(customerId);
+		if(data.isEmpty()) {
+			throw new IdNotFoundException("Sorry Customer With " + customerId + " not found");
+			
+		}
+		UserDTO user = data.get();
+				Set<AccountDTO> accounts = user.getAccount();
 		Set<AccountResponseEntity> responses = new HashSet<>();
 		accounts.forEach(e -> {
 			AccountResponseEntity response = new AccountResponseEntity();
