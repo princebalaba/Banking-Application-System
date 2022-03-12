@@ -1,5 +1,6 @@
 package com.learning.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import com.learning.entity.ApprovedDTO;
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.Role;
 import com.learning.entity.UserDTO;
+import com.learning.enums.Active;
 import com.learning.enums.Approved;
 import com.learning.enums.ERole;
 import com.learning.exceptions.IdNotFoundException;
@@ -121,6 +123,7 @@ public class CustomerController {
 
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
+		System.out.println(signinRequest.getUserName()+": "+signinRequest.getPassword());
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
 
@@ -283,29 +286,31 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 	}
 
+	
 	@GetMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
 
 		return null;
 
 	}
-
+	//Make sure user has an account before adding beneficiary. or errors
 	@PostMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
-System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getApproved());
+System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getActive());
 Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
-		
-		if(1+1==2) {
+		Boolean userExists = userService.userExistsById(customerId);
+		if(accountExists) {
 		BeneficiaryDTO ben = new BeneficiaryDTO();
-		System.out.println("Acc exists");
+//		System.out.println("Acc exists");
 		
-		ben.setAccountNo(payload.getAccountNumber());
+		ben.setAccountNumber(payload.getAccountNumber());
 		Long beneficiaryAccountUserId = accountService.getAccountByAccountNumber((payload.getAccountNumber()))
 				.getCustomerId();
 		String beneficiaryName = userService.getUser(beneficiaryAccountUserId).getFullname();
 		ben.setName(beneficiaryName);
-		ben.setApproved(Approved.YES);
+		ben.setActive(Active.YES);
 		ben.setAccountType(payload.getAccountType());
+		ben.setAddedDate(LocalDate.now());
 		
 		UserDTO user =userService.getUser(customerId);
 		Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
@@ -313,8 +318,8 @@ Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
 		UserDTO updatedUser=userService.updateUser(user);
 		
 		BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
-		response.setApproved(ben.getApproved());
-		response.setBeneficiaryAccountNo(ben.getBeneficiaryAccount());
+		response.setActive(ben.getActive());
+		response.setBeneficiaryAccountNo(ben.getAccountNumber());
 		response.setBeneficiaryName(ben.getName());
 		
 		return ResponseEntity.status(201).body(response);

@@ -22,15 +22,15 @@ public class StaffDTO extends UserDTO {
 	
 	
 	private EStatus status = EStatus.ENABLE;
-	
-	@OneToMany
-	private Set<Role> roles; 
-	
-	@NotBlank
-	private String username;
-	@NotBlank
-	private String fullname;
-	@NotBlank
-	private String password;
+//	
+//	@OneToMany
+//	private Set<Role> roles; 
+//	
+//	@NotBlank
+//	private String username;
+//	@NotBlank
+//	private String fullname;
+//	@NotBlank
+//	private String password;
 
 }

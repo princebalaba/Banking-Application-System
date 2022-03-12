@@ -74,4 +74,9 @@ public class UserServiceImpl implements UserService{
         }
 
 
-}}
+}
+	@Override
+	public Boolean userExistsById(Long userId) {
+		// TODO Auto-generated method stub
+		return userRepo.existsById(userId);
+	}}

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning.entity.BeneficiaryDTO;
+import com.learning.enums.Active;
 import com.learning.enums.Approved;
 import com.learning.payload.response.StaffApproveBeneficiaryResponse;
 import com.learning.repo.BeneficiaryRepo;
@@ -51,8 +52,8 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 		List<BeneficiaryDTO>  beneficiaries = repo.findAll();
 		
 		beneficiaries.removeIf(beneficiary->beneficiary
-				.getApproved()
-				.equals(Approved.YES));
+				.getActive()
+				.equals(Active.YES));
 		return beneficiaries;
 	}
 
@@ -62,8 +63,8 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 	List<BeneficiaryDTO>  beneficiaries = repo.findAll();
 		
 		beneficiaries.removeIf(beneficiary->beneficiary
-				.getApproved()
-				.equals(Approved.NO));
+				.getActive()
+				.equals(Active.NO));
 		return beneficiaries;
 	}
 
@@ -81,11 +82,11 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 	public BeneficiaryDTO updateBeneficiary( BeneficiaryDTO newBeneficiary) {
 		// TODO Auto-generated method stub
 		
-		if(repo.existsById(newBeneficiary.getBeneficiaryAccount())) {
+		if(repo.existsById(newBeneficiary.getAccountNumber())) {
 			
 			return repo.save(newBeneficiary);
 		}
-		throw new RuntimeException("Sorry Beneficiary " + newBeneficiary.getBeneficiaryAccount() + " not found");
+		throw new RuntimeException("Sorry Beneficiary " + newBeneficiary.getAccountNumber() + " not found");
 	}
 
 	@Override

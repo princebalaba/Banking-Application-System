@@ -34,6 +34,13 @@ public interface  StaffService {
 	
 	StaffSetCustomerStatusRequest setCustomerStatus(StaffSetCustomerStatusRequest request);
 	
+	public List<StaffDTO> getAllStaff();
+	
+	StaffDTO addStaff(StaffDTO staff);
+	
+	void removeStaff(Long staffId);
+	
+	
 
 //	ApproveBeneficiaryResponse approveBeneficiary(ApproveBeneficiaryRequest request);
 //

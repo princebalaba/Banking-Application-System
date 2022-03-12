@@ -18,4 +18,6 @@ public interface UserService {
 	UserDTO getUser(Long id);
 	UserDTO updateUser(UserDTO user);
 	
+	Boolean userExistsById(Long userId);
+	
 }

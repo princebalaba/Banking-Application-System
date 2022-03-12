@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.learning.enums.AccountType;
-import com.learning.enums.Approved;
+import com.learning.enums.Active;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,11 +26,11 @@ public class BeneficiaryDTO {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long beneficiaryAccount;
-	private long accountNo;
+	private Long beneficiaryId;
+	private Long accountNumber;
 	private String name;
 	@Enumerated(EnumType.STRING)
-	private Approved approved;
+	private Active active;
 	private LocalDate addedDate;
 	
 	@Enumerated(EnumType.STRING)

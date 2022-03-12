@@ -21,6 +21,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	StaffServiceImpl service;
+	
+	
 	@Transactional
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
