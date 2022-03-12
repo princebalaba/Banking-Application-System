@@ -1,5 +1,7 @@
 package com.learning.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -7,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning.entity.AccountDTO;
+import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.UserDTO;
 import com.learning.exceptions.IdNotFoundException;
+import com.learning.payload.response.CustomerGetBeneficiaries;
+import com.learning.repo.BeneficiaryRepo;
 import com.learning.repo.UserRepository;
 import com.learning.service.UserService;
 
@@ -21,6 +26,9 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	UserRepository userRepo ;
 	//addUser
+	
+	@Autowired
+	BeneficiaryRepo beneficiaryRepo;
 	@Override
 	public UserDTO addUser(UserDTO user) {
 		
@@ -79,4 +87,24 @@ public class UserServiceImpl implements UserService{
 	public Boolean userExistsById(Long userId) {
 		// TODO Auto-generated method stub
 		return userRepo.existsById(userId);
+	}
+	@Override
+	public List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId) {
+		// TODO Auto-generated method stub
+		UserDTO user =userRepo.findById(userId).orElseThrow( () -> new IdNotFoundException("User with id: "+ userId +" not found")) ;
+		List<CustomerGetBeneficiaries> response = new ArrayList<CustomerGetBeneficiaries>();
+		Set<BeneficiaryDTO>beneficiaryDTOs = user.getBeneficiaries();
+		System.out.println("hiii");
+	
+		CustomerGetBeneficiaries benSave = new CustomerGetBeneficiaries();
+		for(BeneficiaryDTO beneficiary : beneficiaryDTOs){
+			System.out.println(beneficiary.getName());
+			benSave.setActive(beneficiary.getActive());
+			benSave.setBeneficiaryAccountNo(beneficiary.getAccountNumber());
+			benSave.setBeneficiaryName(beneficiary.getName());
+			
+			response.add(benSave);
+		};
+		
+		return response;
 	}}

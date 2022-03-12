@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import com.learning.enums.AccountType;
@@ -36,6 +37,8 @@ public class BeneficiaryDTO {
 	@Enumerated(EnumType.STRING)
 	private AccountType accountType;
 
+	@JoinColumn(name ="userId")
+	private Long userId;
 
 	
 	

@@ -51,6 +51,7 @@ import com.learning.payload.response.AccountApproaval;
 import com.learning.payload.response.AccountResponseEntity;
 import com.learning.payload.response.AccountTransactionResponse;
 import com.learning.payload.response.BeneficiaryAddedResponse;
+import com.learning.payload.response.CustomerGetBeneficiaries;
 import com.learning.payload.response.CustomerRegisterResponse;
 import com.learning.payload.response.JwtResponse;
 import com.learning.payload.response.UpdateResponse;
@@ -289,15 +290,15 @@ public class CustomerController {
 	
 	@GetMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
-
-		return null;
+		List<CustomerGetBeneficiaries> response = userService.getCustomerBeneficiaries(customerId);
+		return ResponseEntity.status(200).body(response);
 
 	}
 	//Make sure user has an account before adding beneficiary. or errors
 	@PostMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
-System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getActive());
-Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
+		System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getActive());
+		Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
 		Boolean userExists = userService.userExistsById(customerId);
 		if(accountExists) {
 		BeneficiaryDTO ben = new BeneficiaryDTO();

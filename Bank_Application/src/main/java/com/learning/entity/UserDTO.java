@@ -71,7 +71,7 @@ public class UserDTO {
 	private EStatus status;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "add_beneficiary_tbl" ,  joinColumns = @JoinColumn(name ="account_no"))
+	@JoinTable(name = "add_beneficiary_tbl" ,  joinColumns = @JoinColumn(name ="user_id"))
 	private Set<BeneficiaryDTO> beneficiaries = new HashSet<>();
 	
 	
