@@ -94,12 +94,14 @@ public class UserServiceImpl implements UserService{
 		List<CustomerGetBeneficiaries> response = new ArrayList<CustomerGetBeneficiaries>();
 		Set<BeneficiaryDTO>beneficiaryDTOs = user.getBeneficiaries();
 		System.out.println("hiii");
+		
+		System.out.println(user.getFullname() + user.getBeneficiaries());
 	
 		CustomerGetBeneficiaries benSave = new CustomerGetBeneficiaries();
 		for(BeneficiaryDTO beneficiary : beneficiaryDTOs){
 			System.out.println(beneficiary.getName());
 			benSave.setActive(beneficiary.getActive());
-			benSave.setBeneficiaryAccountNo(beneficiary.getAccountNumber());
+			benSave.setBeneficiaryAccountNo(beneficiary.getBeneficiaryId());
 			benSave.setBeneficiaryName(beneficiary.getName());
 			
 			response.add(benSave);

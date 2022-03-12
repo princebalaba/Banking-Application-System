@@ -3,6 +3,8 @@ package com.learning.entity;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Table
 public class StaffDTO extends UserDTO{
 	
-	
+	@Enumerated(EnumType.STRING)
 	private EStatus status = EStatus.ENABLE;
 
 

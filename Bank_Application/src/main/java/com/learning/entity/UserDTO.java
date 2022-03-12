@@ -72,7 +72,7 @@ public class UserDTO {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "add_beneficiary_tbl" ,  joinColumns = @JoinColumn(name ="user_id"))
-	private Set<BeneficiaryDTO> beneficiaries = new HashSet<>();
+	private Set<BeneficiaryDTO> beneficiaries;
 	
 	
 

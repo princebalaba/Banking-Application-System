@@ -303,8 +303,14 @@ public class CustomerController {
 	@PostMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
 		System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getActive());
-		Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
 		Boolean userExists = userService.userExistsById(customerId);
+		Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
+		if(!userExists ||!accountExists ) {
+			throw new IdNotFoundException("Sorry Beneficiary With "+customerId +" not added");
+		}
+		
+
+		
 		if(accountExists) {
 		BeneficiaryDTO ben = new BeneficiaryDTO();
 //		System.out.println("Acc exists");
@@ -317,10 +323,12 @@ public class CustomerController {
 		ben.setActive(Active.YES);
 		ben.setAccountType(payload.getAccountType());
 		ben.setAddedDate(LocalDate.now());
+		ben.setUserId(customerId);
 		
 		UserDTO user =userService.getUser(customerId);
 		Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
 		userBeneficiaries.add(ben);
+		user.setBeneficiaries(userBeneficiaries);
 		UserDTO updatedUser=userService.updateUser(user);
 		
 		BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
@@ -328,19 +336,37 @@ public class CustomerController {
 		response.setBeneficiaryAccountNo(ben.getAccountNumber());
 		response.setBeneficiaryName(ben.getName());
 		
-		return ResponseEntity.status(201).body(response);
+		return ResponseEntity.status(200).body("Beneficiary with: "+payload.getAccountNumber() + "  added");
 		}
 		else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("something went wrong adding");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to add Beneficiary with "+payload.getAccountNumber());
 					
 		}
 
 	}
 
 	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
-	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") long customerId,
-			@PathVariable("beneficiaryId") long beneficiaryId) {
-
+	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") Long customerId,
+			@PathVariable("beneficiaryId") Long beneficiaryId) {
+		Boolean userExists = userService.userExistsById(customerId);
+		
+		Boolean beneficiaryExists = userService.userExistsById(customerId);
+		
+		if(!beneficiaryExists || !userExists) {
+			
+			throw new IdNotFoundException("Beneficiary Not Deleted");
+		}
+		
+		UserDTO user = userService.getUser(customerId);
+		
+		Set <BeneficiaryDTO> userBens = user.getBeneficiaries();
+		userBens.removeIf(ben -> ben.getAccountNumber().equals(beneficiaryId));
+		
+		user.setBeneficiaries(userBens);
+		
+		UserDTO updatedUser = userService.updateUser(user);
+		
+		
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 
 	}
