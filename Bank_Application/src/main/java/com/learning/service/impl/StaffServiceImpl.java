@@ -3,6 +3,7 @@ package com.learning.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Service;
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.StaffDTO;
 import com.learning.entity.UserDTO;
+import com.learning.enums.Active;
 import com.learning.enums.Approved;
+import com.learning.exceptions.IdNotFoundException;
 import com.learning.payload.requset.StaffSetCustomerStatusRequest;
 import com.learning.payload.response.StaffGetAccountResponse;
 import com.learning.payload.response.StaffGetCustomerResponse;
@@ -36,7 +39,7 @@ public class StaffServiceImpl implements StaffService{
 	//get Bu user Id
 	@Override
 	public Optional<UserDTO> getUserById(long id) {
-		return repo.findById(id);
+		return userRepo.findById(id);
 	}
 	
 	//get all users
@@ -62,7 +65,7 @@ public class StaffServiceImpl implements StaffService{
 	//getByUserName
 	@Override
 	public Optional<UserDTO> getUserByUserName(String name) {
-		return repo.findByUsername(name);
+		return userRepo.findByUsername(name);
 	}
 	//does user exist
 	@Override
@@ -83,7 +86,7 @@ public class StaffServiceImpl implements StaffService{
 		
 		List<BeneficiaryDTO>  beneficiaries = beneficiaryRepo.findAll();
 		
-		beneficiaries.removeIf(beneficiary -> beneficiary.getApproved().equals(Approved.NO));
+		beneficiaries.removeIf(beneficiary -> beneficiary.getActive().equals(Active.NO));
 		
 		return beneficiaries;
 	}
@@ -93,7 +96,7 @@ public class StaffServiceImpl implements StaffService{
 		
 		List<BeneficiaryDTO>  beneficiaries = beneficiaryRepo.findAll();
 		
-		beneficiaries.removeIf(beneficiary -> beneficiary.getApproved().equals(Approved.YES));
+		beneficiaries.removeIf(beneficiary -> beneficiary.getActive().equals(Active.YES));
 		
 		return beneficiaries;
 	}
@@ -101,7 +104,49 @@ public class StaffServiceImpl implements StaffService{
 	@Override
 	public StaffSetCustomerStatusRequest setCustomerStatus(StaffSetCustomerStatusRequest request) {
 		// TODO Auto-generated method stub
+		StaffSetCustomerStatusRequest response = new StaffSetCustomerStatusRequest();
+		;
+		if(userRepo.existsById(request.getCustomerId())) {
+			UserDTO user = userRepo.findById(request.getCustomerId()).orElseThrow();
+			
+			user.setStatus(request.getStatus());
+			
+			UserDTO updatedUser = userRepo.save(user);
+			
+			response.setCustomerId(updatedUser.getId());
+			response.setStatus(updatedUser.getStatus());
+			
+		}else { 
+			throw new IdNotFoundException("Staff with id: "+request.getCustomerId()+ " not found");
+		}
+		return response;
+	}
+
+	@Override
+	public List<StaffDTO> getAllStaff() {
+		// TODO Auto-generated method stub
+//List<StaffDTO> staff =repo.findAll();
+
+
 		return null;
+	}
+
+	@Override
+	public StaffDTO addStaff(StaffDTO staff) {
+		// TODO Auto-generated method stub
+		return repo.save(staff);
+	}
+
+	@Override
+	public void removeStaff(Long staffId) {
+		// TODO Auto-generated method stub
+		
+		if(repo.existsById(staffId)) {
+			repo.deleteById(staffId);
+		}else { 
+			throw new IdNotFoundException("Staff with id: "+staffId+ " not found");
+		}
+		
 	}
 
 	

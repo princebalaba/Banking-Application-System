@@ -19,13 +19,17 @@ public class AccountServiceImpl implements AccountService{
 	@Override
 	public AccountDTO getAccountById(Long id) {
 		// TODO Auto-generated method stub
-		return repo.findById(id).orElseThrow();
+		return repo.findById(id).orElseThrow(
+				
+				() -> new IdNotFoundException("Account Id: "+id+" not found")
+				);
 	}
 
 	@Override
 	public AccountDTO getAccountByAccountNumber(Long id) {
 		// TODO Auto-generated method stub
-		return repo.findById(id).orElseThrow();
+		return repo.findById(id).orElseThrow(() -> new IdNotFoundException("Account Number: "+id+" not found")
+				);
 	}
 
 	@Override
@@ -76,7 +80,8 @@ public class AccountServiceImpl implements AccountService{
 			repo.save(account);
 			
 		});
-		return repo.findById(id).orElseThrow();
+		return repo.findById(id).orElseThrow(() -> new IdNotFoundException("Account Id: "+id+" not found")
+				);
 	}
 
 	@Override
@@ -95,13 +100,13 @@ public class AccountServiceImpl implements AccountService{
 	public AccountDTO getAccount(Long id) {
 		// TODO Auto-generated method stub
 		return repo.findById(id).orElseThrow(
-				() -> new IdNotFoundException("account not found")
+				() -> new IdNotFoundException("account with id: "+ id +" not found")
 				);
 	}
 
 	@Override
 	public AccountDTO updateAccount(long id, AccountDTO account) {
-			AccountDTO prev = repo.findById(id).orElseThrow(()-> new IdNotFoundException("account id not found")) ; 
+			AccountDTO prev = repo.findById(id).orElseThrow(()-> new IdNotFoundException("account with id: "+ id +" not found")) ; 
 		prev.setAccountBalance(account.getAccountBalance());
 			return repo.save(prev);
 	}

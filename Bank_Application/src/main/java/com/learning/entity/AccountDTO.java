@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.learning.enums.AccountType;
 import com.learning.enums.Approved;
 import com.learning.enums.CreditDebit;
+import com.learning.enums.EStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -50,26 +51,22 @@ public class AccountDTO {
 	
 	private LocalDateTime dateOfCreation;
 	// enum enable/disable
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinTable(name = "creditDebitTypeDTO", joinColumns = @JoinColumn(name = "credit_id"))
-	private CreditDebitTypeDTO type; // accountType of type enum
+	
+	private CreditDebit type; // accountType of type enum
 	// 
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinTable(name = "accountTypeDTO", joinColumns = @JoinColumn(name = "accountType_id"))
-	private AccountTypeDTO accountType;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinTable( name = "approvedDTO" , joinColumns = @JoinColumn(name = "approved_id"))
-	private ApprovedDTO approved;
+	private AccountType accountType;
+	
+	
+	private Approved approved;
 	
 	@OneToMany()
 	@JoinTable(name = "tranactions" , joinColumns = @JoinColumn (name = "transAction_id" ))
 	private Set<Transaction> transactions;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinTable( name = "enabledDTO" , joinColumns = @JoinColumn(name = "enabled_id"))
-	private EnabledDisabledDTO enableDisabled;
+	
+	private EStatus enableDisabled;
 	
 	@OneToMany()
 	@JoinTable(name = "beneficiaries" , joinColumns = @JoinColumn (name = "beneficiary_id" ))

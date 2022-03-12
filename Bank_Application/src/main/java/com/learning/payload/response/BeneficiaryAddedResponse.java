@@ -1,6 +1,6 @@
 package com.learning.payload.response;
 
-import com.learning.enums.Approved;
+import com.learning.enums.Active;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +14,5 @@ private Long  beneficiaryAccountNo;
 
 private String beneficiaryName;
 
-private    Approved approved; 
+private    Active active; 
 }

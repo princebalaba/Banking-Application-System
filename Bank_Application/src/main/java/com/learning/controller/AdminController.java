@@ -30,6 +30,7 @@ import com.learning.exceptions.AccountDisabledException;
 import com.learning.exceptions.RoleNotFoundException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.CreateStaffRequest;
+import com.learning.payload.requset.SetEnableRequest;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.payload.response.JwtResponse;
 import com.learning.security.service.UserDetailsImpl;
@@ -110,4 +111,7 @@ public class AdminController {
 
 	}
 	
+	public ResponseEntity<?> setStaffEnabled(@RequestBody SetEnableRequest request){
+		return ResponseEntity.ok(adminService.setEnable(request));
+	}
 }

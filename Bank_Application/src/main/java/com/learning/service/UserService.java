@@ -1,8 +1,10 @@
 package com.learning.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.learning.entity.UserDTO;
+import com.learning.payload.response.CustomerGetBeneficiaries;
 
 
 
@@ -17,5 +19,9 @@ public interface UserService {
 	public UserDTO updateUser(UserDTO user, long id );
 	UserDTO getUser(Long id);
 	UserDTO updateUser(UserDTO user);
+	
+	Boolean userExistsById(Long userId);
+	
+	List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId);
 	
 }

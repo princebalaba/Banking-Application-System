@@ -2,9 +2,9 @@ package com.learning.payload.response;
 
 import java.util.Set;
 
-import com.learning.entity.AccountTypeDTO;
-import com.learning.entity.EnabledDisabledDTO;
 import com.learning.entity.Transaction;
+import com.learning.enums.AccountType;
+import com.learning.enums.EStatus;
 
 import lombok.Data;
 
@@ -18,9 +18,9 @@ public class AccountTransactionResponse {
 
 	private Double accountBalance;
 
-	private AccountTypeDTO accountType;
+	private AccountType accountType;
 	
-	private EnabledDisabledDTO enabled; 
+	private EStatus enabled; 
 	
 	Set<Transaction> transactions;
 

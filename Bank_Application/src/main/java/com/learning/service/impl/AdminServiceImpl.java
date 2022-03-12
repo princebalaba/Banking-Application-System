@@ -6,8 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning.entity.StaffDTO;
+import com.learning.entity.UserDTO;
+import com.learning.exceptions.IdNotFoundException;
+import com.learning.exceptions.NoDataFoundException;
+import com.learning.payload.requset.SetEnableRequest;
 import com.learning.repo.AdminRepo;
+import com.learning.repo.StaffRepository;
+import com.learning.repo.UserRepository;
 import com.learning.service.AdminService;
+import com.learning.service.StaffService;
 
 /**
  * @author : Ki Beom Lee
@@ -18,18 +25,44 @@ public class AdminServiceImpl implements AdminService {
 	@Autowired
 	private AdminRepo adminRepo;
 	
+	@Autowired
+	private StaffRepository staffRepo;
 	
 	@Override
 	public StaffDTO addStaff(StaffDTO staff) {
-		return adminRepo.save(staff);
+		return staffRepo.save(staff);
 	}
 
 	@Override
 	public List<StaffDTO> getAllStaff() {
 		// TODO Auto-generated method stub
-		return adminRepo.findAll();
+		return staffRepo.findAll();
 	}
 
+	@Override
+	public UserDTO getAdmin() {
+		// TODO Auto-generated method stub
+		UserDTO admin = adminRepo.findByUsername("Admin").orElseThrow(()-> new IdNotFoundException(""));
+		return admin;
+	}
+	
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	
+	
+
+
+	
+	public String setEnable(SetEnableRequest request) {
+		
+		StaffDTO staff = staffRepo.findById(request.getStaffId())
+				.orElseThrow(() -> new NoDataFoundException("Staff Not Found"));
+				staff.setStatus(request.getStatus());
+				staffRepo.save(staff);
+				return "Staff status updated";
+	}
 	
 
 }
