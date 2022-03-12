@@ -51,14 +51,14 @@ public class AccountDTO {
 	
 	private LocalDateTime dateOfCreation;
 	// enum enable/disable
-	
+	@Enumerated(EnumType.STRING)
 	private CreditDebit type; // accountType of type enum
 	// 
 	
-	
+	@Enumerated(EnumType.STRING)
 	private AccountType accountType;
 	
-	
+	@Enumerated(EnumType.STRING)
 	private Approved approved;
 	
 	@OneToMany()
@@ -67,9 +67,6 @@ public class AccountDTO {
 	
 	
 	private EStatus enableDisabled;
-	
-	@OneToMany()
-	@JoinTable(name = "beneficiaries" , joinColumns = @JoinColumn (name = "beneficiary_id" ))
-	private Set <BeneficiaryDTO> beneficiaries;
+
 
 }
