@@ -23,22 +23,11 @@ import lombok.NoArgsConstructor;
  * @author : Ki Beom Lee
  * @time : 2022. 3. 10.-오후 4:30:14
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Table(name =  "admin_tbl")
 @Entity
-public class AdminDTO {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id; 
-	private String username;
-	private String password ;
-	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name="adminRoles",
-	joinColumns  = @JoinColumn(name="id"),
-	inverseJoinColumns =  @JoinColumn(name ="role_id"))
-	private Set<Role> roles;
+public class AdminDTO extends UserDTO {
+	
 	
 
 }

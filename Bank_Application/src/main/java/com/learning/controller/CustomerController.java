@@ -111,11 +111,10 @@ public class CustomerController {
 
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
-		System.out.println(signinRequest.getUserName()+": "+signinRequest.getPassword());
+	
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
 
-		
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 		String jwt = jwtUtils.generateToken(authentication);
