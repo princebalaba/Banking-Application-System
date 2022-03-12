@@ -100,7 +100,6 @@ public class AdminController {
 		Set<Role> roles = new HashSet<>();
 		roles.add(role);
 		staff.setRoles(roles);
-//		System.out.println(staff);
 		adminService.addStaff(staff);
 		return ResponseEntity.status(200).body("staff added");
 
