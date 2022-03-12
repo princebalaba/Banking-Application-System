@@ -65,7 +65,7 @@ public class AccountDTO {
 	@JoinTable(name = "tranactions" , joinColumns = @JoinColumn (name = "transAction_id" ))
 	private Set<Transaction> transactions;
 	
-	
+	@Enumerated(EnumType.STRING)
 	private EStatus enableDisabled;
 
 
