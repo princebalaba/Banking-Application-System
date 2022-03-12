@@ -29,11 +29,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.entity.AccountDTO;
-import com.learning.entity.AccountTypeDTO;
-import com.learning.entity.ApprovedDTO;
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.Role;
 import com.learning.entity.UserDTO;
+import com.learning.enums.AccountType;
 import com.learning.enums.Active;
 import com.learning.enums.Approved;
 import com.learning.enums.ERole;
@@ -59,8 +58,6 @@ import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.AccountService;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
-import com.learning.service.impl.AccountTypeServiceImpl;
-import com.learning.service.impl.ApprovedServiceImpl;
 import com.learning.service.impl.RoleServiceImpl;
 
 @RestController
@@ -85,23 +82,13 @@ public class CustomerController {
 	@Autowired
 	private RoleServiceImpl roleService;
 	@Autowired
-	private AccountTypeServiceImpl accountTypeService;
-	@Autowired
-	private ApprovedServiceImpl approvedService;
-	@Autowired
 	private AccountService accountService;
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
-		// can u create user object?
-		// can u initialize the values based on the signuprequest object?
-
 		UserDTO user = new UserDTO();
-
 		Role role = roleService.getRoleName(ERole.ROLE_CUSTOMER)
 				.orElseThrow(() -> new RoleNotFoundException("this role has not found"));
-//		Role role = new Role();
-//		role.setRoleName(eRole);
 		Set<Role> roles = new HashSet<>();
 		roles.add(role);
 
@@ -148,20 +135,16 @@ public class CustomerController {
 	public ResponseEntity<?> createAccount(@PathVariable("customerId") long customerId,
 			@RequestBody AccountRequest request) {
 		String type = request.getAccountType().name();
-		Optional<AccountTypeDTO> roles = accountTypeService.getAccountTypeByName(request.getAccountType());
-		if (roles.isEmpty()) {
-			throw new RoleNotFoundException("role is not found ");
-		}
-		Optional<ApprovedDTO> approved = approvedService.getRoleName(Approved.NO);
-		if (approved.isEmpty()) {
-			throw new RoleNotFoundException("role is not found ");
-		}
+		AccountType roles = request.getAccountType();
+		
+		Approved approved = Approved.NO;
+		
 
 		AccountDTO account = new AccountDTO();
 		account.setAccountBalance(request.getAccountBalance());
-		account.setAccountType(roles.get());
+		account.setAccountType(roles);
 		account.setCustomerId(customerId);
-		account.setApproved(approved.get());
+		account.setApproved(approved);
 		LocalDateTime now = LocalDateTime.now();
 		account.setDateOfCreation(now);
 //		double accNo = Math.random() * 100000000;
@@ -194,7 +177,7 @@ public class CustomerController {
 
 		accounts.forEach(e -> {
 			if (e.getAccountNumber() == accountNo) {
-				e.setApproved(approvedService.getRoleName(Approved.YES).get());
+				e.setApproved(Approved.YES);
 
 			}
 		});
@@ -205,7 +188,7 @@ public class CustomerController {
 		response.setAccountNumber(accountNo);
 		accounts.forEach(e -> {
 			if (e.getAccountNumber() == accountNo) {
-				response.setAccountStatus(e.getApproved().getApprovedStatus());
+				response.setAccountStatus(e.getApproved());
 
 			}
 		});
