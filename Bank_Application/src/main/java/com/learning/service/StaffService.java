@@ -3,6 +3,7 @@ package com.learning.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.learning.entity.AccountDTO;
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.StaffDTO;
 import com.learning.entity.UserDTO;
@@ -39,10 +40,12 @@ public interface  StaffService {
 	StaffDTO addStaff(StaffDTO staff);
 	
 	void removeStaff(Long staffId);
+	List <AccountDTO> getUnapprovedAccounts();
 	
+	 
 	
 
-//	ApproveBeneficiaryResponse approveBeneficiary(ApproveBeneficiaryRequest request);
+//ApproveBeneficiaryResponse approveBeneficiary(ApproveBeneficiaryRequest request);
 //
 //	List<AccountApprovalSummary> getUnapprovedAccounts();
 //

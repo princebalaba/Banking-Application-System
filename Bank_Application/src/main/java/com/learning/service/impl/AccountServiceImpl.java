@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning.entity.AccountDTO;
+import com.learning.entity.BeneficiaryDTO;
 import com.learning.enums.Approved;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.repo.AccountRepo;
@@ -110,4 +111,16 @@ public class AccountServiceImpl implements AccountService{
 		prev.setAccountBalance(account.getAccountBalance());
 			return repo.save(prev);
 	}
+
+	@Override
+	public AccountDTO updateAccount(AccountDTO newAccount) {
+		// TODO Auto-generated method stub
+if(repo.existsById(newAccount.getAccountNumber())) {
+			
+			return repo.save(newAccount);
+		}
+		throw new RuntimeException("Sorry Beneficiary " + newAccount.getAccountNumber() + " not found");
+	}
+	
+	
 }
