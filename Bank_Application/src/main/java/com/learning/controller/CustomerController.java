@@ -333,9 +333,19 @@ public class CustomerController {
 	}
 
 	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
-	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") long customerId,
-			@PathVariable("beneficiaryId") long beneficiaryId) {
+	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") Long customerId,
+			@PathVariable("beneficiaryId") Long beneficiaryId) {
+		Boolean userExists = userService.userExistsById(customerId);
+		
+		Boolean beneficiaryExists = userService.userExistsById(customerId);
+		UserDTO user = userService.getUser(customerId);
+		
+		Set <BeneficiaryDTO> userBens = user.getBeneficiaries();
+		
+		//userBens.remove(customerId)
+		
 
+		
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 
 	}
