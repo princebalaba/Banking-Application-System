@@ -119,13 +119,11 @@ public List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId) {
 	}
 	UserDTO user = user1.get(); 
 	
-	List<BeneficiaryDTO> bens = beneficiaryRepo.findAll();
-	bens.removeIf(beneficiary -> !(beneficiary.getUserId().equals(userId)));
 	
 	
 	List<CustomerGetBeneficiaries> response = new ArrayList<CustomerGetBeneficiaries>();
 	Set<BeneficiaryDTO>beneficiaryDTOs = user.getBeneficiaries();
-	System.out.println("hiii");
+	
 	
 	System.out.println(user.getFullname() + user.getBeneficiaries());
 
