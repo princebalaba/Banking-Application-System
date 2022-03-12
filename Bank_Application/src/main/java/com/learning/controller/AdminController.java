@@ -108,8 +108,7 @@ public class AdminController {
 
 	}
 	
-	public ResponseEntity<T> setStaffEnabled(@RequestBody SetEnableRequest request){
+	public ResponseEntity<?> setStaffEnabled(@RequestBody SetEnableRequest request){
 		return ResponseEntity.ok(adminService.setEnable(request));
 	}
-}
 }
