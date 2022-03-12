@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learning.apierrors.ApiError;
 import com.learning.entity.AccountDTO;
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.Role;
@@ -53,6 +54,7 @@ import com.learning.payload.response.AccountTransactionResponse;
 import com.learning.payload.response.BeneficiaryAddedResponse;
 import com.learning.payload.response.CustomerGetBeneficiaries;
 import com.learning.payload.response.CustomerRegisterResponse;
+import com.learning.payload.response.GetCustomerResponse;
 import com.learning.payload.response.JwtResponse;
 import com.learning.payload.response.UpdateResponse;
 import com.learning.security.service.UserDetailsImpl;
@@ -174,7 +176,7 @@ public class CustomerController {
 	public ResponseEntity<?> approveAccount(@PathVariable("customerId") long customerId,
 			@PathVariable("accountNo") long accountNo, @RequestBody AccountRequest request) {
 		// possibly user AccountRequest
-		UserDTO user = staffService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry Customer With " + customerId + " not found"));
+		UserDTO user = staffService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Please check Account Number"));
 		Set<AccountDTO> accounts = user.getAccount();
 
 		accounts.forEach(e -> {
@@ -252,11 +254,24 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 
 	}
+	
+	@GetMapping("{customerId}")
+	public ResponseEntity<?> getCustomer(@PathVariable("customerId") long customerId) {
+		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry Customer With " + customerId+ " not found"));
+		GetCustomerResponse response = new GetCustomerResponse();
+		response.setFullName(user.getFullname());
+		response.setAadhar(user.getAadhar());
+		response.setPan(user.getPan());
+		response.setPhone(user.getPhone());
+		response.setUsername(user.getUsername());
+		
+		return ResponseEntity.status(200).body(response);
+	}
 
 	@GetMapping("{customerId}/account/{accountid}")
 	public ResponseEntity<?> getAccountFromId(@PathVariable("customerId") long customerId,
 			@PathVariable("accountid") long accountid) {
-		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("ID not found"));
+		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry customer With "+ customerId +" not found"));
 		AccountDTO account = null;
 		Iterator<AccountDTO> it = user.getAccount().iterator();
 		while (it.hasNext()) {
