@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.learning.entity.AdminDTO;
 import com.learning.entity.StaffDTO;
 import com.learning.entity.UserDTO;
 import com.learning.exceptions.IdNotFoundException;
@@ -40,9 +41,9 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public UserDTO getAdmin() {
+	public AdminDTO getAdmin() {
 		// TODO Auto-generated method stub
-		UserDTO admin = adminRepo.findByUsername("Admin").orElseThrow(()-> new IdNotFoundException(""));
+		AdminDTO admin = adminRepo.findByUsername("Admin").orElseThrow(()-> new IdNotFoundException(""));
 		return admin;
 	}
 	
