@@ -87,25 +87,85 @@ public class UserServiceImpl implements UserService{
 		// TODO Auto-generated method stub
 		return userRepo.existsById(userId);
 	}
-	@Override
-	public List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId) {
-		// TODO Auto-generated method stub
-		UserDTO user =userRepo.findById(userId).orElseThrow( () -> new IdNotFoundException("User with id: "+ userId +" not found")) ;
-		List<CustomerGetBeneficiaries> response = new ArrayList<CustomerGetBeneficiaries>();
-		Set<BeneficiaryDTO>beneficiaryDTOs = user.getBeneficiaries();
-		System.out.println("hiii");
-		
-		System.out.println(user.getFullname() + user.getBeneficiaries());
+//	@Override
+//	public List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId) {
+//		// TODO Auto-generated method stub
+//		UserDTO user =userRepo.findById(userId).orElseThrow( () -> new IdNotFoundException("User with id: "+ userId +" not found")) ;
+//		List<CustomerGetBeneficiaries> response = new ArrayList<CustomerGetBeneficiaries>();
+//		Set<BeneficiaryDTO>beneficiaryDTOs = user.getBeneficiaries();
+//		System.out.println("hiii");
+//		
+//		System.out.println(user.getFullname() + user.getBeneficiaries());
+//	
+//		CustomerGetBeneficiaries benSave = new CustomerGetBeneficiaries();
+//		for(BeneficiaryDTO beneficiary : beneficiaryDTOs){
+//			System.out.println(beneficiary.getName());
+//			benSave.setActive(beneficiary.getActive());
+//			benSave.setBeneficiaryAccountNo(beneficiary.getBeneficiaryId());
+//			benSave.setBeneficiaryName(beneficiary.getName());
+//			
+//			response.add(benSave);
+//		};
+//		
+//		return response;
+//	}
+
+@Override
+public List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId) {
+	// TODO Auto-generated method stub
+	Optional<UserDTO> user1 =userRepo.findById(userId);
+	if(user1.isEmpty()) {
+		return new ArrayList<CustomerGetBeneficiaries>(); 
+	}
+	UserDTO user = user1.get(); 
 	
+	
+	
+	List<CustomerGetBeneficiaries> response = new ArrayList<CustomerGetBeneficiaries>();
+	Set<BeneficiaryDTO>beneficiaryDTOs = user.getBeneficiaries();
+	
+	
+	System.out.println(user.getFullname() + user.getBeneficiaries());
+
+	
+	for(BeneficiaryDTO beneficiary : beneficiaryDTOs){
 		CustomerGetBeneficiaries benSave = new CustomerGetBeneficiaries();
-		for(BeneficiaryDTO beneficiary : beneficiaryDTOs){
-			System.out.println(beneficiary.getName());
-			benSave.setActive(beneficiary.getActive());
-			benSave.setBeneficiaryAccountNo(beneficiary.getBeneficiaryId());
-			benSave.setBeneficiaryName(beneficiary.getName());
-			
-			response.add(benSave);
-		};
+		System.out.println(beneficiary.getName());
+		benSave.setActive(beneficiary.getActive());
+		benSave.setBeneficiaryAccountNo(beneficiary.getBeneficiaryId());
+		benSave.setBeneficiaryName(beneficiary.getName());
 		
-		return response;
-	}}
+		response.add(benSave);
+	};
+	
+	return response;
+}
+//
+//@Override
+//public List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId) {
+//	// TODO Auto-generated method stub
+//	Optional<UserDTO> user1 =userRepo.findById(userId);
+//	if(user1.isEmpty()) {
+//		return new ArrayList<CustomerGetBeneficiaries>(); 
+//	}
+//	UserDTO user = user1.get(); 
+//	List<CustomerGetBeneficiaries> response = new ArrayList<CustomerGetBeneficiaries>();
+//	Set<BeneficiaryDTO>beneficiaryDTOs = user.getBeneficiaries();
+//	System.out.println("hiii");
+//	
+//	System.out.println(user.getFullname() + user.getBeneficiaries());
+//	
+//	CustomerGetBeneficiaries benSave = new CustomerGetBeneficiaries();
+//	for(BeneficiaryDTO beneficiary : beneficiaryDTOs){
+//		System.out.println(beneficiary.getName());
+//		benSave.setActive(beneficiary.getActive());
+//		benSave.setBeneficiaryAccountNo(beneficiary.getBeneficiaryId());
+//		benSave.setBeneficiaryName(beneficiary.getName());
+//		
+//		response.add(benSave);
+//	};
+//	
+//	return response;
+//}
+
+}

@@ -24,10 +24,12 @@ import lombok.NoArgsConstructor;
  * @time : 2022. 3. 10.-오후 4:30:14
  */
 
-@Table(name =  "admin_tbl")
+
 @Entity
 public class AdminDTO extends UserDTO {
 	
-	
+	public AdminDTO() {
+		super();
+	}
 
 }

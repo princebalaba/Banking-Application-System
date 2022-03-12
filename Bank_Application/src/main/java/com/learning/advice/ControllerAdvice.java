@@ -2,6 +2,7 @@ package com.learning.advice;
 
 import java.io.IOException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +57,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler implements 
 		map.put("message", "name already exists");
 		System.out.println(e);
 		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage(), e);
-		System.out.println(apiError);
+		apiError.setDebugMessage("check your account Id");
 		return buildResponseEntity(apiError);
 	}
 
@@ -109,6 +110,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler implements 
 		System.out.println(e);
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), e);
 		System.out.println(apiError);
+		apiError.setDebugMessage("check your roles");
 		return buildResponseEntity(apiError);
 	}
 	
@@ -118,7 +120,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler implements 
 		map.put("message", e.getMessage());
 		System.out.println(e);
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-		System.out.println(apiError);
+		apiError.setDebugMessage("check accounts");
 		return buildResponseEntity(apiError);
 	}
 	
@@ -129,7 +131,7 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler implements 
 		map.put("message", e.getMessage());
 		System.out.println(e);
 		ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, e.getMessage(), e);
-		System.out.println(apiError);
+		apiError.setDebugMessage("check your account");
 		return buildResponseEntity(apiError);
 	}
 	
@@ -139,17 +141,18 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler implements 
 		map.put("message", e.getMessage());
 		System.out.println(e.getMessage());
 		ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, e.getMessage(), e);
-//		System.out.println(apiError);
+		apiError.setDebugMessage("check your Id");
 		return buildResponseEntity(apiError);
 	}
 	
 	@ExceptionHandler(BalanceNonPositiveException.class)
 	public ResponseEntity<?> balanceNonPositiveException(BalanceNonPositiveException e) {
 		Map<String, String> map = new HashMap<>();
-		map.put("message", e.getMessage());
+		map.put("message", "check your input number");
 		System.out.println(e.getMessage());
 		ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, e.getMessage(), e);
-
+		apiError.setDebugMessage("check your balance");
+		
 		return buildResponseEntity(apiError);
 	}
 	

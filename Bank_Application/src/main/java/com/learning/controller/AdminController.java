@@ -27,6 +27,7 @@ import com.learning.entity.StaffDTO;
 import com.learning.enums.ERole;
 import com.learning.enums.EStatus;
 import com.learning.exceptions.AccountDisabledException;
+import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.RoleNotFoundException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.CreateStaffRequest;
@@ -57,7 +58,12 @@ public class AdminController {
 	private RoleServiceImpl roleService;
 	@Autowired
 	private AdminServiceImpl adminService ;
+
 	//
+
+	@Autowired
+	private StaffServiceImpl staffService ;
+
 	
 //	@PostMapping("/authenticate")
 //	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
@@ -87,19 +93,18 @@ public class AdminController {
 	@PostMapping("/staff")
 	public ResponseEntity<?> createStaff(@Valid @RequestBody CreateStaffRequest request) {
 		
-//		StaffDTO staff = new StaffDTO(1,EStatus.ENABLE, null,request.getStaffUserName(), request.getStaffFullName(), passwordEncoder.encode(request.getStaffPassword()));;
-//		staff.setFullname(request.getStaffFullName());
-//		staff.setUsername(request.getStaffUserName());
-//		staff.setPassword(passwordEncoder.encode(request.getStaffPassword()));
-//		Optional<Role> role1 = roleService.getRoleName(ERole.ROLE_STAFF);
+		StaffDTO staff = new StaffDTO();
+		staff.setFullname(request.getStaffFullName());
+		staff.setUsername(request.getStaffUserName());
+		staff.setPassword(passwordEncoder.encode(request.getStaffPassword()));
+		staff.setStatus(EStatus.ENABLE);
 
 			Role role = roleService.getRoleName(ERole.ROLE_STAFF)
 				.orElseThrow(() -> new RoleNotFoundException("this staff role has not found"));
 		Set<Role> roles = new HashSet<>();
 		roles.add(role);
-//		staff.setRoles(roles);
-//		System.out.println(staff);
-//		adminService.addStaff(staff);
+		staff.setRoles(roles);
+		adminService.addStaff(staff);
 		return ResponseEntity.status(200).body("staff added");
 
 	}
@@ -113,6 +118,8 @@ public class AdminController {
 	}
 	
 	public ResponseEntity<?> setStaffEnabled(@RequestBody SetEnableRequest request){
+		StaffDTO staff = (StaffDTO) staffService.getUserById(request.getStaffId()).orElseThrow(()-> new IdNotFoundException("Staff status not changed"));
+		staff.setStatus(EStatus.DISABLED);
 		return ResponseEntity.ok(adminService.setEnable(request));
 	}
 }
