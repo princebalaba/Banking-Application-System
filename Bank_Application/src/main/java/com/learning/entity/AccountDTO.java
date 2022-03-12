@@ -67,9 +67,6 @@ public class AccountDTO {
 	
 	@Enumerated(EnumType.STRING)
 	private EStatus enableDisabled;
-	
-	@OneToMany()
-	@JoinTable(name = "beneficiaries" , joinColumns = @JoinColumn (name = "beneficiary_id" ))
-	private Set <BeneficiaryDTO> beneficiaries;
+
 
 }

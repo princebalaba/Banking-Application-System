@@ -1,7 +1,9 @@
 package com.learning.entity;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +18,7 @@ import com.learning.enums.Active;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -23,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "beneficiary_tbl")
+
 public class BeneficiaryDTO {
 	
 	@Id
@@ -37,8 +41,27 @@ public class BeneficiaryDTO {
 	@Enumerated(EnumType.STRING)
 	private AccountType accountType;
 
-	@JoinColumn(name ="userId")
+	@JoinColumn(name ="user_Id")
 	private Long userId;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BeneficiaryDTO other = (BeneficiaryDTO) obj;
+		return Objects.equals(accountNumber, other.accountNumber) && Objects.equals(userId, other.userId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(accountNumber, userId);
+	}
+	
+	
 
 	
 	
