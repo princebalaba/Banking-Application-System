@@ -2,7 +2,9 @@ package com.learning.controller;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,7 +19,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +33,7 @@ import com.learning.enums.EStatus;
 import com.learning.exceptions.AccountDisabledException;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.RoleNotFoundException;
+import com.learning.exceptions.UnauthrorizedException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.CreateStaffRequest;
 import com.learning.payload.requset.SetEnableRequest;
@@ -61,30 +66,35 @@ public class AdminController {
 	@Autowired
 	private StaffServiceImpl staffService ;
 	
-//	@PostMapping("/authenticate")
-//	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
-//		Authentication authentication = authenticationManager.authenticate(
-//				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
-//
-//		
-//		SecurityContextHolder.getContext().setAuthentication(authentication);
-//		
-//		String jwt = jwtUtils.generateToken(authentication);
-//		// get user data/ principal
-//	
-////		StaffDetailsImpl staffDetailsImpl = (StaffDetailsImpl) authentication.getPrincipal();
-//
-////		List<String> roles = staffDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
-////				.collect(Collectors.toList());
-////		EStatus status= staffDetailsImpl.getStatus();
-////		if(status.equals(EStatus.DISABLED)) {
-////			throw new AccountDisabledException("this account has been disabled");
-////		}
-////		// return new token
-////		return ResponseEntity.status(200)
-////				.body(new JwtResponse(jwt, staffDetailsImpl.getId(), staffDetailsImpl.getUsername(), roles));
-//
-//	}
+	@PostMapping("/authenticate")
+	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
+	
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
+
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		String jwt = jwtUtils.generateToken(authentication);
+		// get user data/ principal
+	
+		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+
+		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
+				.collect(Collectors.toList());
+		// return new token
+		boolean isadmin = false; 
+		for( int i =0 ; i < roles.size() ; i++) {
+			if (roles.get(i).equals(ERole.ROLE_SUPER_ADMIN.name())) {
+				isadmin= true;
+			}
+		}
+		if(!isadmin) {
+			throw new UnauthrorizedException("unauthorized access");
+		}
+		return ResponseEntity.status(200)
+				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
+
+	}
 	
 	@PostMapping("/staff")
 	public ResponseEntity<?> createStaff(@Valid @RequestBody CreateStaffRequest request) {
@@ -112,10 +122,14 @@ public class AdminController {
 		return ResponseEntity.status(200).body(staffs);
 
 	}
-	
-	public ResponseEntity<?> setStaffEnabled(@RequestBody SetEnableRequest request){
-		StaffDTO staff = (StaffDTO) staffService.getUserById(request.getStaffId()).orElseThrow(()-> new IdNotFoundException("Staff status not changed"));
+	@PutMapping("/{staffid}")
+	public ResponseEntity<?> setStaffEnabled(@PathVariable ("staffid") long staffid){
+		StaffDTO staff = (StaffDTO) staffService.getUserById(staffid).orElseThrow(()-> new IdNotFoundException("Staff status not changed"));
 		staff.setStatus(EStatus.DISABLED);
-		return ResponseEntity.ok(adminService.setEnable(request));
+		adminService.updateStaffStatus(staff);
+		Map<String, String> response = new LinkedHashMap<>();
+		response.put("staffId", " : " + staffid);
+		response.put("status", " : " + EStatus.DISABLED.name());
+		return ResponseEntity.status(200).body(response);
 	}
 }

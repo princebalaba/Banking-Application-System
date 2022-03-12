@@ -16,4 +16,5 @@ public interface AdminService {
 	public List<StaffDTO> getAllStaff();
 	public AdminDTO getAdmin();
 	String setEnable(SetEnableRequest request);
+	public StaffDTO updateStaffStatus(StaffDTO staff);
 }
