@@ -308,6 +308,7 @@ public class CustomerController {
 		ben.setActive(Active.YES);
 		ben.setAccountType(payload.getAccountType());
 		ben.setAddedDate(LocalDate.now());
+		ben.setUserId(customerId);
 		
 		UserDTO user =userService.getUser(customerId);
 		Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
