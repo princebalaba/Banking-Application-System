@@ -140,11 +140,11 @@ public class CustomerController {
 		String type = request.getAccountType().name();
 		Optional<AccountTypeDTO> roles = accountTypeService.getAccountTypeByName(request.getAccountType());
 		if (roles.isEmpty()) {
-			throw new RoleNotFoundException("role is not found ");
+			throw new RoleNotFoundException("role is not account found ");
 		}
 		Optional<ApprovedDTO> approved = approvedService.getRoleName(Approved.NO);
 		if (approved.isEmpty()) {
-			throw new RoleNotFoundException("role is not found ");
+			throw new RoleNotFoundException("role is not approved found ");
 		}
 
 		AccountDTO account = new AccountDTO();

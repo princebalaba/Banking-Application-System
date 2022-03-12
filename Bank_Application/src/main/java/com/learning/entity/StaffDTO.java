@@ -3,7 +3,11 @@ package com.learning.entity;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 import com.learning.enums.EStatus;
@@ -18,19 +22,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class StaffDTO extends UserDTO {
+@Table
+public class StaffDTO extends UserDTO{
 	
 	
 	private EStatus status = EStatus.ENABLE;
-	
-	@OneToMany
-	private Set<Role> roles; 
-	
-	@NotBlank
-	private String username;
-	@NotBlank
-	private String fullname;
-	@NotBlank
-	private String password;
+
+
 
 }
