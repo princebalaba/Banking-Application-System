@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService{
 		for(BeneficiaryDTO beneficiary : beneficiaryDTOs){
 			System.out.println(beneficiary.getName());
 			benSave.setActive(beneficiary.getActive());
-			benSave.setBeneficiaryAccountNo(beneficiary.getAccountNumber());
+			benSave.setBeneficiaryAccountNo(beneficiary.getBeneficiaryId());
 			benSave.setBeneficiaryName(beneficiary.getName());
 			
 			response.add(benSave);
