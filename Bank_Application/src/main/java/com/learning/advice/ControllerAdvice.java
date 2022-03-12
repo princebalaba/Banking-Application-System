@@ -35,6 +35,7 @@ import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.NoDataFoundException;
 import com.learning.exceptions.RoleNotFoundException;
 import com.learning.exceptions.TransactionInvalidException;
+import com.learning.exceptions.UnauthrorizedException;
 @org.springframework.web.bind.annotation.ControllerAdvice
 public class ControllerAdvice extends ResponseEntityExceptionHandler implements AuthenticationEntryPoint {
 	
@@ -58,6 +59,16 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler implements 
 		System.out.println(e);
 		ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, e.getMessage(), e);
 		apiError.setDebugMessage("check your account Id");
+		return buildResponseEntity(apiError);
+	}
+	
+	@ExceptionHandler(UnauthrorizedException.class)
+	public ResponseEntity<?> unauthrorizedException(UnauthrorizedException e) {
+		Map<String, String> map = new HashMap<>();
+		
+	
+		ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, e.getMessage(), e);
+		apiError.setDebugMessage("check your account access");
 		return buildResponseEntity(apiError);
 	}
 
