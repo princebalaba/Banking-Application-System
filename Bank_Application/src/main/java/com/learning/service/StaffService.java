@@ -42,7 +42,8 @@ public interface  StaffService {
 	void removeStaff(Long staffId);
 	List <AccountDTO> getUnapprovedAccounts();
 	
-	List <UserDTO> getAllCustomers(); 
+	List <UserDTO> getAllCustomers();
+	void setCustomerEnabledDisabled(Long customerId); 
 	
 
 //ApproveBeneficiaryResponse approveBeneficiary(ApproveBeneficiaryRequest request);

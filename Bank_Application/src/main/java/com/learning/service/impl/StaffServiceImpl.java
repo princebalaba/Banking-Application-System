@@ -15,6 +15,7 @@ import com.learning.entity.UserDTO;
 import com.learning.enums.Active;
 import com.learning.enums.Approved;
 import com.learning.enums.ERole;
+import com.learning.enums.EStatus;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.payload.requset.StaffSetCustomerStatusRequest;
 import com.learning.payload.response.StaffGetAccountResponse;
@@ -24,6 +25,7 @@ import com.learning.repo.BeneficiaryRepo;
 import com.learning.repo.StaffRepository;
 import com.learning.repo.UserRepository;
 import com.learning.service.StaffService;
+import com.learning.service.UserService;
 
 /**
  * @author : Ki Beom Lee
@@ -42,6 +44,9 @@ public class StaffServiceImpl implements StaffService{
 	
 	@Autowired
 	AccountRepo accountRepo;
+	
+	@Autowired
+	UserService userService;
 	//get Bu user Id
 	@Override
 	public Optional<UserDTO> getUserById(long id) {
@@ -182,6 +187,34 @@ public class StaffServiceImpl implements StaffService{
 				;
 		
 		return response;
+	}
+
+	@Override
+	public void setCustomerEnabledDisabled(Long customerId) {
+		// TODO Auto-generated method stub
+		
+		List <UserDTO> users = getAllCustomers();
+		
+	
+		
+		users.removeIf(u -> u.getId()!=customerId);
+		
+		if(users.size() !=1) {
+			
+			throw new IdNotFoundException("Id not found");
+		}
+		
+		UserDTO user = users.get(0);
+		
+		if(user.getStatus().equals(EStatus.DISABLED)) {
+			user.setStatus(EStatus.ENABLE);
+		}else {
+			user.setStatus(EStatus.DISABLED);
+		}
+		
+		userService.updateUser(user);
+		
+		
 	}
 
 	
