@@ -384,11 +384,11 @@ public class CustomerController {
 		AccountDTO toAccount = accountService.getAccount(request.getToAccNumber());
 		Double amount = request.getAmount();
 		String reason = request.getReason();
-		if(accountFrom.getCustomerId() != request.getCustomer()) {
+		if (accountFrom.getCustomerId() != request.getCustomer()) {
 			throw new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
 					+ request.getToAccNumber() + " Account Number Not Valid");
 		}
-		
+
 		AccountDTO temp = accountFrom;
 		// deal with the user from
 		temp.setAccountBalance(accountFrom.getAccountBalance() - amount);
@@ -415,14 +415,14 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 
 	}
-
+	// secret Question and Answer
 	@GetMapping("/{username}/forgot/question/answer")
-	public ResponseEntity<?> secretQuestionAnswer(@PathVariable UpdateRequest updatesRequest, UpdateResponse updateResponse
-			) throws SecretDetailsDoNotMatchException {
-		
-		// updatesRequest.getSecretQuestion();
-		// updateResponse.getSecretAnswer();
-		if (updateResponse.getSecretAnswer().equals(updatesRequest.getSecretAnswer())) {
+	public ResponseEntity<?> secretQuestionAnswer(@PathVariable UpdateRequest updatesRequest,
+			UpdateResponse updateResponse) throws SecretDetailsDoNotMatchException {
+
+		updatesRequest.getSecretQuestion(); //  getting secret question
+		updateResponse.getSecretAnswer(); // picking the secret answer
+		if (updateResponse.getSecretAnswer().equals(updatesRequest.getSecretAnswer())) { // comparing the answer with the original
 			System.out.println("Secret Answer matches Secret Question");
 		} else {
 			throw new SecretDetailsDoNotMatchException("Sorry your secret details are not matching");
@@ -431,19 +431,18 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("Details Validated");
 
 	}
-
+	//password update
 	@PutMapping("/{username}/forgot")
 	public ResponseEntity<?> updatePassword(@PathVariable SigninRequest signinRequest, SigninRequest newPassword) {
-		signinRequest.getUserName();
-		newPassword.setPassword(newPassword.getPassword());
-		if(newPassword.equals(signinRequest.getPassword())){
+		signinRequest.getUserName(); // get username
+		newPassword.setPassword(newPassword.getPassword()); // the new password
+		
+		if (newPassword.equals(signinRequest.getPassword())) { // comparing the new password with the old one
 			System.out.println("Sorry password not updated");
-		}else {
-			//System.out.println("new password updated");
+		} else {
+			// System.out.println("new password updated");
 		}
-		
-			
-		
+
 		return ResponseEntity.status(200).body("new password updated");
 	}
 
