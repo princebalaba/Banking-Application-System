@@ -3,6 +3,7 @@ package com.learning.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -170,11 +171,15 @@ public class StaffServiceImpl implements StaffService{
 		
 		List <UserDTO> response = userRepo.findAll();
 		
-//		response.removeIf(
-//
-//				//user -> user.getRoles()
-//				
-//				);
+		response.removeIf(
+
+				user ->  user.getRoles().removeIf(customerRole-> !customerRole.getRoleName().equals(ERole.ROLE_CUSTOMER))
+				
+				
+				)
+			
+				
+				;
 		
 		return response;
 	}
