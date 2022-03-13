@@ -86,7 +86,7 @@ public class CustomerController {
 	@Autowired
 	private RoleServiceImpl roleService;
 	@Autowired
-	private AccountService accountService;
+	private AccountService accountService;  
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
