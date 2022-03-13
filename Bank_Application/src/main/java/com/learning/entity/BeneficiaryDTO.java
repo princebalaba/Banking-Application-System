@@ -1,9 +1,8 @@
 package com.learning.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,7 +17,6 @@ import com.learning.enums.Active;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -36,7 +34,7 @@ public class BeneficiaryDTO {
 	private String name;
 	@Enumerated(EnumType.STRING)
 	private Active active;
-	private LocalDate addedDate;
+	private LocalDateTime addedDate;
 	
 	@Enumerated(EnumType.STRING)
 	private AccountType accountType;

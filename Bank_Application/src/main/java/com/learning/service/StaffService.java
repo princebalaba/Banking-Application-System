@@ -9,6 +9,7 @@ import com.learning.entity.StaffDTO;
 import com.learning.entity.UserDTO;
 import com.learning.payload.requset.StaffSetCustomerStatusRequest;
 import com.learning.payload.response.StaffGetAccountResponse;
+import com.learning.payload.response.StaffGetCustomerByIdResponse;
 import com.learning.payload.response.StaffGetCustomerResponse;
 
 
@@ -34,6 +35,8 @@ public interface  StaffService {
 	List<BeneficiaryDTO> getApprovedBeneficiaries();
 	
 	StaffSetCustomerStatusRequest setCustomerStatus(StaffSetCustomerStatusRequest request);
+	
+	StaffGetCustomerByIdResponse getCustomerDetailsByID(Long customerId);
 	
 	public List<StaffDTO> getAllStaff();
 	

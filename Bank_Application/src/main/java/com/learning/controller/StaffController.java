@@ -187,11 +187,86 @@ public class StaffController {
 		staffService.setCustomerEnabledDisabled(customerId);
 		return ResponseEntity.ok(customerId +"has been enabled");
 	}
+	
+	//////////////
+	
+	
+	
+	
+	
+	@GetMapping("/customer/{customerID}")
+	public ResponseEntity<?> getCustomer(@PathVariable("customerID") Long customerId) {
+		
+	
+		return ResponseEntity.ok(	staffService.getCustomerDetailsByID(customerId));
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	////////////////////////////
 //
-//	@GetMapping("/customer/:customerID")
-//	public ResponseEntity<?> getCustomer(@PathVariable("customerID") Long customerId) {
-//		return ResponseEntity.ok(staffService.getCustomer(customerId));
-//	}
+
 //
 //	@PutMapping("/transfer")
 //	public ResponseEntity<?> staffTransfer(@RequestBody TransferRequestStaff request) {
