@@ -170,10 +170,10 @@ public class StaffController {
 		return ResponseEntity.ok(response);
 	}
 //
-//	@GetMapping("/customer")
-//	public ResponseEntity<?> listCustomers() {
-//		return ResponseEntity.ok(staffService.getCustomers());
-//	}
+	@GetMapping("/customer")
+	public ResponseEntity<?> getAllCustomers() {
+		return ResponseEntity.ok(staffService.getAllCustomers());
+	}
 //
 //	@PutMapping("/customer")
 //	public ResponseEntity<?> setCustomerEnabled(@RequestBody SetEnabledRequest request) {

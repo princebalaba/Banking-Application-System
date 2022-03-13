@@ -3,7 +3,6 @@ package com.learning.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import com.learning.entity.StaffDTO;
 import com.learning.entity.UserDTO;
 import com.learning.enums.Active;
 import com.learning.enums.Approved;
+import com.learning.enums.ERole;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.payload.requset.StaffSetCustomerStatusRequest;
 import com.learning.payload.response.StaffGetAccountResponse;
@@ -162,6 +162,21 @@ public class StaffServiceImpl implements StaffService{
 		
 		unapprovedAccounts.removeIf(account -> account.getApproved().equals(Approved.YES));
 		return unapprovedAccounts;
+	}
+
+	@Override
+	public List<UserDTO> getAllCustomers() {
+		// TODO Auto-generated method stub
+		
+		List <UserDTO> response = userRepo.findAll();
+		
+//		response.removeIf(
+//
+//				//user -> user.getRoles()
+//				
+//				);
+		
+		return response;
 	}
 
 	
