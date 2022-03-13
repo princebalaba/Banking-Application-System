@@ -110,6 +110,7 @@ public class AccountServiceImpl implements AccountService{
 	public AccountDTO updateAccount(long id, AccountDTO account) {
 			AccountDTO prev = repo.findById(id).orElseThrow(()-> new IdNotFoundException("account with id: "+ id +" not found")) ; 
 		prev.setAccountBalance(account.getAccountBalance());
+		prev.setTransactions(account.getTransactions());
 			return repo.save(prev);
 	}
 

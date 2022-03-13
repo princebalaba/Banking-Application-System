@@ -61,7 +61,7 @@ public class AccountDTO {
 	@Enumerated(EnumType.STRING)
 	private Approved approved;
 	
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "tranactions" , joinColumns = @JoinColumn (name = "transAction_id" ))
 	private Set<Transaction> transactions;
 	
