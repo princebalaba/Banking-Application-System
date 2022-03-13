@@ -18,5 +18,6 @@ public interface BeneficiaryService {
 	void removeBeneficiaryByAccountNumber(Long id);
 	BeneficiaryDTO updateBeneficiary(BeneficiaryDTO newBeneficiary);
 	BeneficiaryDTO createBeneficiary(BeneficiaryDTO beneficiary);
+	BeneficiaryDTO getBeneficiaryById(Long beneficiaryId);
 	
 }
