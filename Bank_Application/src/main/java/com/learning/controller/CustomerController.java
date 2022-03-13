@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -171,7 +172,7 @@ public class CustomerController {
 
 	}
 
-//	@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("{customerId}/account/{accountNo}")
 	public ResponseEntity<?> approveAccount(@PathVariable("customerId") long customerId,
 			@PathVariable("accountNo") long accountNo, @RequestBody AccountRequest request) {
@@ -344,7 +345,7 @@ public class CustomerController {
 		}
 
 	}
-
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") Long customerId,
 			@PathVariable("beneficiaryId") Long beneficiaryId) {
@@ -370,7 +371,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 
 	}
-
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@PutMapping("/transfer")
 	public ResponseEntity<?> transfer(@Valid @RequestBody TransferRequest request) {
 		UserDTO user = userService.getUserById(request.getCustomer())
@@ -411,7 +412,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 
 	}
-
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("/{customerId}/forgot/question/answer")
 	public ResponseEntity<?> secretQuestionAnswer(@Valid @RequestBody TransferRequest request) {
 		

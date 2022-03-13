@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -100,6 +101,7 @@ public class StaffController {
 				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
 
 	}
+	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/account/{accountNo}")
 	public ResponseEntity<?> getStatementOfAccount(@PathVariable ("accountNo") Long accountNo){
 		AccountDTO response = accountService.getAccount(accountNo);
@@ -110,7 +112,7 @@ public class StaffController {
 		
 	}
 //	/josh is working on it 
-	
+	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/beneficiary")
 	public ResponseEntity<?> getUnapprovedBeneficiaries(){
 		
@@ -125,7 +127,7 @@ public class StaffController {
 				.body(toBeApproved);
 		
 	}
-	
+	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> getApprovedBeneficiary (@PathVariable("beneficiaryId") Long beneficiaryId){
 		
@@ -150,14 +152,14 @@ public class StaffController {
 				.body(beneficiaryToBeApproved);
 		
 	}
-	
+	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/accounts/approve")
 	public ResponseEntity<?> getUnapprovedAccounts() {
 		
 		//no impl yet
 		return ResponseEntity.ok(staffService.getUnapprovedAccounts());
 	}
-
+	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/accounts/approve/{accountId}")
 	public ResponseEntity<?> approveAccount( @PathVariable("accountId") Long accountId) {
 	AccountDTO response = accountService.getAccount(accountId);
@@ -174,6 +176,7 @@ public class StaffController {
 		return ResponseEntity.ok(response);
 	}
 //
+	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/customer")
 	public ResponseEntity<?> getAllCustomers() {
 		return ResponseEntity.ok(staffService.getAllCustomers());
