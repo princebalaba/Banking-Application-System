@@ -1,6 +1,7 @@
 package com.learning.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -120,6 +121,12 @@ if(repo.existsById(newAccount.getAccountNumber())) {
 			return repo.save(newAccount);
 		}
 		throw new RuntimeException("Sorry Beneficiary " + newAccount.getAccountNumber() + " not found");
+	}
+
+	@Override
+	public Optional<AccountDTO> findAccountById(long id) {
+		// TODO Auto-generated method stub
+		return repo.findById(id);
 	}
 	
 	

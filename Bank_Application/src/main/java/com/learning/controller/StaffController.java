@@ -2,6 +2,7 @@ package com.learning.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -25,14 +26,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.entity.AccountDTO;
 import com.learning.entity.BeneficiaryDTO;
-
+import com.learning.entity.UserDTO;
 import com.learning.enums.ERole;
+import com.learning.exceptions.TransactionInvalidException;
 import com.learning.exceptions.UnauthrorizedException;
 
 import com.learning.enums.Active;
 import com.learning.enums.Approved;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.SigninRequest;
+import com.learning.payload.requset.TransferRequestStaff;
 import com.learning.payload.response.JwtResponse;
 import com.learning.payload.response.StaffGetAccountResponse;
 import com.learning.repo.BeneficiaryRepo;
@@ -193,9 +196,43 @@ public class StaffController {
 //		return ResponseEntity.ok(staffService.getCustomer(customerId));
 //	}
 //
-//	@PutMapping("/transfer")
-//	public ResponseEntity<?> staffTransfer(@RequestBody TransferRequestStaff request) {
-//		return ResponseEntity.ok(staffService.staffTransferFunds(request));
-//	}
+	
+	@PreAuthorize("hasRole('STAFF')")
+	@PutMapping("/transfer")
+	public ResponseEntity<?> staffTransfer(@RequestBody TransferRequestStaff request) {
+		
+		
+		Optional<AccountDTO> accountFrom = accountService.findAccountById(request.getFromAccNumber());
+		Optional<AccountDTO> toAccount = accountService.findAccountById(request.getToAccNumber());
+		Double amount = request.getAmount();
+		String reason = request.getReason();
+		if(accountFrom.isEmpty() || toAccount.isEmpty()) {
+			throw new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
+					+ request.getToAccNumber() + " Account Number Not Valid");
+		}
+		if(!userService.userExistsById(accountFrom.get().getCustomerId())) {
+			throw new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
+					+ request.getToAccNumber() + " Account Number Not Valid");
+		}
+		AccountDTO from = accountFrom.get();
+		AccountDTO to = toAccount.get();
+		AccountDTO temp = from;
+		// deal with the user from
+		temp.setAccountBalance(from.getAccountBalance() - amount);
+
+		accountService.updateAccount(to.getAccountNumber(), temp);
+
+		// deal with the uer to
+		UserDTO toAccountHolder = userService.getUserById(to.getCustomerId())
+				.orElseThrow(() -> new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
+						+ request.getToAccNumber() + " Account Number Not Valid"));
+		temp = to;
+		temp.setAccountBalance(temp.getAccountBalance() + amount);
+		accountService.updateAccount(to.getAccountNumber(), temp);
+
+		
+		
+		return ResponseEntity.status(200).body("");
+	}
 
 }
