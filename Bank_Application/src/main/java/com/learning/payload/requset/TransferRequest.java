@@ -18,7 +18,7 @@ public class TransferRequest {
 	@NotNull
 	private Double amount;
 	@NotBlank
-	private String Reason;
+	private String reason;
 	//set long beacuse not sure about customerDTO or id
 	@NotNull
 	private long customer;
