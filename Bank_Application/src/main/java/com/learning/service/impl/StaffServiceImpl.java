@@ -136,10 +136,10 @@ public class StaffServiceImpl implements StaffService{
 	@Override
 	public List<StaffDTO> getAllStaff() {
 		// TODO Auto-generated method stub
-//List<StaffDTO> staff =repo.findAll();
+		List<StaffDTO> staff =repo.findAll();
 
 
-		return null;
+		return staff;
 	}
 
 	@Override

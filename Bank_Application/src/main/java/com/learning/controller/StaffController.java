@@ -229,6 +229,7 @@ public class StaffController {
 		}
 		AccountDTO from = accountFrom.get();
 		AccountDTO to = toAccount.get();
+		
 		AccountDTO temp = from;
 		// deal with the user from
 		temp.setAccountBalance(from.getAccountBalance() - amount);
