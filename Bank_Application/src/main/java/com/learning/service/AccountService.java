@@ -14,6 +14,7 @@ public interface AccountService {
 	List<AccountDTO> getAllUnapprovedAcounts();
 	Boolean removeAccountById(Long id);
 	AccountDTO updateAccount(Long id, AccountDTO newAccount);
+	AccountDTO updateAccount(AccountDTO newAccount);
 	AccountDTO createAccount(AccountDTO account);
 	Boolean accountExists(Long id);
 	

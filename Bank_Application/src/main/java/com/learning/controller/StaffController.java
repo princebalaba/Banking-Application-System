@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,12 +24,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.entity.AccountDTO;
 import com.learning.entity.BeneficiaryDTO;
+
 import com.learning.enums.ERole;
 import com.learning.exceptions.UnauthrorizedException;
+
+import com.learning.enums.Active;
+import com.learning.enums.Approved;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.payload.response.JwtResponse;
 import com.learning.payload.response.StaffGetAccountResponse;
+import com.learning.repo.BeneficiaryRepo;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.AccountService;
 import com.learning.service.BeneficiaryService;
@@ -49,6 +55,10 @@ public class StaffController {
 	
 	@Autowired
 	BeneficiaryService beneficiaryService;
+	
+	
+	@Autowired
+	BeneficiaryRepo beneficiaryRepo;
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -107,28 +117,67 @@ public class StaffController {
 		
 		
 		List<StaffGetAccountResponse> response = new ArrayList<>() ;
-		List<BeneficiaryDTO> toBeApproved = beneficiaryService.getBeneficiaries();
+		List<BeneficiaryDTO> toBeApproved = beneficiaryService.getAllUnapprovedBeneficiaries();
 				
 		
 		
 		return ResponseEntity.status(200)
-				.body(response);
+				.body(toBeApproved);
 		
 	}
-//	@GetMapping("/accounts/approve")
-//	public ResponseEntity<?> getUnapprovedAccounts() {
-//		return ResponseEntity.ok(staffService.getUnapprovedAccounts());
-//	}
+	
+	@PutMapping("/beneficiary/{beneficiaryId}")
+	public ResponseEntity<?> getApprovedBeneficiary (@PathVariable("beneficiaryId") Long beneficiaryId){
+		
+		Boolean benefiBoolean = beneficiaryRepo.existsById(beneficiaryId);
+		if(!benefiBoolean) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("Sorry beneficiary not approved");
+		}
+		
+		
+		BeneficiaryDTO beneficiaryToBeApproved = beneficiaryService.getBeneficiaryById(beneficiaryId);
+		
+		if(beneficiaryToBeApproved.getActive().equals(Active.NO)) {
+			beneficiaryToBeApproved.setActive(Active.YES);
+		}else {
+			beneficiaryToBeApproved.setActive(Active.NO);
+		}
+	
+		
+		beneficiaryService.updateBeneficiary(beneficiaryToBeApproved);
+		return ResponseEntity.status(200)
+				.body(beneficiaryToBeApproved);
+		
+	}
+	
+	@GetMapping("/accounts/approve")
+	public ResponseEntity<?> getUnapprovedAccounts() {
+		
+		//no impl yet
+		return ResponseEntity.ok(staffService.getUnapprovedAccounts());
+	}
 
-//	@PutMapping("/accounts/approve")
-//	public ResponseEntity<?> approveAccount(@RequestBody ApproveAccountRequest request) {
-//		return ResponseEntity.ok(staffService.approveAccount(request));
-//	}
+	@PutMapping("/accounts/approve/{accountId}")
+	public ResponseEntity<?> approveAccount( @PathVariable("accountId") Long accountId) {
+	AccountDTO response = accountService.getAccount(accountId);
+	
+	if(response.getApproved().equals(Approved.NO)){
+		response.setApproved(Approved.YES);
+		
+	}else {
+		response.setApproved(Approved.NO);
+	}
+	
+	AccountDTO updatedAccount = accountService.updateAccount(response);
+		
+		return ResponseEntity.ok(response);
+	}
 //
-//	@GetMapping("/customer")
-//	public ResponseEntity<?> listCustomers() {
-//		return ResponseEntity.ok(staffService.getCustomers());
-//	}
+	@GetMapping("/customer")
+	public ResponseEntity<?> getAllCustomers() {
+		return ResponseEntity.ok(staffService.getAllCustomers());
+	}
 //
 //	@PutMapping("/customer")
 //	public ResponseEntity<?> setCustomerEnabled(@RequestBody SetEnabledRequest request) {

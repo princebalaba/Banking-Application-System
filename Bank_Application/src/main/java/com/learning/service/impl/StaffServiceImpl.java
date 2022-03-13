@@ -3,20 +3,22 @@ package com.learning.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.learning.entity.AccountDTO;
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.StaffDTO;
 import com.learning.entity.UserDTO;
 import com.learning.enums.Active;
 import com.learning.enums.Approved;
+import com.learning.enums.ERole;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.payload.requset.StaffSetCustomerStatusRequest;
 import com.learning.payload.response.StaffGetAccountResponse;
 import com.learning.payload.response.StaffGetCustomerResponse;
+import com.learning.repo.AccountRepo;
 import com.learning.repo.BeneficiaryRepo;
 import com.learning.repo.StaffRepository;
 import com.learning.repo.UserRepository;
@@ -36,6 +38,9 @@ public class StaffServiceImpl implements StaffService{
 	
 	@Autowired
 	UserRepository userRepo;
+	
+	@Autowired
+	AccountRepo accountRepo;
 	//get Bu user Id
 	@Override
 	public Optional<UserDTO> getUserById(long id) {
@@ -147,6 +152,31 @@ public class StaffServiceImpl implements StaffService{
 			throw new IdNotFoundException("Staff with id: "+staffId+ " not found");
 		}
 		
+	}
+
+	@Override
+	public List<AccountDTO> getUnapprovedAccounts() {
+		// TODO Auto-generated method stub
+		
+		List<AccountDTO> unapprovedAccounts =  accountRepo.findAll();
+		
+		unapprovedAccounts.removeIf(account -> account.getApproved().equals(Approved.YES));
+		return unapprovedAccounts;
+	}
+
+	@Override
+	public List<UserDTO> getAllCustomers() {
+		// TODO Auto-generated method stub
+		
+		List <UserDTO> response = userRepo.findAll();
+		
+//		response.removeIf(
+//
+//				//user -> user.getRoles()
+//				
+//				);
+		
+		return response;
 	}
 
 	
