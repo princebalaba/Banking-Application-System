@@ -3,7 +3,6 @@ package com.learning.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,7 @@ import com.learning.enums.EStatus;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.payload.requset.StaffSetCustomerStatusRequest;
 import com.learning.payload.response.StaffGetAccountResponse;
+import com.learning.payload.response.StaffGetCustomerByIdResponse;
 import com.learning.payload.response.StaffGetCustomerResponse;
 import com.learning.repo.AccountRepo;
 import com.learning.repo.BeneficiaryRepo;
@@ -186,6 +186,8 @@ public class StaffServiceImpl implements StaffService{
 				
 				;
 		
+		
+		
 		return response;
 	}
 
@@ -201,7 +203,7 @@ public class StaffServiceImpl implements StaffService{
 		
 		if(users.size() !=1) {
 			
-			throw new IdNotFoundException("Id not found");
+			throw new IdNotFoundException("Approving of account was not successful");
 		}
 		
 		UserDTO user = users.get(0);
@@ -216,6 +218,26 @@ public class StaffServiceImpl implements StaffService{
 		
 		
 	}
+
+	@Override
+	public StaffGetCustomerByIdResponse getCustomerDetailsByID(Long customerId) {
+		// TODO Auto-generated method stub
+		
+		List <UserDTO> users = getAllCustomers();
+		
+		UserDTO user = users.stream().filter(u -> u.getId()==customerId).findFirst().get();
+		
+		StaffGetCustomerByIdResponse response = new StaffGetCustomerByIdResponse();
+		
+		response.setCreated(user.getDateCreated());
+		response.setCustomerId(user.getId());
+		response.setStatus(user.getStatus());
+		response.setCustomerName(user.getFullname());
+		
+		return response;
+	}
+	
+	
 
 	
 

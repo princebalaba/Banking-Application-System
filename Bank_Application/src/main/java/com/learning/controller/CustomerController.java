@@ -101,6 +101,7 @@ public class CustomerController {
 		user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
 
 		user.setRoles(roles);
+		user.setDateCreated(LocalDateTime.now());
 		UserDTO newUser = userService.addUser(user);
 		CustomerRegisterResponse response = new CustomerRegisterResponse();
 		response.setCustomerId(newUser.getId());
@@ -323,7 +324,7 @@ public class CustomerController {
 		ben.setName(beneficiaryName);
 		ben.setActive(Active.YES);
 		ben.setAccountType(payload.getAccountType());
-		ben.setAddedDate(LocalDate.now());
+		ben.setAddedDate(LocalDateTime.now());
 		ben.setUserId(customerId);
 		
 		UserDTO user =userService.getUser(customerId);
