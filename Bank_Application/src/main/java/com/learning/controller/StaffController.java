@@ -196,7 +196,7 @@ public class StaffController {
 	
 	
 	
-	
+	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/customer/{customerID}")
 	public ResponseEntity<?> getCustomer(@PathVariable("customerID") Long customerId) {
 		
@@ -204,73 +204,7 @@ public class StaffController {
 		return ResponseEntity.ok(	staffService.getCustomerDetailsByID(customerId));
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
-	
-	////////////////////////////
-//
-
-//
 	
 	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/transfer")
@@ -307,7 +241,7 @@ public class StaffController {
 
 		
 		
-		return ResponseEntity.status(200).body("");
+		return ResponseEntity.status(200).body("transfer successs");
 	}
 
 }
