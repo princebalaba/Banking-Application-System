@@ -33,10 +33,12 @@ import com.learning.apierrors.ApiError;
 import com.learning.entity.AccountDTO;
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.Role;
+import com.learning.entity.Transaction;
 import com.learning.entity.UserDTO;
 import com.learning.enums.AccountType;
 import com.learning.enums.Active;
 import com.learning.enums.Approved;
+import com.learning.enums.CreditDebit;
 import com.learning.enums.ERole;
 import com.learning.exceptions.BalanceNonPositiveException;
 import com.learning.exceptions.IdNotFoundException;
@@ -395,6 +397,14 @@ public class CustomerController {
 //		accountsFrom.add(temp);
 //		user.setAccount(accountsFrom);
 //		userService.updateUser(user, request.getCustomer());
+		Transaction transaction = new Transaction();
+		transaction.setDateTime(LocalDateTime.now());
+		transaction.setReference(request.getReason());
+		transaction.setAmount(request.getAmount());
+		transaction.setType(CreditDebit.CREDIT);
+		Set<Transaction> transactions = temp.getTransactions();
+		transactions.add(transaction);
+		temp.setTransactions(transactions);
 		accountService.updateAccount(accountFrom.getAccountNumber(), temp);
 
 		// deal with the uer to
@@ -409,6 +419,14 @@ public class CustomerController {
 //		accountsTo.add(temp);
 //		toAccountHolder.setAccount(accountsTo);
 //		userService.updateUser(toAccountHolder, toAccount.getCustomerId());
+		 transaction = new Transaction();
+		transaction.setDateTime(LocalDateTime.now());
+		transaction.setReference(request.getReason());
+		transaction.setAmount(request.getAmount());
+		transaction.setType(CreditDebit.CREDIT);
+		 transactions = temp.getTransactions();
+		transactions.add(transaction);
+		temp.setTransactions(transactions);
 
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 
