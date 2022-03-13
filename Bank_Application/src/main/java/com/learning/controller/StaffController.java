@@ -229,36 +229,35 @@ public class StaffController {
 		}
 		AccountDTO from = accountFrom.get();
 		AccountDTO to = toAccount.get();
-		AccountDTO temp = from;
-		// deal with the user from
-		temp.setAccountBalance(from.getAccountBalance() - amount);
-		Transaction transaction = new Transaction();
-		transaction.setDateTime(LocalDateTime.now());
-		transaction.setReference(request.getReason());
-		transaction.setAmount(request.getAmount());
-		transaction.setType(CreditDebit.CREDIT);
-		Set<Transaction> transactions = temp.getTransactions();
-		transactions.add(transaction);
-		temp.setTransactions(transactions);
-		accountService.updateAccount(to.getAccountNumber(), temp);
 		
-		// deal with the uer to
-		UserDTO toAccountHolder = userService.getUserById(to.getCustomerId())
-				.orElseThrow(() -> new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
-						+ request.getToAccNumber() + " Account Number Not Valid"));
-		temp = to;
-		temp.setAccountBalance(temp.getAccountBalance() + amount);
-		Transaction transaction2 = new Transaction();
-		transaction2.setDateTime(LocalDateTime.now());
-		transaction2.setReference(request.getReason());
-		transaction2.setAmount(request.getAmount());
-		transaction2.setType(CreditDebit.DEBIT);
-		Set<Transaction> transactions2 = temp.getTransactions();
-		transactions2.add(transaction2);
-		temp.setTransactions(transactions2);
-		
-		accountService.updateAccount(to.getAccountNumber(), temp);
+		//temp for accountFrom 
+				AccountDTO temp = from;
+			
+				temp.setAccountBalance(from.getAccountBalance() - amount);
 
+				Transaction transaction = new Transaction();
+				transaction.setDateTime(LocalDateTime.now());
+				transaction.setReference(request.getReason());
+				transaction.setAmount(request.getAmount());
+				transaction.setType(CreditDebit.CREDIT);
+				Set<Transaction> transactions = temp.getTransactions();
+				transactions.add(transaction);
+				temp.setTransactions(transactions);
+				accountService.updateAccount(from.getAccountNumber(), temp);
+
+				
+				AccountDTO temp2 = to;
+				temp2.setAccountBalance(temp2.getAccountBalance() + amount);
+			
+				Transaction transaction2 = new Transaction();
+				transaction2.setDateTime(LocalDateTime.now());
+				transaction2.setReference(request.getReason());
+				transaction2.setAmount(request.getAmount());
+				transaction2.setType(CreditDebit.DEBIT);
+				Set<Transaction> transactions2 = temp2.getTransactions();
+				transactions2.add(transaction2);
+				temp2.setTransactions(transactions2);
+				accountService.updateAccount(to.getAccountNumber(), temp2);
 		
 		
 		return ResponseEntity.status(200).body("transfer successs");
