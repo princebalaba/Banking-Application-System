@@ -63,54 +63,53 @@ public class AdminController {
 	@Autowired
 	private RoleServiceImpl roleService;
 	@Autowired
-	private AdminServiceImpl adminService ;
+	private AdminServiceImpl adminService;
 
 	//
 
 	@Autowired
-	private StaffServiceImpl staffService ;
+	private StaffServiceImpl staffService;
 
-	
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
-	
+
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		
+
 		String jwt = jwtUtils.generateToken(authentication);
 		// get user data/ principal
-	
+
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
 				.collect(Collectors.toList());
 		// return new token
-		boolean isadmin = false; 
-		for( int i =0 ; i < roles.size() ; i++) {
+		boolean isadmin = false;
+		for (int i = 0; i < roles.size(); i++) {
 			if (roles.get(i).equals(ERole.ROLE_SUPER_ADMIN.name())) {
-				isadmin= true;
+				isadmin = true;
 			}
 		}
-		if(!isadmin) {
+		if (!isadmin) {
 			throw new UnauthrorizedException("unauthorized access");
 		}
 		return ResponseEntity.status(200)
 				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
 
 	}
-	
+
 	@PostMapping("/staff")
 	public ResponseEntity<?> createStaff(@Valid @RequestBody CreateStaffRequest request) {
-		
+
 		StaffDTO staff = new StaffDTO();
 		staff.setFullname(request.getStaffFullName());
 		staff.setUsername(request.getStaffUserName());
 		staff.setPassword(passwordEncoder.encode(request.getStaffPassword()));
 		staff.setStatus(EStatus.ENABLE);
 
-			Role role = roleService.getRoleName(ERole.ROLE_STAFF)
+		Role role = roleService.getRoleName(ERole.ROLE_STAFF)
 				.orElseThrow(() -> new RoleNotFoundException("this staff role has not found"));
 		Set<Role> roles = new HashSet<>();
 		roles.add(role);
@@ -119,7 +118,7 @@ public class AdminController {
 		return ResponseEntity.status(200).body("staff added");
 
 	}
-	
+
 	@GetMapping("/staff")
 	public ResponseEntity<?> getAllStaff() {
 		List<StaffDTO> staffs = new ArrayList<>();
@@ -127,9 +126,11 @@ public class AdminController {
 		return ResponseEntity.status(200).body(staffs);
 
 	}
+
 	@PutMapping("/{staffid}")
-	public ResponseEntity<?> setStaffEnabled(@PathVariable ("staffid") long staffid){
-		StaffDTO staff = (StaffDTO) staffService.getUserById(staffid).orElseThrow(()-> new IdNotFoundException("Staff status not changed"));
+	public ResponseEntity<?> setStaffEnabled(@PathVariable("staffid") long staffid) {
+		StaffDTO staff = (StaffDTO) staffService.getUserById(staffid)
+				.orElseThrow(() -> new IdNotFoundException("Staff status not changed"));
 		staff.setStatus(EStatus.DISABLED);
 		adminService.updateStaffStatus(staff);
 		Map<String, String> response = new LinkedHashMap<>();

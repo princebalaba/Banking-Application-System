@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,7 @@ import com.learning.enums.ERole;
 import com.learning.exceptions.BalanceNonPositiveException;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.RoleNotFoundException;
+import com.learning.exceptions.SecretDetailsDoNotMatchException;
 import com.learning.exceptions.TransactionInvalidException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.AccountRequest;
@@ -70,10 +72,10 @@ public class CustomerController {
 	UserService userService;
 	@Autowired
 	StaffService staffService;
-	
+
 //	@Autowired
 //	AccountService accountService;
-	
+
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
@@ -114,15 +116,15 @@ public class CustomerController {
 
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
-	
+
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		
+
 		String jwt = jwtUtils.generateToken(authentication);
 		// get user data/ principal
-	
+
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
@@ -138,9 +140,9 @@ public class CustomerController {
 			@RequestBody AccountRequest request) {
 		String type = request.getAccountType().name();
 		AccountType roles = request.getAccountType();
-		
+
 		Approved approved = Approved.NO;
-		if(request.getAccountBalance() < 0) {
+		if (request.getAccountBalance() < 0) {
 			throw new BalanceNonPositiveException("Account cannot be created");
 		}
 
@@ -176,7 +178,8 @@ public class CustomerController {
 	public ResponseEntity<?> approveAccount(@PathVariable("customerId") long customerId,
 			@PathVariable("accountNo") long accountNo, @RequestBody AccountRequest request) {
 		// possibly user AccountRequest
-		UserDTO user = staffService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Please check Account Number"));
+		UserDTO user = staffService.getUserById(customerId)
+				.orElseThrow(() -> new IdNotFoundException("Please check Account Number"));
 		Set<AccountDTO> accounts = user.getAccount();
 
 		accounts.forEach(e -> {
@@ -203,12 +206,12 @@ public class CustomerController {
 	@GetMapping("{customerId}/account")
 	public ResponseEntity<?> getAccounts(@PathVariable("customerId") long customerId) {
 		Optional<UserDTO> data = userService.getUserById(customerId);
-		if(data.isEmpty()) {
+		if (data.isEmpty()) {
 			throw new IdNotFoundException("Sorry Customer With " + customerId + " not found");
-			
+
 		}
 		UserDTO user = data.get();
-				Set<AccountDTO> accounts = user.getAccount();
+		Set<AccountDTO> accounts = user.getAccount();
 		Set<AccountResponseEntity> responses = new HashSet<>();
 		accounts.forEach(e -> {
 			AccountResponseEntity response = new AccountResponseEntity();
@@ -254,24 +257,26 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 
 	}
-	
+
 	@GetMapping("{customerId}")
 	public ResponseEntity<?> getCustomer(@PathVariable("customerId") long customerId) {
-		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry Customer With " + customerId+ " not found"));
+		UserDTO user = userService.getUserById(customerId)
+				.orElseThrow(() -> new IdNotFoundException("Sorry Customer With " + customerId + " not found"));
 		GetCustomerResponse response = new GetCustomerResponse();
 		response.setFullName(user.getFullname());
 		response.setAadhar(user.getAadhar());
 		response.setPan(user.getPan());
 		response.setPhone(user.getPhone());
 		response.setUsername(user.getUsername());
-		
+
 		return ResponseEntity.status(200).body(response);
 	}
 
 	@GetMapping("{customerId}/account/{accountid}")
 	public ResponseEntity<?> getAccountFromId(@PathVariable("customerId") long customerId,
 			@PathVariable("accountid") long accountid) {
-		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry customer With "+ customerId +" not found"));
+		UserDTO user = userService.getUserById(customerId)
+				.orElseThrow(() -> new IdNotFoundException("Sorry customer With " + customerId + " not found"));
 		AccountDTO account = null;
 		Iterator<AccountDTO> it = user.getAccount().iterator();
 		while (it.hasNext()) {
@@ -292,55 +297,55 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 	}
 
-	
 	@GetMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
 		List<CustomerGetBeneficiaries> response = userService.getCustomerBeneficiaries(customerId);
 		return ResponseEntity.status(200).body(response);
 
 	}
-	//Make sure user has an account before adding beneficiary. or errors
-	@PostMapping("{customerId}/beneficiary")
-	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
-		System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getActive());
-		Boolean userExists = userService.userExistsById(customerId);
-		Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
-		if(!userExists ||!accountExists ) {
-			throw new IdNotFoundException("Sorry Beneficiary With "+customerId +" not added");
-		}
-		
 
-		
-		if(accountExists) {
-		BeneficiaryDTO ben = new BeneficiaryDTO();
-//		System.out.println("Acc exists");
-		
-		ben.setAccountNumber(payload.getAccountNumber());
-		Long beneficiaryAccountUserId = accountService.getAccountByAccountNumber((payload.getAccountNumber()))
-				.getCustomerId();
-		String beneficiaryName = userService.getUser(beneficiaryAccountUserId).getFullname();
-		ben.setName(beneficiaryName);
-		ben.setActive(Active.YES);
-		ben.setAccountType(payload.getAccountType());
-		ben.setAddedDate(LocalDate.now());
-		ben.setUserId(customerId);
-		
-		UserDTO user =userService.getUser(customerId);
-		Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
-		userBeneficiaries.add(ben);
-		user.setBeneficiaries(userBeneficiaries);
-		UserDTO updatedUser=userService.updateUser(user);
-		
-		BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
-		response.setActive(ben.getActive());
-		response.setBeneficiaryAccountNo(ben.getAccountNumber());
-		response.setBeneficiaryName(ben.getName());
-		
-		return ResponseEntity.status(200).body("Beneficiary with: "+payload.getAccountNumber() + "  added");
+	// Make sure user has an account before adding beneficiary. or errors
+	@PostMapping("{customerId}/beneficiary")
+	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId,
+			@RequestBody BeneficiaryPayload payload) {
+		System.out.println("Payload: " + payload.getAccountType() + ". " + payload.getAccountNumber() + ". "
+				+ payload.getActive());
+		Boolean userExists = userService.userExistsById(customerId);
+		Boolean accountExists = accountService.accountExists(payload.getAccountNumber());
+		if (!userExists || !accountExists) {
+			throw new IdNotFoundException("Sorry Beneficiary With " + customerId + " not added");
 		}
-		else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to add Beneficiary with "+payload.getAccountNumber());
-					
+
+		if (accountExists) {
+			BeneficiaryDTO ben = new BeneficiaryDTO();
+//		System.out.println("Acc exists");
+
+			ben.setAccountNumber(payload.getAccountNumber());
+			Long beneficiaryAccountUserId = accountService.getAccountByAccountNumber((payload.getAccountNumber()))
+					.getCustomerId();
+			String beneficiaryName = userService.getUser(beneficiaryAccountUserId).getFullname();
+			ben.setName(beneficiaryName);
+			ben.setActive(Active.YES);
+			ben.setAccountType(payload.getAccountType());
+			ben.setAddedDate(LocalDate.now());
+			ben.setUserId(customerId);
+
+			UserDTO user = userService.getUser(customerId);
+			Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
+			userBeneficiaries.add(ben);
+			user.setBeneficiaries(userBeneficiaries);
+			UserDTO updatedUser = userService.updateUser(user);
+
+			BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
+			response.setActive(ben.getActive());
+			response.setBeneficiaryAccountNo(ben.getAccountNumber());
+			response.setBeneficiaryName(ben.getName());
+
+			return ResponseEntity.status(200).body("Beneficiary with: " + payload.getAccountNumber() + "  added");
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("Failed to add Beneficiary with " + payload.getAccountNumber());
+
 		}
 
 	}
@@ -349,24 +354,23 @@ public class CustomerController {
 	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") Long customerId,
 			@PathVariable("beneficiaryId") Long beneficiaryId) {
 		Boolean userExists = userService.userExistsById(customerId);
-		
+
 		Boolean beneficiaryExists = userService.userExistsById(customerId);
-		
-		if(!beneficiaryExists || !userExists) {
-			
+
+		if (!beneficiaryExists || !userExists) {
+
 			throw new IdNotFoundException("Beneficiary Not Deleted");
 		}
-		
+
 		UserDTO user = userService.getUser(customerId);
-		
-		Set <BeneficiaryDTO> userBens = user.getBeneficiaries();
+
+		Set<BeneficiaryDTO> userBens = user.getBeneficiaries();
 		userBens.removeIf(ben -> ben.getAccountNumber().equals(beneficiaryId));
-		
+
 		user.setBeneficiaries(userBens);
-		
+
 		UserDTO updatedUser = userService.updateUser(user);
-		
-		
+
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 
 	}
@@ -408,12 +412,35 @@ public class CustomerController {
 
 	}
 
-	@GetMapping("/{customerId}/forgot/question/answer")
-	public ResponseEntity<?> secretQuestionAnswer(@Valid @RequestBody TransferRequest request) {
+	@GetMapping("/{username}/forgot/question/answer")
+	public ResponseEntity<?> secretQuestionAnswer(@PathVariable UpdateRequest updatesRequest, UpdateResponse updateResponse
+			) throws SecretDetailsDoNotMatchException {
 		
-		
-		return ResponseEntity.status(200).body("transaction Scuccessfully");
+		// updatesRequest.getSecretQuestion();
+		// updateResponse.getSecretAnswer();
+		if (updateResponse.getSecretAnswer().equals(updatesRequest.getSecretAnswer())) {
+			System.out.println("Secret Answer matches Secret Question");
+		} else {
+			throw new SecretDetailsDoNotMatchException("Sorry your secret details are not matching");
+		}
 
+		return ResponseEntity.status(200).body("Details Validated");
+
+	}
+
+	@PutMapping("/{username}/forgot")
+	public ResponseEntity<?> updatePassword(@PathVariable SigninRequest signinRequest, SigninRequest newPassword) {
+		signinRequest.getUserName();
+		newPassword.setPassword(newPassword.getPassword());
+		if(newPassword.equals(signinRequest.getPassword())){
+			System.out.println("Sorry password not updated");
+		}else {
+			//System.out.println("new password updated");
+		}
+		
+			
+		
+		return ResponseEntity.status(200).body("new password updated");
 	}
 
 }
