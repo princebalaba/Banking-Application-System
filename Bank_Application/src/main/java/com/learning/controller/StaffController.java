@@ -24,6 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.entity.AccountDTO;
 import com.learning.entity.BeneficiaryDTO;
+
+import com.learning.enums.ERole;
+import com.learning.exceptions.UnauthrorizedException;
+
 import com.learning.enums.Active;
 import com.learning.enums.Approved;
 import com.learning.jwt.JwtUtils;
@@ -72,26 +76,26 @@ public class StaffController {
 	public ResponseEntity<?> signinStaff(@Valid @RequestBody SigninRequest signinRequest) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
-		/*
-		 * Interface defining the minimum security information associated with the
-		 * current threadof execution. The security context is stored in a
-		 * SecurityContextHolder.
-		 * 
-		 * Changes the currently authenticated principal, or removes the
-		 * authenticationinformation.
-		 * 
-		 */
-		System.out.println(signinRequest.toString());
+
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		System.out.println("passed context holder");
+		
 		String jwt = jwtUtils.generateToken(authentication);
 		// get user data/ principal
-		System.out.println(jwt);
+	
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
 				.collect(Collectors.toList());
 		// return new token
+		boolean isadmin = false; 
+		for( int i =0 ; i < roles.size() ; i++) {
+			if (roles.get(i).equals(ERole.ROLE_STAFF.name())) {
+				isadmin= true;
+			}
+		}
+		if(!isadmin) {
+			throw new UnauthrorizedException("unauthorized access");
+		}
 		return ResponseEntity.status(200)
 				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
 

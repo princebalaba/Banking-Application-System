@@ -13,6 +13,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -99,7 +100,11 @@ public class AdminController {
 				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
 
 	}
+<<<<<<< HEAD
 
+=======
+	@PreAuthorize("hasRole('SUPER_ADMIN')")
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 	@PostMapping("/staff")
 	public ResponseEntity<?> createStaff(@Valid @RequestBody CreateStaffRequest request) {
 
@@ -118,7 +123,11 @@ public class AdminController {
 		return ResponseEntity.status(200).body("staff added");
 
 	}
+<<<<<<< HEAD
 
+=======
+	@PreAuthorize("hasRole('SUPER_ADMIN')")
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 	@GetMapping("/staff")
 	public ResponseEntity<?> getAllStaff() {
 		List<StaffDTO> staffs = new ArrayList<>();
@@ -126,7 +135,11 @@ public class AdminController {
 		return ResponseEntity.status(200).body(staffs);
 
 	}
+<<<<<<< HEAD
 
+=======
+	@PreAuthorize("hasRole('SUPER_ADMIN')")
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 	@PutMapping("/{staffid}")
 	public ResponseEntity<?> setStaffEnabled(@PathVariable("staffid") long staffid) {
 		StaffDTO staff = (StaffDTO) staffService.getUserById(staffid)

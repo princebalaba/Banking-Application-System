@@ -384,7 +384,11 @@ public class CustomerController {
 		AccountDTO toAccount = accountService.getAccount(request.getToAccNumber());
 		Double amount = request.getAmount();
 		String reason = request.getReason();
-
+		if(accountFrom.getCustomerId() != request.getCustomer()) {
+			throw new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
+					+ request.getToAccNumber() + " Account Number Not Valid");
+		}
+		
 		AccountDTO temp = accountFrom;
 		// deal with the user from
 		temp.setAccountBalance(accountFrom.getAccountBalance() - amount);
