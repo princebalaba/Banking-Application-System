@@ -440,7 +440,7 @@ public class CustomerController {
 		if (newPassword.equals(signinRequest.getPassword())) { // comparing the new password with the old one
 			System.out.println("Sorry password not updated");
 		} else {
-			// System.out.println("new password updated");
+			// System.out.println("new password updated"); //
 		}
 
 		return ResponseEntity.status(200).body("new password updated");
