@@ -347,7 +347,7 @@ public class CustomerController {
 		response.setBeneficiaryName(ben.getName());
 		
 		return ResponseEntity.status(200).body("Beneficiary with: "+payload.getAccountNumber() + "  added");
-//>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
 		}
 
 		if (accountExists) {
@@ -361,7 +361,7 @@ public class CustomerController {
 			ben.setName(beneficiaryName);
 			ben.setActive(Active.YES);
 			ben.setAccountType(payload.getAccountType());
-			ben.setAddedDate(LocalDate.now());
+			ben.setAddedDate(LocalDateTime.now());
 			ben.setUserId(customerId);
 
 			UserDTO user = userService.getUser(customerId);
