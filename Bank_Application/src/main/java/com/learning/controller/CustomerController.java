@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -40,6 +41,7 @@ import com.learning.enums.Active;
 import com.learning.enums.Approved;
 import com.learning.enums.CreditDebit;
 import com.learning.enums.ERole;
+import com.learning.enums.EStatus;
 import com.learning.exceptions.BalanceNonPositiveException;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.RoleNotFoundException;
@@ -66,6 +68,7 @@ import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.AccountService;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
+import com.learning.service.impl.BeneficiaryServiceImpl;
 import com.learning.service.impl.RoleServiceImpl;
 
 @RestController
@@ -91,6 +94,8 @@ public class CustomerController {
 	private RoleServiceImpl roleService;
 	@Autowired
 	private AccountService accountService;  
+	@Autowired
+	private BeneficiaryServiceImpl beneficiaryService; 
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -110,10 +115,9 @@ public class CustomerController {
 		CustomerRegisterResponse response = new CustomerRegisterResponse();
 		response.setCustomerId(newUser.getId());
 		response.setFullName(newUser.getFullname());
-//		response.setPhoneNumber(null); // for null now 
 		response.setPassword(newUser.getPassword());
 		response.setUserName(newUser.getUsername());
-
+		response.setDateCreated(newUser.getDateCreated());
 		return ResponseEntity.status(201).body(response);
 
 	}
@@ -122,7 +126,7 @@ public class CustomerController {
 	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
 	
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
+				new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
@@ -135,7 +139,7 @@ public class CustomerController {
 				.collect(Collectors.toList());
 		// return new token
 		return ResponseEntity.status(200)
-				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
+				.body("token: " + new JwtResponse(jwt).getToken());
 
 	}
 
@@ -159,15 +163,24 @@ public class CustomerController {
 		account.setApproved(approved);
 		LocalDateTime now = LocalDateTime.now();
 		account.setDateOfCreation(now);
+		account.setEnableDisabled(EStatus.DISABLED);
 //		double accNo = Math.random() * 100000000;
 //		long roundAccNo = (long) accNo;
 //		account.setAccountNumber(roundAccNo);
 		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Id not found"));
-		Set<AccountDTO> accounts = user.getAccount();
+		Set <AccountDTO> accounts = user.getAccount();
 		accounts.add(account);
 		user.setAccount(accounts);
-		userService.updateUser(user, customerId);
-
+		user = userService.updateUser(user, customerId);
+		long id = 0 ; 
+		for(AccountDTO e: accounts) {
+			if( id < e.getAccountNumber()) {
+				id = e.getAccountNumber();
+				account = e;
+			}
+		}
+		
+		 
 		AccountResponseEntity response = new AccountResponseEntity();
 		response.setAccountBalance(account.getAccountBalance());
 		response.setAccountNumber(account.getAccountNumber());
@@ -337,8 +350,10 @@ public class CustomerController {
 		Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
 		userBeneficiaries.add(ben);
 		user.setBeneficiaries(userBeneficiaries);
-		UserDTO updatedUser=userService.updateUser(user);
-		
+		UserDTO updatedUser=userService.updateUser(user, customerId);
+//		//////////////////////
+//		System.out.println(updatedUser.getBeneficiaries());
+//		/////////////////////////
 		BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
 		response.setActive(ben.getActive());
 		response.setBeneficiaryAccountNo(ben.getAccountNumber());
@@ -358,9 +373,9 @@ public class CustomerController {
 			@PathVariable("beneficiaryId") Long beneficiaryId) {
 		Boolean userExists = userService.userExistsById(customerId);
 		
-		Boolean beneficiaryExists = userService.userExistsById(customerId);
+		BeneficiaryDTO beneficiary = beneficiaryService.getBeneficiaryById(beneficiaryId);
 		
-		if(!beneficiaryExists || !userExists) {
+		if( !userExists || ! (beneficiary.getUserId()==customerId)) {
 			
 			throw new IdNotFoundException("Beneficiary Not Deleted");
 		}
@@ -368,13 +383,15 @@ public class CustomerController {
 		UserDTO user = userService.getUser(customerId);
 		
 		Set <BeneficiaryDTO> userBens = user.getBeneficiaries();
-		userBens.removeIf(ben -> ben.getAccountNumber().equals(beneficiaryId));
-		
+//	not working 
+//		userBens.removeIf(ben -> ben.getAccountNumber().equals(beneficiaryId) );
+		userBens.remove(beneficiary);
+		System.out.println("*******************" + userBens);
 		user.setBeneficiaries(userBens);
-		
+		beneficiaryService.removeBeneficiaryByAccountNumber(beneficiaryId);
 		UserDTO updatedUser = userService.updateUser(user);
 		
-		
+
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 
 	}
@@ -445,7 +462,7 @@ public class CustomerController {
 		public ResponseEntity<?> secretQuestionAnswer(@PathVariable("username") String username,  @RequestBody ForgotPasswordRequest payload)   {
 			
 			//forgot.getUsername();
-	
+			System.out.println("test");
 			UserDTO user =userService.findByUsername(username);//get user first
 			
 			if(user.getSecretAnswer().equalsIgnoreCase(payload.getSecurityAnswer()) ) {
@@ -464,9 +481,10 @@ public class CustomerController {
 		@PutMapping("/{username}/forgot")
 		public ResponseEntity<?> updatePassword(@RequestBody SigninRequest payload , @PathVariable("username") String username) {
 //			payload.getUserName(); // get username
-//			payload.getPassword(); // the new password
-
-			if (userService.existsByUsername(username)) { // comparing the new password with the old one
+////			payload.getPassword(); // the new password
+//
+			System.out.println(payload.getUsername());
+			if (userService.existsByUsername(payload.getUsername())) { // comparing the new password with the old one
 				
 				UserDTO user = userService.findByUsername(username);
 				
@@ -475,9 +493,10 @@ public class CustomerController {
 				userService.updateUser(user);
 				return ResponseEntity.status(200).body("new password updated");
 			} else {
-				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Sorry password not updated");
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sorry password not updated");
 			}
-
+			
+			
 			
 		}
 

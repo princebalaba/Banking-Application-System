@@ -194,6 +194,18 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler implements 
 		return buildResponseEntity(apiError);
 	}
 	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<?> dataIntegrityViolationException(DataIntegrityViolationException e) {
+		Map<String, String> map = new HashMap<>();
+		
+		
+		ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, e.getMessage(), e);
+		apiError.setDebugMessage("check your data input");
+		
+		
+		return buildResponseEntity(apiError);
+	}
+	
 
 	
 	@Override

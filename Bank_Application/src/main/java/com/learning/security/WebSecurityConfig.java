@@ -76,7 +76,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/customer/{username}/forgot/**").permitAll()	
 		.antMatchers("/api/customer/{username}/forgot").permitAll()	
 		.antMatchers("/api/customer/{username}/forgot/question/answer").permitAll()	
-		.antMatchers("/api/admin/register").permitAll()
 		.antMatchers("/api/admin/authenticate").permitAll()
 		.antMatchers("/api/staff/authenticate").permitAll()
 		.antMatchers("/api/customer/**").authenticated()

@@ -71,7 +71,7 @@ public class AdminController {
 	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
 	
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
+				new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		

@@ -8,14 +8,14 @@ import com.learning.payload.response.StaffApproveBeneficiaryResponse;
 public interface BeneficiaryService {
 
 	
-	List<BeneficiaryDTO> getBeneficiaries();
+	
 	StaffApproveBeneficiaryResponse approveBeneficiary();
 
 	BeneficiaryDTO getBeneficiaryByAccountNumber(Long id);
 	List<BeneficiaryDTO> getAllBeneficiaries();
 	List<BeneficiaryDTO> getAllApprovedBeneficiaries();
 	List<BeneficiaryDTO> getAllUnapprovedBeneficiaries();
-	void removeBeneficiaryByAccountNumber(Long id);
+	void removeBeneficiaryByAccountNumber(long id);
 	BeneficiaryDTO updateBeneficiary(BeneficiaryDTO newBeneficiary);
 	BeneficiaryDTO createBeneficiary(BeneficiaryDTO beneficiary);
 	BeneficiaryDTO getBeneficiaryById(Long beneficiaryId);

@@ -19,21 +19,7 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 	@Autowired
 	BeneficiaryRepo repo;
 	
-//	@Override
-	public List<BeneficiaryDTO> getBeneficiaries() {
-//		// TODO Auto-generated method stub
-//		
-//		List<BeneficiaryDTO> notApproved = repo.findAll()
-//				.stream()
-//				.filter( beneficiary -> beneficiary
-//						.getActive()
-//						.equals(Approved.NO))
-//						.toList()
-//				
-//				
-//				;
-		return null;
-	}
+
 
 	@Override
 	public BeneficiaryDTO getBeneficiaryByAccountNumber(Long id) {
@@ -70,7 +56,7 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 	}
 
 	@Override
-	public void removeBeneficiaryByAccountNumber(Long id) {
+	public void removeBeneficiaryByAccountNumber(long id) {
 		// TODO Auto-generated method stub
 		
 	repo.deleteById(id);
