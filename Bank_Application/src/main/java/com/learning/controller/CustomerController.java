@@ -460,17 +460,23 @@ public class CustomerController {
 
 		// password update
 		@PutMapping("/{username}/forgot")
-		public ResponseEntity<?> updatePassword(@PathVariable SigninRequest signinRequest, SigninRequest newPassword) {
-			signinRequest.getUserName(); // get username
-			newPassword.setPassword(newPassword.getPassword()); // the new password
+		public ResponseEntity<?> updatePassword(@RequestBody SigninRequest payload , @PathVariable("username") String username) {
+//			payload.getUserName(); // get username
+//			payload.getPassword(); // the new password
 
-			if (newPassword.equals(signinRequest.getPassword())) { // comparing the new password with the old one
-				System.out.println("Sorry password not updated");
+			if (userService.existsByUsername(username)) { // comparing the new password with the old one
+				
+				UserDTO user = userService.findByUsername(username);
+				
+				user.setPassword(passwordEncoder.encode(payload.getPassword()));
+				
+				userService.updateUser(user);
+				return ResponseEntity.status(200).body("new password updated");
 			} else {
-				// System.out.println("new password updated"); //
+				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Sorry password not updated");
 			}
 
-			return ResponseEntity.status(200).body("new password updated");
+			
 		}
 
 }

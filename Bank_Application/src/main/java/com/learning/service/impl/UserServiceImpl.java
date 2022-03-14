@@ -154,5 +154,10 @@ public UserDTO findByUsername(String username) {
 	}
 	return userRepo.findByUsername(username).get();
 }
+@Override
+public Boolean existsByUsername(String username) {
+	// TODO Auto-generated method stub
+	return userRepo.existsByUsername(username);
+}
 
 }
