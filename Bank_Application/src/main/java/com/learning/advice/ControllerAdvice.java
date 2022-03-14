@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,6 +35,7 @@ import com.learning.exceptions.BalanceNonPositiveException;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.NoDataFoundException;
 import com.learning.exceptions.RoleNotFoundException;
+import com.learning.exceptions.SecretDetailsDoNotMatchException;
 import com.learning.exceptions.TransactionInvalidException;
 import com.learning.exceptions.UnauthrorizedException;
 @org.springframework.web.bind.annotation.ControllerAdvice
@@ -166,6 +168,33 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler implements 
 		
 		return buildResponseEntity(apiError);
 	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<?> accessDeniedException(AccessDeniedException e) {
+		Map<String, String> map = new HashMap<>();
+		map.put("message", "check your roles");
+		
+		ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, e.getMessage(), e);
+		apiError.setDebugMessage("access denied");
+		
+		
+		return buildResponseEntity(apiError);
+	}
+	
+
+	@ExceptionHandler(SecretDetailsDoNotMatchException.class)
+	public ResponseEntity<?> secretDetailsDoNotMatchException(SecretDetailsDoNotMatchException e) {
+		Map<String, String> map = new HashMap<>();
+		
+		
+		ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, e.getMessage(), e);
+		apiError.setDebugMessage("Wrong answer");
+		
+		
+		return buildResponseEntity(apiError);
+	}
+	
+
 	
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
