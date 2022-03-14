@@ -24,4 +24,6 @@ public interface UserService {
 	
 	List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId);
 	public void deleteUserById(Long employeeId);
+	
+	public UserDTO findByUsername(String username);
 }

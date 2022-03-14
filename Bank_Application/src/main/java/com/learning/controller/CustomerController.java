@@ -43,10 +43,12 @@ import com.learning.enums.ERole;
 import com.learning.exceptions.BalanceNonPositiveException;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.RoleNotFoundException;
+import com.learning.exceptions.SecretDetailsDoNotMatchException;
 import com.learning.exceptions.TransactionInvalidException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.AccountRequest;
 import com.learning.payload.requset.BeneficiaryPayload;
+import com.learning.payload.requset.ForgotPasswordRequest;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.payload.requset.SignupRequest;
 import com.learning.payload.requset.TransferRequest;
@@ -431,5 +433,44 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 
 	}
+	
+	
+	
+	
+	// secret Question and Answer
+//		
+		@GetMapping("/{username}/forgot/question/answer")
+		public ResponseEntity<?> secretQuestionAnswer(@PathVariable("username") String username,  @RequestBody ForgotPasswordRequest payload)   {
+			
+			//forgot.getUsername();
+	
+			UserDTO user =userService.findByUsername(username);//get user first
+			
+			if(user.getSecretAnswer().equalsIgnoreCase(payload.getSecurityAnswer()) ) {
+				
+				return ResponseEntity.status(200).body("Details Validated");
+			}else {
+				
+				throw new SecretDetailsDoNotMatchException("Sorry your secret details are not matching");
+			}
+			
+			
+
+		}
+
+		// password update
+		@PutMapping("/{username}/forgot")
+		public ResponseEntity<?> updatePassword(@PathVariable SigninRequest signinRequest, SigninRequest newPassword) {
+			signinRequest.getUserName(); // get username
+			newPassword.setPassword(newPassword.getPassword()); // the new password
+
+			if (newPassword.equals(signinRequest.getPassword())) { // comparing the new password with the old one
+				System.out.println("Sorry password not updated");
+			} else {
+				// System.out.println("new password updated"); //
+			}
+
+			return ResponseEntity.status(200).body("new password updated");
+		}
 
 }
