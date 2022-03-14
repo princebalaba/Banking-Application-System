@@ -425,14 +425,14 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 
 	}
-	@PreAuthorize("hasRole('CUSTOMER')")
-	@GetMapping("/{customerId}/forgot/question/answer")
-	public ResponseEntity<?> secretQuestionAnswer(@Valid @RequestBody TransferRequest request) {
-		
-		
-		return ResponseEntity.status(200).body("transaction Scuccessfully");
-
-	}
+//	@PreAuthorize("hasRole('CUSTOMER')")
+//	@GetMapping("/{customerId}/forgot/question/answer")
+//	public ResponseEntity<?> secretQuestionAnswer(@Valid @RequestBody TransferRequest request) {
+//		
+//		
+//		return ResponseEntity.status(200).body("transaction Scuccessfully");
+//
+//	}
 	
 	
 	
