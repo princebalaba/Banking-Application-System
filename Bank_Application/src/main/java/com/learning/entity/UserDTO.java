@@ -1,5 +1,7 @@
 package com.learning.entity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -74,6 +76,7 @@ public class UserDTO {
 	@JoinTable(name = "add_beneficiary_tbl" ,  joinColumns = @JoinColumn(name ="user_id"))
 	private Set<BeneficiaryDTO> beneficiaries;
 	
+	private LocalDateTime dateCreated;
 	
 
 }

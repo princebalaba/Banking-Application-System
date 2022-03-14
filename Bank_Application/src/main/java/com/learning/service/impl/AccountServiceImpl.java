@@ -1,6 +1,7 @@
 package com.learning.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,6 +110,7 @@ public class AccountServiceImpl implements AccountService{
 	public AccountDTO updateAccount(long id, AccountDTO account) {
 			AccountDTO prev = repo.findById(id).orElseThrow(()-> new IdNotFoundException("account with id: "+ id +" not found")) ; 
 		prev.setAccountBalance(account.getAccountBalance());
+		prev.setTransactions(account.getTransactions());
 			return repo.save(prev);
 	}
 
@@ -120,6 +122,12 @@ if(repo.existsById(newAccount.getAccountNumber())) {
 			return repo.save(newAccount);
 		}
 		throw new RuntimeException("Sorry Beneficiary " + newAccount.getAccountNumber() + " not found");
+	}
+
+	@Override
+	public Optional<AccountDTO> findAccountById(long id) {
+		// TODO Auto-generated method stub
+		return repo.findById(id);
 	}
 	
 	

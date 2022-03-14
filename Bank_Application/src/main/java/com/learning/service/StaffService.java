@@ -9,6 +9,7 @@ import com.learning.entity.StaffDTO;
 import com.learning.entity.UserDTO;
 import com.learning.payload.requset.StaffSetCustomerStatusRequest;
 import com.learning.payload.response.StaffGetAccountResponse;
+import com.learning.payload.response.StaffGetCustomerByIdResponse;
 import com.learning.payload.response.StaffGetCustomerResponse;
 
 
@@ -35,6 +36,8 @@ public interface  StaffService {
 	
 	StaffSetCustomerStatusRequest setCustomerStatus(StaffSetCustomerStatusRequest request);
 	
+	StaffGetCustomerByIdResponse getCustomerDetailsByID(Long customerId);
+	
 	public List<StaffDTO> getAllStaff();
 	
 	StaffDTO addStaff(StaffDTO staff);
@@ -42,7 +45,8 @@ public interface  StaffService {
 	void removeStaff(Long staffId);
 	List <AccountDTO> getUnapprovedAccounts();
 	
-	List <UserDTO> getAllCustomers(); 
+	List <UserDTO> getAllCustomers();
+	void setCustomerEnabledDisabled(Long customerId); 
 	
 
 //ApproveBeneficiaryResponse approveBeneficiary(ApproveBeneficiaryRequest request);

@@ -15,6 +15,7 @@ import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,10 +34,12 @@ import com.learning.apierrors.ApiError;
 import com.learning.entity.AccountDTO;
 import com.learning.entity.BeneficiaryDTO;
 import com.learning.entity.Role;
+import com.learning.entity.Transaction;
 import com.learning.entity.UserDTO;
 import com.learning.enums.AccountType;
 import com.learning.enums.Active;
 import com.learning.enums.Approved;
+import com.learning.enums.CreditDebit;
 import com.learning.enums.ERole;
 import com.learning.exceptions.BalanceNonPositiveException;
 import com.learning.exceptions.IdNotFoundException;
@@ -87,7 +90,7 @@ public class CustomerController {
 	@Autowired
 	private RoleServiceImpl roleService;
 	@Autowired
-	private AccountService accountService;
+	private AccountService accountService;  
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -102,6 +105,7 @@ public class CustomerController {
 		user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
 
 		user.setRoles(roles);
+		user.setDateCreated(LocalDateTime.now());
 		UserDTO newUser = userService.addUser(user);
 		CustomerRegisterResponse response = new CustomerRegisterResponse();
 		response.setCustomerId(newUser.getId());
@@ -173,7 +177,7 @@ public class CustomerController {
 
 	}
 
-//	@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("{customerId}/account/{accountNo}")
 	public ResponseEntity<?> approveAccount(@PathVariable("customerId") long customerId,
 			@PathVariable("accountNo") long accountNo, @RequestBody AccountRequest request) {
@@ -304,6 +308,7 @@ public class CustomerController {
 
 	}
 
+<<<<<<< HEAD
 	// Make sure user has an account before adding beneficiary. or errors
 	@PostMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId,
@@ -314,6 +319,35 @@ public class CustomerController {
 		Boolean accountExists = accountService.accountExists(payload.getAccountNumber());
 		if (!userExists || !accountExists) {
 			throw new IdNotFoundException("Sorry Beneficiary With " + customerId + " not added");
+=======
+		
+		if(accountExists) {
+		BeneficiaryDTO ben = new BeneficiaryDTO();
+//		System.out.println("Acc exists");
+		
+		ben.setAccountNumber(payload.getAccountNumber());
+		Long beneficiaryAccountUserId = accountService.getAccountByAccountNumber((payload.getAccountNumber()))
+				.getCustomerId();
+		String beneficiaryName = userService.getUser(beneficiaryAccountUserId).getFullname();
+		ben.setName(beneficiaryName);
+		ben.setActive(Active.YES);
+		ben.setAccountType(payload.getAccountType());
+		ben.setAddedDate(LocalDateTime.now());
+		ben.setUserId(customerId);
+		
+		UserDTO user =userService.getUser(customerId);
+		Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
+		userBeneficiaries.add(ben);
+		user.setBeneficiaries(userBeneficiaries);
+		UserDTO updatedUser=userService.updateUser(user);
+		
+		BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
+		response.setActive(ben.getActive());
+		response.setBeneficiaryAccountNo(ben.getAccountNumber());
+		response.setBeneficiaryName(ben.getName());
+		
+		return ResponseEntity.status(200).body("Beneficiary with: "+payload.getAccountNumber() + "  added");
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 		}
 
 		if (accountExists) {
@@ -349,7 +383,7 @@ public class CustomerController {
 		}
 
 	}
-
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") Long customerId,
 			@PathVariable("beneficiaryId") Long beneficiaryId) {
@@ -374,7 +408,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 
 	}
-
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@PutMapping("/transfer")
 	public ResponseEntity<?> transfer(@Valid @RequestBody TransferRequest request) {
 		UserDTO user = userService.getUserById(request.getCustomer())
@@ -388,33 +422,46 @@ public class CustomerController {
 			throw new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
 					+ request.getToAccNumber() + " Account Number Not Valid");
 		}
+<<<<<<< HEAD
 
+=======
+		//temp for accountFrom 
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 		AccountDTO temp = accountFrom;
-		// deal with the user from
+	
 		temp.setAccountBalance(accountFrom.getAccountBalance() - amount);
-//		Set<AccountDTO> accountsFrom = user.getAccount();
-//		accountsFrom.remove(accountFrom);
-//		accountsFrom.add(temp);
-//		user.setAccount(accountsFrom);
-//		userService.updateUser(user, request.getCustomer());
+
+		Transaction transaction = new Transaction();
+		transaction.setDateTime(LocalDateTime.now());
+		transaction.setReference(request.getReason());
+		transaction.setAmount(request.getAmount());
+		transaction.setType(CreditDebit.CREDIT);
+		Set<Transaction> transactions = temp.getTransactions();
+		transactions.add(transaction);
+		temp.setTransactions(transactions);
 		accountService.updateAccount(accountFrom.getAccountNumber(), temp);
 
 		// deal with the uer to
 		UserDTO toAccountHolder = userService.getUserById(toAccount.getCustomerId())
 				.orElseThrow(() -> new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
 						+ request.getToAccNumber() + " Account Number Not Valid"));
-		temp = toAccount;
-		temp.setAccountBalance(temp.getAccountBalance() + amount);
-		accountService.updateAccount(toAccount.getAccountNumber(), temp);
-//		Set<AccountDTO> accountsTo = toAccountHolder.getAccount();
-//		accountsTo.remove(toAccount);
-//		accountsTo.add(temp);
-//		toAccountHolder.setAccount(accountsTo);
-//		userService.updateUser(toAccountHolder, toAccount.getCustomerId());
-
+		
+		AccountDTO temp2 = toAccount;
+		temp2.setAccountBalance(temp2.getAccountBalance() + amount);
+	
+		Transaction transaction2 = new Transaction();
+		transaction2.setDateTime(LocalDateTime.now());
+		transaction2.setReference(request.getReason());
+		transaction2.setAmount(request.getAmount());
+		transaction2.setType(CreditDebit.DEBIT);
+		Set<Transaction> transactions2 = temp2.getTransactions();
+		transactions2.add(transaction2);
+		temp2.setTransactions(transactions2);
+		accountService.updateAccount(toAccount.getAccountNumber(), temp2);
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 
 	}
+<<<<<<< HEAD
 	// secret Question and Answer
 	@GetMapping("/{username}/forgot/question/answer")
 	public ResponseEntity<?> secretQuestionAnswer(@PathVariable UpdateRequest updatesRequest,
@@ -427,6 +474,14 @@ public class CustomerController {
 		} else {
 			throw new SecretDetailsDoNotMatchException("Sorry your secret details are not matching");
 		}
+=======
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@GetMapping("/{customerId}/forgot/question/answer")
+	public ResponseEntity<?> secretQuestionAnswer(@Valid @RequestBody TransferRequest request) {
+		
+		
+		return ResponseEntity.status(200).body("transaction Scuccessfully");
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 
 		return ResponseEntity.status(200).body("Details Validated");
 

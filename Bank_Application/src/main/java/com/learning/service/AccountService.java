@@ -1,6 +1,7 @@
 package com.learning.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.learning.entity.AccountDTO;
 
@@ -20,4 +21,5 @@ public interface AccountService {
 	
 
 	public AccountDTO updateAccount(long id, AccountDTO account);
+	public Optional<AccountDTO> findAccountById(long id);
 }

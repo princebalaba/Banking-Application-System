@@ -1,5 +1,7 @@
 package com.learning.payload.response;
 
+import java.time.LocalDateTime;
+
 import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +19,8 @@ public class CustomerRegisterResponse {
 	
 	@NotBlank
 	private Long customerId;
+	
+	private LocalDateTime dateCreated;
 	
 	private String Password;
 

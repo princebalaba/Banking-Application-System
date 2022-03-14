@@ -14,15 +14,18 @@ import com.learning.entity.UserDTO;
 import com.learning.enums.Active;
 import com.learning.enums.Approved;
 import com.learning.enums.ERole;
+import com.learning.enums.EStatus;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.payload.requset.StaffSetCustomerStatusRequest;
 import com.learning.payload.response.StaffGetAccountResponse;
+import com.learning.payload.response.StaffGetCustomerByIdResponse;
 import com.learning.payload.response.StaffGetCustomerResponse;
 import com.learning.repo.AccountRepo;
 import com.learning.repo.BeneficiaryRepo;
 import com.learning.repo.StaffRepository;
 import com.learning.repo.UserRepository;
 import com.learning.service.StaffService;
+import com.learning.service.UserService;
 
 /**
  * @author : Ki Beom Lee
@@ -41,6 +44,9 @@ public class StaffServiceImpl implements StaffService{
 	
 	@Autowired
 	AccountRepo accountRepo;
+	
+	@Autowired
+	UserService userService;
 	//get Bu user Id
 	@Override
 	public Optional<UserDTO> getUserById(long id) {
@@ -130,10 +136,10 @@ public class StaffServiceImpl implements StaffService{
 	@Override
 	public List<StaffDTO> getAllStaff() {
 		// TODO Auto-generated method stub
-//List<StaffDTO> staff =repo.findAll();
+		List<StaffDTO> staff =repo.findAll();
 
 
-		return null;
+		return staff;
 	}
 
 	@Override
@@ -170,14 +176,68 @@ public class StaffServiceImpl implements StaffService{
 		
 		List <UserDTO> response = userRepo.findAll();
 		
-//		response.removeIf(
-//
-//				//user -> user.getRoles()
-//				
-//				);
+		response.removeIf(
+
+				user ->  user.getRoles().removeIf(customerRole-> !customerRole.getRoleName().equals(ERole.ROLE_CUSTOMER))
+				
+				
+				)
+			
+				
+				;
+		
+		
 		
 		return response;
 	}
+
+	@Override
+	public void setCustomerEnabledDisabled(Long customerId) {
+		// TODO Auto-generated method stub
+		
+		List <UserDTO> users = getAllCustomers();
+		
+	
+		
+		users.removeIf(u -> u.getId()!=customerId);
+		
+		if(users.size() !=1) {
+			
+			throw new IdNotFoundException("Approving of account was not successful");
+		}
+		
+		UserDTO user = users.get(0);
+		
+		if(user.getStatus().equals(EStatus.DISABLED)) {
+			user.setStatus(EStatus.ENABLE);
+		}else {
+			user.setStatus(EStatus.DISABLED);
+		}
+		
+		userService.updateUser(user);
+		
+		
+	}
+
+	@Override
+	public StaffGetCustomerByIdResponse getCustomerDetailsByID(Long customerId) {
+		// TODO Auto-generated method stub
+		
+		List <UserDTO> users = getAllCustomers();
+		
+		UserDTO user = users.stream().filter(u -> u.getId()==customerId).findFirst().get();
+		
+		StaffGetCustomerByIdResponse response = new StaffGetCustomerByIdResponse();
+		
+		response.setCreated(user.getDateCreated());
+		response.setCustomerId(user.getId());
+		response.setStatus(user.getStatus());
+		response.setCustomerName(user.getFullname());
+		
+		return response;
+	}
+	
+	
 
 	
 
