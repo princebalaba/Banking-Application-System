@@ -1,6 +1,5 @@
 package com.learning.controller;
 
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -11,8 +10,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -319,35 +316,6 @@ public class CustomerController {
 		Boolean accountExists = accountService.accountExists(payload.getAccountNumber());
 		if (!userExists || !accountExists) {
 			throw new IdNotFoundException("Sorry Beneficiary With " + customerId + " not added");
-
-		
-		if(accountExists) {
-		BeneficiaryDTO ben = new BeneficiaryDTO();
-//		System.out.println("Acc exists");
-		
-		ben.setAccountNumber(payload.getAccountNumber());
-		Long beneficiaryAccountUserId = accountService.getAccountByAccountNumber((payload.getAccountNumber()))
-				.getCustomerId();
-		String beneficiaryName = userService.getUser(beneficiaryAccountUserId).getFullname();
-		ben.setName(beneficiaryName);
-		ben.setActive(Active.YES);
-		ben.setAccountType(payload.getAccountType());
-		ben.setAddedDate(LocalDateTime.now());
-		ben.setUserId(customerId);
-		
-		UserDTO user =userService.getUser(customerId);
-		Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
-		userBeneficiaries.add(ben);
-		user.setBeneficiaries(userBeneficiaries);
-		UserDTO updatedUser=userService.updateUser(user);
-		
-		BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
-		response.setActive(ben.getActive());
-		response.setBeneficiaryAccountNo(ben.getAccountNumber());
-		response.setBeneficiaryName(ben.getName());
-		
-		return ResponseEntity.status(200).body("Beneficiary with: "+payload.getAccountNumber() + "  added");
-
 		}
 
 		if (accountExists) {
@@ -380,7 +348,6 @@ public class CustomerController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body("Failed to add Beneficiary with " + payload.getAccountNumber());
 
-		}
 		}
 
 	}
@@ -425,9 +392,7 @@ public class CustomerController {
 			throw new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
 					+ request.getToAccNumber() + " Account Number Not Valid");
 		}
-
 		// temp for accountFrom
-
 		AccountDTO temp = accountFrom;
 
 		temp.setAccountBalance(accountFrom.getAccountBalance() - amount);
@@ -462,31 +427,32 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 
 	}
+//	@PreAuthorize("hasRole('CUSTOMER')")
+//	@GetMapping("/{customerId}/forgot/question/answer")
+//	public ResponseEntity<?> secretQuestionAnswer(@Valid @RequestBody TransferRequest request) {
+//		
+//		
+//		return ResponseEntity.status(200).body("transaction Scuccessfully");
+//
+//	}
 
 	// secret Question and Answer
-	@PreAuthorize("hasRole('CUSTOMER')")
+//		
 	@GetMapping("/{username}/forgot/question/answer")
-	public ResponseEntity<?> secretQuestionAnswer(@PathVariable UpdateRequest updatesRequest,
-			UpdateResponse updateResponse) throws SecretDetailsDoNotMatchException {
+	public ResponseEntity<?> secretQuestionAnswer(@PathVariable("username") String username,
+			@RequestBody ForgotPasswordRequest payload) {
 
-		updatesRequest.getSecretQuestion(); // getting secret question
-		updateResponse.getSecretAnswer(); // picking the secret answer
-		if (updateResponse.getSecretAnswer().equals(updatesRequest.getSecretAnswer())) { // comparing the answer with
-																							// the original
-			System.out.println("Secret Answer matches Secret Question");
+		// forgot.getUsername();
+
+		UserDTO user = userService.findByUsername(username);// get user first
+
+		if (user.getSecretAnswer().equalsIgnoreCase(payload.getSecurityAnswer())) {
+
+			return ResponseEntity.status(200).body("Details Validated");
 		} else {
+
 			throw new SecretDetailsDoNotMatchException("Sorry your secret details are not matching");
 		}
-
-		/*
-		 * @GetMapping("/{customerId}/forgot/question/answer") public ResponseEntity<?>
-		 * secretQuestionAnswer(@Valid @RequestBody TransferRequest request) {
-		 * 
-		 * 
-		 * return ResponseEntity.status(200).body("transaction Scuccessfully"); >>>>>>>
-		 * branch 'master' of https://github.com/KiLee16/bankApplication.git
-		 */
-		return ResponseEntity.status(200).body("Details Validated");
 
 	}
 
