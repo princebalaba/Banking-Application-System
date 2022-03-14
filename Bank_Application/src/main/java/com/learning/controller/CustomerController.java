@@ -146,9 +146,10 @@ public class CustomerController {
 		AccountType roles = request.getAccountType();
 		
 		Approved approved = Approved.NO;
-		if(request.getAccountBalance() < 0) {
+		if(request.getAccountBalance() < 0 && (!request.getAccountType().equals(AccountType.SB) || !request.getAccountType().equals(AccountType.CA))) {
 			throw new BalanceNonPositiveException("Account cannot be created");
 		}
+		
 
 		AccountDTO account = new AccountDTO();
 		account.setAccountBalance(request.getAccountBalance());
