@@ -23,5 +23,5 @@ public interface UserService {
 	Boolean userExistsById(Long userId);
 	
 	List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId);
-	
+	public void deleteUserById(Long employeeId);
 }

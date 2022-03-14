@@ -19,4 +19,5 @@ public interface UserRepository extends JpaRepository<UserDTO, Long> {
 	boolean existsByUsername(String username);
 	Optional<UserDTO> findByUsername(String username);
 //	UserDTO findByBeneficiaries(Long userId);
+	public void deleteUserDTOById(Long employeeId);
 }
