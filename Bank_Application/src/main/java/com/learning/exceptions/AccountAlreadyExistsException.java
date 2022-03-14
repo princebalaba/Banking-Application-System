@@ -1,6 +1,6 @@
 package com.learning.exceptions;
 
-public class AccountAlreadyExistsException extends Exception {
+public class AccountAlreadyExistsException extends RuntimeException {
 	
 	public AccountAlreadyExistsException(String e) {
 		// TODO Auto-generated constructor stub

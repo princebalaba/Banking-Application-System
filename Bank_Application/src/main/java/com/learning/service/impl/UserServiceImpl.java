@@ -146,5 +146,18 @@ public void deleteUserById(Long employeeId) {
 	
 	userRepo.deleteUserDTOById(employeeId);
 }
+@Override
+public UserDTO findByUsername(String username) {
+	// TODO Auto-generated method stub
+	if(userRepo.findByUsername(username).isEmpty()) {
+		throw new IdNotFoundException(username + " doesn't exist");
+	}
+	return userRepo.findByUsername(username).get();
+}
+@Override
+public Boolean existsByUsername(String username) {
+	// TODO Auto-generated method stub
+	return userRepo.existsByUsername(username);
+}
 
 }

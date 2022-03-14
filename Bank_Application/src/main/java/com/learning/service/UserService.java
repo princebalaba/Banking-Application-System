@@ -21,7 +21,10 @@ public interface UserService {
 	UserDTO updateUser(UserDTO user);
 	
 	Boolean userExistsById(Long userId);
+	Boolean existsByUsername(String username);
 	
 	List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId);
 	public void deleteUserById(Long employeeId);
+	
+	public UserDTO findByUsername(String username);
 }

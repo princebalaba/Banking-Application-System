@@ -47,6 +47,7 @@ import com.learning.exceptions.TransactionInvalidException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.AccountRequest;
 import com.learning.payload.requset.BeneficiaryPayload;
+import com.learning.payload.requset.ForgotPasswordRequest;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.payload.requset.SignupRequest;
 import com.learning.payload.requset.TransferRequest;
@@ -435,7 +436,33 @@ public class CustomerController {
 //		return ResponseEntity.status(200).body("transaction Scuccessfully");
 //
 //	}
+<<<<<<< HEAD
+=======
+	
+	
+	
+	
+	// secret Question and Answer
+//		
+		@GetMapping("/{username}/forgot/question/answer")
+		public ResponseEntity<?> secretQuestionAnswer(@PathVariable("username") String username,  @RequestBody ForgotPasswordRequest payload)   {
+			
+			//forgot.getUsername();
+	
+			UserDTO user =userService.findByUsername(username);//get user first
+			
+			if(user.getSecretAnswer().equalsIgnoreCase(payload.getSecurityAnswer()) ) {
+				
+				return ResponseEntity.status(200).body("Details Validated");
+			}else {
+				
+				throw new SecretDetailsDoNotMatchException("Sorry your secret details are not matching");
+			}
+			
+			
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 
+<<<<<<< HEAD
 	// secret Question and Answer
 //		
 	@GetMapping("/{username}/forgot/question/answer")
@@ -470,5 +497,29 @@ public class CustomerController {
 
 		return ResponseEntity.status(200).body("new password updated");
 	}
+=======
+		}
+
+		// password update
+		@PutMapping("/{username}/forgot")
+		public ResponseEntity<?> updatePassword(@RequestBody SigninRequest payload , @PathVariable("username") String username) {
+//			payload.getUserName(); // get username
+//			payload.getPassword(); // the new password
+
+			if (userService.existsByUsername(username)) { // comparing the new password with the old one
+				
+				UserDTO user = userService.findByUsername(username);
+				
+				user.setPassword(passwordEncoder.encode(payload.getPassword()));
+				
+				userService.updateUser(user);
+				return ResponseEntity.status(200).body("new password updated");
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Sorry password not updated");
+			}
+
+			
+		}
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 
 }
