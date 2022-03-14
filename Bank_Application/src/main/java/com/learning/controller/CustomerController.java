@@ -147,7 +147,8 @@ public class CustomerController {
 		
 		Approved approved = Approved.NO;
 		if(request.getAccountBalance() < 0 && (!request.getAccountType().equals(AccountType.SB) || !request.getAccountType().equals(AccountType.CA))) {
-			throw new BalanceNonPositiveException("Account cannot be created");
+		RuntimeException	response = new BalanceNonPositiveException("Account cannot be created");
+			return ResponseEntity.status(403).body(response);
 		}
 		
 
