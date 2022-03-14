@@ -1,5 +1,6 @@
 package com.learning.controller;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -90,7 +91,7 @@ public class CustomerController {
 	@Autowired
 	private RoleServiceImpl roleService;
 	@Autowired
-	private AccountService accountService;  
+	private AccountService accountService;
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -308,7 +309,6 @@ public class CustomerController {
 
 	}
 
-<<<<<<< HEAD
 	// Make sure user has an account before adding beneficiary. or errors
 	@PostMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId,
@@ -319,7 +319,7 @@ public class CustomerController {
 		Boolean accountExists = accountService.accountExists(payload.getAccountNumber());
 		if (!userExists || !accountExists) {
 			throw new IdNotFoundException("Sorry Beneficiary With " + customerId + " not added");
-=======
+
 		
 		if(accountExists) {
 		BeneficiaryDTO ben = new BeneficiaryDTO();
@@ -347,7 +347,7 @@ public class CustomerController {
 		response.setBeneficiaryName(ben.getName());
 		
 		return ResponseEntity.status(200).body("Beneficiary with: "+payload.getAccountNumber() + "  added");
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+//>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 		}
 
 		if (accountExists) {
@@ -381,8 +381,10 @@ public class CustomerController {
 					.body("Failed to add Beneficiary with " + payload.getAccountNumber());
 
 		}
+		}
 
 	}
+
 	@PreAuthorize("hasRole('CUSTOMER')")
 	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") Long customerId,
@@ -408,6 +410,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 
 	}
+
 	@PreAuthorize("hasRole('CUSTOMER')")
 	@PutMapping("/transfer")
 	public ResponseEntity<?> transfer(@Valid @RequestBody TransferRequest request) {
@@ -422,13 +425,11 @@ public class CustomerController {
 			throw new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
 					+ request.getToAccNumber() + " Account Number Not Valid");
 		}
-<<<<<<< HEAD
 
-=======
-		//temp for accountFrom 
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+		// temp for accountFrom
+
 		AccountDTO temp = accountFrom;
-	
+
 		temp.setAccountBalance(accountFrom.getAccountBalance() - amount);
 
 		Transaction transaction = new Transaction();
@@ -445,10 +446,10 @@ public class CustomerController {
 		UserDTO toAccountHolder = userService.getUserById(toAccount.getCustomerId())
 				.orElseThrow(() -> new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
 						+ request.getToAccNumber() + " Account Number Not Valid"));
-		
+
 		AccountDTO temp2 = toAccount;
 		temp2.setAccountBalance(temp2.getAccountBalance() + amount);
-	
+
 		Transaction transaction2 = new Transaction();
 		transaction2.setDateTime(LocalDateTime.now());
 		transaction2.setReference(request.getReason());
@@ -461,37 +462,40 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 
 	}
-<<<<<<< HEAD
+
 	// secret Question and Answer
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("/{username}/forgot/question/answer")
 	public ResponseEntity<?> secretQuestionAnswer(@PathVariable UpdateRequest updatesRequest,
 			UpdateResponse updateResponse) throws SecretDetailsDoNotMatchException {
 
-		updatesRequest.getSecretQuestion(); //  getting secret question
+		updatesRequest.getSecretQuestion(); // getting secret question
 		updateResponse.getSecretAnswer(); // picking the secret answer
-		if (updateResponse.getSecretAnswer().equals(updatesRequest.getSecretAnswer())) { // comparing the answer with the original
+		if (updateResponse.getSecretAnswer().equals(updatesRequest.getSecretAnswer())) { // comparing the answer with
+																							// the original
 			System.out.println("Secret Answer matches Secret Question");
 		} else {
 			throw new SecretDetailsDoNotMatchException("Sorry your secret details are not matching");
 		}
-=======
-	@PreAuthorize("hasRole('CUSTOMER')")
-	@GetMapping("/{customerId}/forgot/question/answer")
-	public ResponseEntity<?> secretQuestionAnswer(@Valid @RequestBody TransferRequest request) {
-		
-		
-		return ResponseEntity.status(200).body("transaction Scuccessfully");
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 
+		/*
+		 * @GetMapping("/{customerId}/forgot/question/answer") public ResponseEntity<?>
+		 * secretQuestionAnswer(@Valid @RequestBody TransferRequest request) {
+		 * 
+		 * 
+		 * return ResponseEntity.status(200).body("transaction Scuccessfully"); >>>>>>>
+		 * branch 'master' of https://github.com/KiLee16/bankApplication.git
+		 */
 		return ResponseEntity.status(200).body("Details Validated");
 
 	}
-	//password update
+
+	// password update
 	@PutMapping("/{username}/forgot")
 	public ResponseEntity<?> updatePassword(@PathVariable SigninRequest signinRequest, SigninRequest newPassword) {
 		signinRequest.getUserName(); // get username
 		newPassword.setPassword(newPassword.getPassword()); // the new password
-		
+
 		if (newPassword.equals(signinRequest.getPassword())) { // comparing the new password with the old one
 			System.out.println("Sorry password not updated");
 		} else {
