@@ -39,6 +39,7 @@ import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.CreateStaffRequest;
 import com.learning.payload.requset.SetEnableRequest;
 import com.learning.payload.requset.SigninRequest;
+import com.learning.payload.response.AdminGetStaffResponse;
 import com.learning.payload.response.JwtResponse;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.impl.AdminServiceImpl;
@@ -93,7 +94,7 @@ public class AdminController {
 			throw new UnauthrorizedException("unauthorized access");
 		}
 		return ResponseEntity.status(200)
-				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
+				.body("Token: " + new JwtResponse(jwt).getToken());
 
 	}
 	@PreAuthorize("hasRole('SUPER_ADMIN')")
@@ -120,7 +121,15 @@ public class AdminController {
 	public ResponseEntity<?> getAllStaff() {
 		List<StaffDTO> staffs = new ArrayList<>();
 		staffs = adminService.getAllStaff();
-		return ResponseEntity.status(200).body(staffs);
+		List<AdminGetStaffResponse> response = new ArrayList();
+		for (int i = 0 ; i < staffs.size() ; i++) {
+			AdminGetStaffResponse staff = new AdminGetStaffResponse();
+			staff.setStaffId(staffs.get(i).getId());
+			staff.setStaffName(staffs.get(i).getFullname());
+			staff.setStatus(staffs.get(i).getStatus());
+			response.add(staff);
+		}
+		return ResponseEntity.status(200).body(response);
 
 	}
 	@PreAuthorize("hasRole('SUPER_ADMIN')")

@@ -111,6 +111,7 @@ public class CustomerController {
 
 		user.setRoles(roles);
 		user.setDateCreated(LocalDateTime.now());
+		user.setStatus(EStatus.ENABLE);
 		UserDTO newUser = userService.addUser(user);
 		CustomerRegisterResponse response = new CustomerRegisterResponse();
 		response.setCustomerId(newUser.getId());
@@ -341,8 +342,17 @@ public class CustomerController {
 				.getCustomerId();
 		String beneficiaryName = userService.getUser(beneficiaryAccountUserId).getFullname();
 		ben.setName(beneficiaryName);
-		ben.setActive(Active.YES);
+		ben.setActive(Active.NO);
+		 
 		ben.setAccountType(payload.getAccountType());
+//		String type = payload.getAccountType();
+//		System.out.println(payload);
+//		switch(type) {
+//		case "SB": 
+//			ben.setAccountType(AccountType.SB);
+//		case "CA":
+//			ben.setAccountType(AccountType.CA);
+//		}
 		ben.setAddedDate(LocalDateTime.now());
 		ben.setUserId(customerId);
 		
@@ -351,9 +361,7 @@ public class CustomerController {
 		userBeneficiaries.add(ben);
 		user.setBeneficiaries(userBeneficiaries);
 		UserDTO updatedUser=userService.updateUser(user, customerId);
-//		//////////////////////
-//		System.out.println(updatedUser.getBeneficiaries());
-//		/////////////////////////
+
 		BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
 		response.setActive(ben.getActive());
 		response.setBeneficiaryAccountNo(ben.getAccountNumber());

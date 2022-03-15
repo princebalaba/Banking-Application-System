@@ -40,7 +40,7 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 		
 		beneficiaries.removeIf(beneficiary->beneficiary
 				.getActive()
-				.equals(Active.YES));
+				.equals(Active.NO));
 		return beneficiaries;
 	}
 
@@ -49,9 +49,7 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 		// TODO Auto-generated method stub
 	List<BeneficiaryDTO>  beneficiaries = repo.findAll();
 		
-		beneficiaries.removeIf(beneficiary->beneficiary
-				.getActive()
-				.equals(Active.NO));
+	
 		return beneficiaries;
 	}
 
