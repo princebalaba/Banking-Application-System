@@ -1,7 +1,11 @@
 package com.learning.payload.requset;
 
+import java.io.File;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +34,6 @@ public class UpdateRequest {
 	@NotBlank
 	private String secretAnswer;
 	
-	private byte[] panimage;
-	private byte[] aarchar ;
+	private MultipartFile  panimage;
+	private MultipartFile  aarchar ;
 }

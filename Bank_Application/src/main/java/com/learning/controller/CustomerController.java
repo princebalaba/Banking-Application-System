@@ -1,5 +1,9 @@
 package com.learning.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -10,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +28,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.apierrors.ApiError;
@@ -249,7 +256,7 @@ public class CustomerController {
 
 	@PutMapping("/{customerId}")
 	public ResponseEntity<?> updateCustomer(@PathVariable("customerId") long customerId,
-			@Valid @RequestBody UpdateRequest request) {
+			@Valid @ModelAttribute UpdateRequest request) {
 		UserDTO user = new UserDTO();
 		userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("id not found"));
 		user.setFullname(request.getFullname());
@@ -258,8 +265,22 @@ public class CustomerController {
 		user.setAadhar(request.getAadhar());
 		user.setSecretQuestion(request.getSecretQuestion());
 		user.setSecretAnswer(request.getSecretAnswer());
-		user.setPanimage(request.getPanimage());
-		user.setAarchar(request.getAarchar());
+		 BufferedImage bImage;
+		try {
+		
+		      byte [] data = request.getAadhar().getBytes();
+		    		  System.out.println(data);
+			user.setPanimage(data);
+			
+		      byte [] data2 = request.getPanimage().getBytes();
+		     
+			user.setAarchar(data2);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			 new FileNotFoundException("file not found");
+		}
+	     
 
 		UserDTO updated = userService.updateUser(user, customerId);
 		UpdateResponse response = new UpdateResponse();
