@@ -221,6 +221,7 @@ public class StaffController {
 		} 
 
 		AccountDTO updatedAccount = accountService.updateAccount(account);
+		
 		UserDetailsImpl staffDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		StaffAccountApproveResponse response = new StaffAccountApproveResponse(); 

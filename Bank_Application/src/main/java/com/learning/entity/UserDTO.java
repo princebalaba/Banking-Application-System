@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -67,7 +68,9 @@ public class UserDTO {
 
 	private String secretAnswer;
 	
+	
 	private byte[] panimage;
+	@Column(length = 1337)
 	private byte[] aarchar;
 	
 	@Enumerated(EnumType.STRING)
