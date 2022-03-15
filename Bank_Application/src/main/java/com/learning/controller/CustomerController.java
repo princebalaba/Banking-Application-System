@@ -159,6 +159,7 @@ public class CustomerController {
 		account.setApproved(approved);
 		LocalDateTime now = LocalDateTime.now();
 		account.setDateOfCreation(now);
+		System.out.println(account.getAccountNumber());
 //		double accNo = Math.random() * 100000000;
 //		long roundAccNo = (long) accNo;
 //		account.setAccountNumber(roundAccNo);
@@ -166,8 +167,10 @@ public class CustomerController {
 		Set<AccountDTO> accounts = user.getAccount();
 		accounts.add(account);
 		user.setAccount(accounts);
-		userService.updateUser(user, customerId);
+		userService.updateUser(user);
 
+		
+		
 		AccountResponseEntity response = new AccountResponseEntity();
 		response.setAccountBalance(account.getAccountBalance());
 		response.setAccountNumber(account.getAccountNumber());
