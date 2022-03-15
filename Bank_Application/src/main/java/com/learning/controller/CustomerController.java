@@ -21,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,6 +72,7 @@ import com.learning.service.UserService;
 import com.learning.service.impl.BeneficiaryServiceImpl;
 import com.learning.service.impl.RoleServiceImpl;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/customer")
 public class CustomerController {
@@ -139,6 +141,7 @@ public class CustomerController {
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
 				.collect(Collectors.toList());
 		// return new token
+		System.out.println("authhh");
 		return ResponseEntity.status(200)
 				.body("token: " + new JwtResponse(jwt).getToken());
 
