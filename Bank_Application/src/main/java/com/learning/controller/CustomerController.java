@@ -509,5 +509,3 @@ public class CustomerController {
 		}
 
 }
-© 2022 GitHub, Inc.
-Terms
