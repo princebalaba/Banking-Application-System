@@ -6,10 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -148,9 +150,10 @@ public class CustomerController {
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
 				.collect(Collectors.toList());
 		// return new token
-		System.out.println("authhh");
-		return ResponseEntity.status(200)
-				.body("token: " + new JwtResponse(jwt).getToken());
+	
+		Map<String ,String > token = new HashMap();
+		token.put("token", new JwtResponse(jwt).getToken());
+		return ResponseEntity.status(200).body(token);
 
 	}
 

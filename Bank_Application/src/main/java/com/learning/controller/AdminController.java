@@ -1,6 +1,7 @@
 package com.learning.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -93,8 +94,10 @@ public class AdminController {
 		if(!isadmin) {
 			throw new UnauthrorizedException("unauthorized access");
 		}
+		Map<String ,String > token = new HashMap();
+		token.put("token", new JwtResponse(jwt).getToken());
 		return ResponseEntity.status(200)
-				.body("Token: " + new JwtResponse(jwt).getToken());
+				.body(token);
 
 	}
 	@PreAuthorize("hasRole('SUPER_ADMIN')")

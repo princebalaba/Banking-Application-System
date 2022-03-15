@@ -2,7 +2,9 @@ package com.learning.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -121,7 +123,10 @@ public class StaffController {
 		if(staff.get().getStatus().equals(EStatus.DISABLED)) {
 			throw new UnauthrorizedException("unauthorized access");
 		}
-		return ResponseEntity.status(200).body("Token: " + new JwtResponse(jwt).getToken());
+		Map<String ,String > token = new HashMap();
+		token.put("token", new JwtResponse(jwt).getToken());
+		return ResponseEntity.status(200)
+				.body(token);
 	}
 
 	@PreAuthorize("hasRole('STAFF')")

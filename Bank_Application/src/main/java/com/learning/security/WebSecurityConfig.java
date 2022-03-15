@@ -66,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		//apply token validation for end points.
 		//cors:
 		//
-		http.cors().and().csrf().disable().exceptionHandling() // end points 
+		http.csrf().disable().exceptionHandling() // end points 
 		.authenticationEntryPoint(unauthorizedHandler)
 		.and()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
