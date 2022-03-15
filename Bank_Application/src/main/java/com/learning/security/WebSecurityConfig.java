@@ -66,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		//apply token validation for end points.
 		//cors:
 		//
-		http.cors().and().csrf().disable().exceptionHandling() // end points 
+		http.csrf().disable().exceptionHandling() // end points 
 		.authenticationEntryPoint(unauthorizedHandler)
 		.and()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -80,7 +80,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/customer/{username}/forgot").permitAll()	
 
 		.antMatchers("/api/customer/{username}/forgot/question/answer").permitAll()	
-		.antMatchers("/api/admin/register").permitAll()
 		.antMatchers("/api/admin/authenticate").permitAll()
 		.antMatchers("/api/staff/authenticate").permitAll()
 		.antMatchers("/api/customer/**").authenticated()

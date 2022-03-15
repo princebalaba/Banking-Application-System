@@ -3,9 +3,11 @@ package com.learning.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -48,7 +50,7 @@ public class UserDTO {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "account_tbl", joinColumns = @JoinColumn(name = "account_customerId"))
-	private Set<AccountDTO> account;
+	private Set <AccountDTO> account;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name="user_roles",
@@ -66,7 +68,9 @@ public class UserDTO {
 
 	private String secretAnswer;
 	
+	
 	private byte[] panimage;
+	@Column(length = 1337)
 	private byte[] aarchar;
 	
 	@Enumerated(EnumType.STRING)

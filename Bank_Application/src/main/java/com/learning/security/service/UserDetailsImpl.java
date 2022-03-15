@@ -24,7 +24,7 @@ import lombok.Data;
 @Data
 public class UserDetailsImpl implements UserDetails {
 	private long id;
-	private String username;
+	private String userName;
 
 	@JsonIgnore
 	private String password;
@@ -34,7 +34,7 @@ public class UserDetailsImpl implements UserDetails {
 	
 	private UserDetailsImpl(Long id , String username, String password, Collection<? extends GrantedAuthority> authorities) {
 		this.id = id ; 
-		this.username = username;
+		this.userName = username;
 		this.password = password;
 		this.authorities = authorities;
 	}
@@ -50,27 +50,7 @@ public class UserDetailsImpl implements UserDetails {
 		
 	}
 	
-//	public static UserDetailsImpl build (StaffDTO user) {
-//		List<GrantedAuthority> authorities = user.getRoles()
-//				.stream()
-//				.map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
-//				.collect(Collectors.toList());
-//		
-//		
-//		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
-//		
-//	}
-	
-	public static UserDetailsImpl build (AdminDTO admin) {
-		List<GrantedAuthority> authorities = admin.getRoles()
-				.stream()
-				.map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
-				.collect(Collectors.toList());
-		
-		//chekc the impl 
-		return new UserDetailsImpl(admin.getId(), admin.getUsername(), admin.getPassword(), authorities);
-		
-	}
+
 	
 	
 	@Override
@@ -88,7 +68,7 @@ public class UserDetailsImpl implements UserDetails {
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return username;
+		return userName;
 	}
 
 	@Override

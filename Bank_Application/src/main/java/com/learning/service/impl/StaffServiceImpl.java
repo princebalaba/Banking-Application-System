@@ -192,7 +192,7 @@ public class StaffServiceImpl implements StaffService{
 	}
 
 	@Override
-	public void setCustomerEnabledDisabled(Long customerId) {
+	public UserDTO setCustomerEnabledDisabled(Long customerId) {
 		// TODO Auto-generated method stub
 		
 		List <UserDTO> users = getAllCustomers();
@@ -214,7 +214,7 @@ public class StaffServiceImpl implements StaffService{
 			user.setStatus(EStatus.DISABLED);
 		}
 		
-		userService.updateUser(user);
+		return userService.updateUser(user);
 		
 		
 	}

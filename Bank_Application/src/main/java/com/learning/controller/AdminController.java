@@ -1,6 +1,7 @@
 package com.learning.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.CreateStaffRequest;
 import com.learning.payload.requset.SetEnableRequest;
 import com.learning.payload.requset.SigninRequest;
+import com.learning.payload.response.AdminGetStaffResponse;
 import com.learning.payload.response.JwtResponse;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.impl.AdminServiceImpl;
@@ -75,7 +77,7 @@ public class AdminController {
 	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
+				new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -96,8 +98,10 @@ public class AdminController {
 		if (!isadmin) {
 			throw new UnauthrorizedException("unauthorized access");
 		}
+		Map<String ,String > token = new HashMap();
+		token.put("token", new JwtResponse(jwt).getToken());
 		return ResponseEntity.status(200)
-				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
+				.body(token);
 
 	}
 
@@ -128,7 +132,15 @@ public class AdminController {
 	public ResponseEntity<?> getAllStaff() {
 		List<StaffDTO> staffs = new ArrayList<>();
 		staffs = adminService.getAllStaff();
-		return ResponseEntity.status(200).body(staffs);
+		List<AdminGetStaffResponse> response = new ArrayList();
+		for (int i = 0 ; i < staffs.size() ; i++) {
+			AdminGetStaffResponse staff = new AdminGetStaffResponse();
+			staff.setStaffId(staffs.get(i).getId());
+			staff.setStaffName(staffs.get(i).getFullname());
+			staff.setStatus(staffs.get(i).getStatus());
+			response.add(staff);
+		}
+		return ResponseEntity.status(200).body(response);
 
 	}
 
