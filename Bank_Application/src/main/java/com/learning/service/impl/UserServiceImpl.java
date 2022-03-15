@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService{
 			prev.setSecretAnswer(user.getSecretAnswer());
 			prev.setSecretQuestion(user.getSecretQuestion());
 			prev.setAccount(accounts);
+			prev.setBeneficiaries(user.getBeneficiaries());
 			
 			userRepo.save(prev);
 		return prev;

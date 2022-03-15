@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.catalina.valves.rewrite.InternalRewriteMap.Escape;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,9 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.entity.AccountDTO;
 import com.learning.entity.BeneficiaryDTO;
+import com.learning.entity.StaffDTO;
 import com.learning.entity.Transaction;
 import com.learning.entity.UserDTO;
 import com.learning.enums.ERole;
+import com.learning.enums.EStatus;
+import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.TransactionInvalidException;
 import com.learning.exceptions.UnauthrorizedException;
 
@@ -41,7 +46,13 @@ import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.SigninRequest;
 import com.learning.payload.requset.TransferRequestStaff;
 import com.learning.payload.response.JwtResponse;
+import com.learning.payload.response.StaffAccountApproveResponse;
 import com.learning.payload.response.StaffGetAccountResponse;
+import com.learning.payload.response.StaffGetBeneficiaryResponse;
+import com.learning.payload.response.StaffGetCustomerByIdResponse;
+import com.learning.payload.response.StaffGetCustomerResponse;
+import com.learning.payload.response.StaffUserEnabledDIsabledResponse;
+import com.learning.payload.response.UnapprovedBeneficiariesResponse;
 import com.learning.repo.BeneficiaryRepo;
 import com.learning.security.service.UserDetailsImpl;
 import com.learning.service.AccountService;
@@ -81,7 +92,7 @@ public class StaffController {
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> signinStaff(@Valid @RequestBody SigninRequest signinRequest) {
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
+				new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -102,9 +113,15 @@ public class StaffController {
 		if (!isadmin) {
 			throw new UnauthrorizedException("unauthorized access");
 		}
-		return ResponseEntity.status(200)
-				.body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
-
+		
+		Optional<UserDTO> staff = staffService.getUserByUserName(userDetailsImpl.getUsername());
+		if(staff.isEmpty()) {
+			throw new UnauthrorizedException("unauthorized access");
+		}
+		if(staff.get().getStatus().equals(EStatus.DISABLED)) {
+			throw new UnauthrorizedException("unauthorized access");
+		}
+		return ResponseEntity.status(200).body("Token: " + new JwtResponse(jwt).getToken());
 	}
 
 	@PreAuthorize("hasRole('STAFF')")
@@ -121,10 +138,21 @@ public class StaffController {
 	@GetMapping("/beneficiary")
 	public ResponseEntity<?> getUnapprovedBeneficiaries() {
 
-		List<StaffGetAccountResponse> response = new ArrayList<>();
-		List<BeneficiaryDTO> toBeApproved = beneficiaryService.getAllUnapprovedBeneficiaries();
-
-		return ResponseEntity.status(200).body(toBeApproved);
+//		List<StaffGetAccountResponse> response = new ArrayList<>();
+		List<BeneficiaryDTO> toBeApproved = beneficiaryService.getAllBeneficiaries();
+		List<StaffGetBeneficiaryResponse> response = new ArrayList();
+		for(int i = 0 ; i < toBeApproved.size() ; i++) {
+			if(toBeApproved.get(i).getActive().equals(Active.NO)) {
+				StaffGetBeneficiaryResponse bene = new StaffGetBeneficiaryResponse();
+				bene.setApproved(toBeApproved.get(i).getActive());
+				bene.setBeneficiaryAcNo(toBeApproved.get(i).getBeneficiaryId());
+				bene.setFromCustomer(toBeApproved.get(i).getAccountNumber());
+				bene.setBeneficiaryAddedDate(toBeApproved.get(i).getAddedDate());
+				response.add(bene);
+			}
+			
+		}
+		return ResponseEntity.status(200).body(response);
 
 	}
 
@@ -145,8 +173,14 @@ public class StaffController {
 			beneficiaryToBeApproved.setActive(Active.NO);
 		}
 
-		beneficiaryService.updateBeneficiary(beneficiaryToBeApproved);
-		return ResponseEntity.status(200).body(beneficiaryToBeApproved);
+		BeneficiaryDTO updated = beneficiaryService.updateBeneficiary(beneficiaryToBeApproved);
+		StaffGetBeneficiaryResponse response = new StaffGetBeneficiaryResponse();
+		response.setApproved(updated.getActive());
+		response.setBeneficiaryAcNo(updated.getAccountNumber());
+		response.setBeneficiaryAddedDate(updated.getAddedDate());
+		response.setFromCustomer(updated.getUserId());
+		
+		return ResponseEntity.status(200).body(response);
 
 	}
 
@@ -154,24 +188,52 @@ public class StaffController {
 	@GetMapping("/accounts/approve")
 	public ResponseEntity<?> getUnapprovedAccounts() {
 
-		// no impl yet
-		return ResponseEntity.ok(staffService.getUnapprovedAccounts());
+		List<UnapprovedBeneficiariesResponse> responses = new ArrayList<>() ;
+		List<BeneficiaryDTO> beneficiaries = beneficiaryService.getAllUnapprovedBeneficiaries();
+		System.out.println(beneficiaries);
+		for(int i = 0 ; i < beneficiaries.size() ; i++) {
+			if(beneficiaries.get(i).getActive().equals(Active.NO)) {
+				UnapprovedBeneficiariesResponse response = new UnapprovedBeneficiariesResponse();
+				response.setAccNo(beneficiaries.get(i).getAccountNumber());
+				response.setAccType(beneficiaries.get(i).getAccountType());
+				response.setApproved(beneficiaries.get(i).getActive());
+				response.setCustomerName(beneficiaries.get(i).getName());
+				response.setDateCreated(beneficiaries.get(i).getAddedDate());
+				responses.add(response);
+				
+			}
+			
+		}
+		
+		
+		
+		return ResponseEntity.status(200).body(responses);
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF') " )
 	@PutMapping("/accounts/approve/{accountId}")
 	public ResponseEntity<?> approveAccount(@PathVariable("accountId") Long accountId) {
-		AccountDTO response = accountService.getAccount(accountId);
+		AccountDTO account = accountService.getAccount(accountId);
 
-		if (response.getApproved().equals(Approved.NO)) {
-			response.setApproved(Approved.YES);
+		if (account.getApproved().equals(Approved.NO)) {
+			account.setApproved(Approved.YES);
 
-		} else {
-			response.setApproved(Approved.NO);
+		} 
+
+		AccountDTO updatedAccount = accountService.updateAccount(account);
+		UserDetailsImpl staffDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		StaffAccountApproveResponse response = new StaffAccountApproveResponse(); 
+		response.setAccNo(updatedAccount.getAccountNumber());
+		response.setAccType(updatedAccount.getAccountType());
+		response.setApproved(updatedAccount.getApproved());
+		Optional<UserDTO> user = userService.getUserById(updatedAccount.getCustomerId());
+		if(user.isEmpty()) {
+			return ResponseEntity.status(403).body("Approving of account was not successful");
 		}
-
-		AccountDTO updatedAccount = accountService.updateAccount(response);
-
+		response.setCustomerName(user.get().getFullname());
+		response.setStaffUserName(staffDetails.getUsername());
+		response.setDateCreated(updatedAccount.getDateOfCreation());
 		return ResponseEntity.ok(response);
 	}
 
@@ -179,23 +241,51 @@ public class StaffController {
 	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/customer")
 	public ResponseEntity<?> getAllCustomers() {
-		return ResponseEntity.ok(staffService.getAllCustomers());
+		
+		List<StaffGetCustomerResponse> list = new ArrayList (); 
+		List<UserDTO> users = staffService.getAllCustomers();
+		for(int i = 0 ; i < users.size() ; i++) {
+			StaffGetCustomerResponse response = new StaffGetCustomerResponse();
+			response.setCustomerId(users.get(i).getId());
+			response.setCustomerName(users.get(i).getFullname());
+			response.setStatus(users.get(i).getStatus());
+			list.add(response);
+		}
+		return ResponseEntity.status(200).body(list);
 	}
 
-//
-	@PutMapping("/customer/{customerId}")
+// not sure how to pick enabled or disabled - Ki 
+	@PutMapping("/{customerId}")
 	public ResponseEntity<?> setCustomerEnabledDisabled(@PathVariable("customerId") Long customerId) {
-		staffService.setCustomerEnabledDisabled(customerId);
-		return ResponseEntity.ok(customerId + "has been enabled");
+		UserDTO user = userService.getUser(customerId);
+		if(user.getStatus().equals(EStatus.DISABLED)) {
+			user.setStatus(EStatus.ENABLE);
+		} else {
+		user.setStatus(EStatus.DISABLED);
+		}
+		UserDTO updated = userService.updateUser(user, user.getId());
+		StaffUserEnabledDIsabledResponse response = new StaffUserEnabledDIsabledResponse();
+		response.setCustomerId(updated.getId());
+		response.setStatus(updated.getStatus());
+		return ResponseEntity.status(200).body(response);
 	}
 
-	//////////////
+	
 
 	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/customer/{customerID}")
 	public ResponseEntity<?> getCustomer(@PathVariable("customerID") Long customerId) {
-
-		return ResponseEntity.ok(staffService.getCustomerDetailsByID(customerId));
+		StaffGetCustomerByIdResponse response = new StaffGetCustomerByIdResponse(); 
+		Optional<UserDTO> userExist = userService.getUserById(customerId);
+		if(userExist.isEmpty()) {
+			throw new IdNotFoundException("Customer Not Found");
+		}
+		UserDTO user = userExist.get();
+		response.setCreated(user.getDateCreated());
+		response.setCustomerId(user.getId());
+		response.setCustomerName(user.getFullname());
+		response.setStatus(user.getStatus());
+		return ResponseEntity.status(200).body(response);
 	}
 
 	@PreAuthorize("hasRole('STAFF')")
@@ -247,5 +337,6 @@ public class StaffController {
 
 		return ResponseEntity.status(200).body("transfer successs");
 	}
+
 
 }

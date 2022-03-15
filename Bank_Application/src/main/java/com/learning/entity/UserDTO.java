@@ -3,6 +3,7 @@ package com.learning.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -48,7 +49,7 @@ public class UserDTO {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "account_tbl", joinColumns = @JoinColumn(name = "account_customerId"))
-	private Set<AccountDTO> account;
+	private Set <AccountDTO> account;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name="user_roles",

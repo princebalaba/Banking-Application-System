@@ -7,7 +7,7 @@ import lombok.Data;
 public class SigninRequest {
 	// sign in request info in payload
 	@NotBlank
-	private String userName;
+	private String username;
 	@NotBlank
 	private String password;
 

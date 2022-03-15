@@ -34,5 +34,10 @@ public class JwtResponse {
 		this.userName = userName;
 		
 	}
+	public JwtResponse(String accessToken) {
+		this.token = accessToken;
+		
+		
+	}
 
 }
