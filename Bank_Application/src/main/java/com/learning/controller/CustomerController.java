@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,10 +75,10 @@ public class CustomerController {
 	UserService userService;
 	@Autowired
 	StaffService staffService;
-
+	
 //	@Autowired
 //	AccountService accountService;
-
+	
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
@@ -89,7 +90,7 @@ public class CustomerController {
 	@Autowired
 	private RoleServiceImpl roleService;
 	@Autowired
-	private AccountService accountService;
+	private AccountService accountService;  
 
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -119,15 +120,15 @@ public class CustomerController {
 
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
-
+	
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signinRequest.getUserName(), signinRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-
+		
 		String jwt = jwtUtils.generateToken(authentication);
 		// get user data/ principal
-
+	
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
@@ -143,9 +144,9 @@ public class CustomerController {
 			@RequestBody AccountRequest request) {
 		String type = request.getAccountType().name();
 		AccountType roles = request.getAccountType();
-
+		
 		Approved approved = Approved.NO;
-		if (request.getAccountBalance() < 0) {
+		if(request.getAccountBalance() < 0) {
 			throw new BalanceNonPositiveException("Account cannot be created");
 		}
 
@@ -181,8 +182,7 @@ public class CustomerController {
 	public ResponseEntity<?> approveAccount(@PathVariable("customerId") long customerId,
 			@PathVariable("accountNo") long accountNo, @RequestBody AccountRequest request) {
 		// possibly user AccountRequest
-		UserDTO user = staffService.getUserById(customerId)
-				.orElseThrow(() -> new IdNotFoundException("Please check Account Number"));
+		UserDTO user = staffService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Please check Account Number"));
 		Set<AccountDTO> accounts = user.getAccount();
 
 		accounts.forEach(e -> {
@@ -209,12 +209,12 @@ public class CustomerController {
 	@GetMapping("{customerId}/account")
 	public ResponseEntity<?> getAccounts(@PathVariable("customerId") long customerId) {
 		Optional<UserDTO> data = userService.getUserById(customerId);
-		if (data.isEmpty()) {
+		if(data.isEmpty()) {
 			throw new IdNotFoundException("Sorry Customer With " + customerId + " not found");
-
+			
 		}
 		UserDTO user = data.get();
-		Set<AccountDTO> accounts = user.getAccount();
+				Set<AccountDTO> accounts = user.getAccount();
 		Set<AccountResponseEntity> responses = new HashSet<>();
 		accounts.forEach(e -> {
 			AccountResponseEntity response = new AccountResponseEntity();
@@ -260,26 +260,24 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 
 	}
-
+	
 	@GetMapping("{customerId}")
 	public ResponseEntity<?> getCustomer(@PathVariable("customerId") long customerId) {
-		UserDTO user = userService.getUserById(customerId)
-				.orElseThrow(() -> new IdNotFoundException("Sorry Customer With " + customerId + " not found"));
+		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry Customer With " + customerId+ " not found"));
 		GetCustomerResponse response = new GetCustomerResponse();
 		response.setFullName(user.getFullname());
 		response.setAadhar(user.getAadhar());
 		response.setPan(user.getPan());
 		response.setPhone(user.getPhone());
 		response.setUsername(user.getUsername());
-
+		
 		return ResponseEntity.status(200).body(response);
 	}
 
 	@GetMapping("{customerId}/account/{accountid}")
 	public ResponseEntity<?> getAccountFromId(@PathVariable("customerId") long customerId,
 			@PathVariable("accountid") long accountid) {
-		UserDTO user = userService.getUserById(customerId)
-				.orElseThrow(() -> new IdNotFoundException("Sorry customer With " + customerId + " not found"));
+		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry customer With "+ customerId +" not found"));
 		AccountDTO account = null;
 		Iterator<AccountDTO> it = user.getAccount().iterator();
 		while (it.hasNext()) {
@@ -300,85 +298,84 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 	}
 
+	
 	@GetMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
 		List<CustomerGetBeneficiaries> response = userService.getCustomerBeneficiaries(customerId);
 		return ResponseEntity.status(200).body(response);
 
 	}
-
-	// Make sure user has an account before adding beneficiary. or errors
+	//Make sure user has an account before adding beneficiary. or errors
 	@PostMapping("{customerId}/beneficiary")
-	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId,
-			@RequestBody BeneficiaryPayload payload) {
-		System.out.println("Payload: " + payload.getAccountType() + ". " + payload.getAccountNumber() + ". "
-				+ payload.getActive());
+	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
+		System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getActive());
 		Boolean userExists = userService.userExistsById(customerId);
-		Boolean accountExists = accountService.accountExists(payload.getAccountNumber());
-		if (!userExists || !accountExists) {
-			throw new IdNotFoundException("Sorry Beneficiary With " + customerId + " not added");
+		Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
+		if(!userExists ||!accountExists ) {
+			throw new IdNotFoundException("Sorry Beneficiary With "+customerId +" not added");
 		}
+		
 
-		if (accountExists) {
-			BeneficiaryDTO ben = new BeneficiaryDTO();
+		
+		if(accountExists) {
+		BeneficiaryDTO ben = new BeneficiaryDTO();
 //		System.out.println("Acc exists");
-
-			ben.setAccountNumber(payload.getAccountNumber());
-			Long beneficiaryAccountUserId = accountService.getAccountByAccountNumber((payload.getAccountNumber()))
-					.getCustomerId();
-			String beneficiaryName = userService.getUser(beneficiaryAccountUserId).getFullname();
-			ben.setName(beneficiaryName);
-			ben.setActive(Active.YES);
-			ben.setAccountType(payload.getAccountType());
-			ben.setAddedDate(LocalDateTime.now());
-			ben.setUserId(customerId);
-
-			UserDTO user = userService.getUser(customerId);
-			Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
-			userBeneficiaries.add(ben);
-			user.setBeneficiaries(userBeneficiaries);
-			UserDTO updatedUser = userService.updateUser(user);
-
-			BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
-			response.setActive(ben.getActive());
-			response.setBeneficiaryAccountNo(ben.getAccountNumber());
-			response.setBeneficiaryName(ben.getName());
-
-			return ResponseEntity.status(200).body("Beneficiary with: " + payload.getAccountNumber() + "  added");
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body("Failed to add Beneficiary with " + payload.getAccountNumber());
-
+		
+		ben.setAccountNumber(payload.getAccountNumber());
+		Long beneficiaryAccountUserId = accountService.getAccountByAccountNumber((payload.getAccountNumber()))
+				.getCustomerId();
+		String beneficiaryName = userService.getUser(beneficiaryAccountUserId).getFullname();
+		ben.setName(beneficiaryName);
+		ben.setActive(Active.YES);
+		ben.setAccountType(payload.getAccountType());
+		ben.setAddedDate(LocalDateTime.now());
+		ben.setUserId(customerId);
+		
+		UserDTO user =userService.getUser(customerId);
+		Set<BeneficiaryDTO> userBeneficiaries = user.getBeneficiaries();
+		userBeneficiaries.add(ben);
+		user.setBeneficiaries(userBeneficiaries);
+		UserDTO updatedUser=userService.updateUser(user);
+		
+		BeneficiaryAddedResponse response = new BeneficiaryAddedResponse();
+		response.setActive(ben.getActive());
+		response.setBeneficiaryAccountNo(ben.getAccountNumber());
+		response.setBeneficiaryName(ben.getName());
+		
+		return ResponseEntity.status(200).body("Beneficiary with: "+payload.getAccountNumber() + "  added");
+		}
+		else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to add Beneficiary with "+payload.getAccountNumber());
+					
 		}
 
 	}
-
 	@PreAuthorize("hasRole('CUSTOMER')")
 	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") Long customerId,
 			@PathVariable("beneficiaryId") Long beneficiaryId) {
 		Boolean userExists = userService.userExistsById(customerId);
-
+		
 		Boolean beneficiaryExists = userService.userExistsById(customerId);
-
-		if (!beneficiaryExists || !userExists) {
-
+		
+		if(!beneficiaryExists || !userExists) {
+			
 			throw new IdNotFoundException("Beneficiary Not Deleted");
 		}
-
+		
 		UserDTO user = userService.getUser(customerId);
-
-		Set<BeneficiaryDTO> userBens = user.getBeneficiaries();
+		
+		Set <BeneficiaryDTO> userBens = user.getBeneficiaries();
 		userBens.removeIf(ben -> ben.getAccountNumber().equals(beneficiaryId));
-
+		
 		user.setBeneficiaries(userBens);
-
+		
 		UserDTO updatedUser = userService.updateUser(user);
-
+		
+		
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 
 	}
-
 	@PreAuthorize("hasRole('CUSTOMER')")
 	@PutMapping("/transfer")
 	public ResponseEntity<?> transfer(@Valid @RequestBody TransferRequest request) {
@@ -389,13 +386,13 @@ public class CustomerController {
 		AccountDTO toAccount = accountService.getAccount(request.getToAccNumber());
 		Double amount = request.getAmount();
 		String reason = request.getReason();
-		if (accountFrom.getCustomerId() != request.getCustomer()) {
+		if(accountFrom.getCustomerId() != request.getCustomer()) {
 			throw new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
 					+ request.getToAccNumber() + " Account Number Not Valid");
 		}
-		// temp for accountFrom
+		//temp for accountFrom 
 		AccountDTO temp = accountFrom;
-
+	
 		temp.setAccountBalance(accountFrom.getAccountBalance() - amount);
 
 		Transaction transaction = new Transaction();
@@ -412,10 +409,10 @@ public class CustomerController {
 		UserDTO toAccountHolder = userService.getUserById(toAccount.getCustomerId())
 				.orElseThrow(() -> new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
 						+ request.getToAccNumber() + " Account Number Not Valid"));
-
+		
 		AccountDTO temp2 = toAccount;
 		temp2.setAccountBalance(temp2.getAccountBalance() + amount);
-
+	
 		Transaction transaction2 = new Transaction();
 		transaction2.setDateTime(LocalDateTime.now());
 		transaction2.setReference(request.getReason());
@@ -436,8 +433,6 @@ public class CustomerController {
 //		return ResponseEntity.status(200).body("transaction Scuccessfully");
 //
 //	}
-<<<<<<< HEAD
-=======
 	
 	
 	
@@ -460,44 +455,7 @@ public class CustomerController {
 			}
 			
 			
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 
-<<<<<<< HEAD
-	// secret Question and Answer
-//		
-	@GetMapping("/{username}/forgot/question/answer")
-	public ResponseEntity<?> secretQuestionAnswer(@PathVariable("username") String username,
-			@RequestBody ForgotPasswordRequest payload) {
-
-		// forgot.getUsername();
-
-		UserDTO user = userService.findByUsername(username);// get user first
-
-		if (user.getSecretAnswer().equalsIgnoreCase(payload.getSecurityAnswer())) {
-
-			return ResponseEntity.status(200).body("Details Validated");
-		} else {
-
-			throw new SecretDetailsDoNotMatchException("Sorry your secret details are not matching");
-		}
-
-	}
-
-	// password update
-	@PutMapping("/{username}/forgot")
-	public ResponseEntity<?> updatePassword(@PathVariable SigninRequest signinRequest, SigninRequest newPassword) {
-		signinRequest.getUserName(); // get username
-		newPassword.setPassword(newPassword.getPassword()); // the new password
-
-		if (newPassword.equals(signinRequest.getPassword())) { // comparing the new password with the old one
-			System.out.println("Sorry password not updated");
-		} else {
-			// System.out.println("new password updated"); //
-		}
-
-		return ResponseEntity.status(200).body("new password updated");
-	}
-=======
 		}
 
 		// password update
@@ -520,6 +478,5 @@ public class CustomerController {
 
 			
 		}
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 
 }

@@ -74,11 +74,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 		.antMatchers("/api/customer/register").permitAll()
 		.antMatchers("/api/customer/authenticate").permitAll()
-<<<<<<< HEAD
-=======
+
+
 		.antMatchers("/api/customer/{username}/forgot/**").permitAll()	
 		.antMatchers("/api/customer/{username}/forgot").permitAll()	
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
 		.antMatchers("/api/customer/{username}/forgot/question/answer").permitAll()	
 		.antMatchers("/api/admin/register").permitAll()
 		.antMatchers("/api/admin/authenticate").permitAll()
@@ -88,17 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/admin/**").authenticated()
 		.anyRequest().permitAll();
 
-<<<<<<< HEAD
-=======
-		
-//		.antMatchers("/api/admin/**").authenticated()
-//		.anyRequest().permitAll()
-//		.antMatchers("/api/staff/**").authenticated()
-//		.anyRequest().permitAll();
 
-		
-
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 		
 
 		
