@@ -70,7 +70,7 @@ public class UserDTO {
 	
 	
 	private byte[] panimage;
-	@Column(length = 1337)
+	
 	private byte[] aarchar;
 	
 	@Enumerated(EnumType.STRING)

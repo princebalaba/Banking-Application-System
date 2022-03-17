@@ -20,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,7 @@ import com.learning.service.impl.StaffServiceImpl;
  * @author : Ki Beom Lee
  * @time : 2022. 3. 11.-오후 4:43:52
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -138,12 +140,19 @@ public class AdminController {
 	@PreAuthorize("hasRole('SUPER_ADMIN')")
 	@PutMapping("/{staffid}")
 	public ResponseEntity<?> setStaffEnabled(@PathVariable ("staffid") long staffid){
+	
 		StaffDTO staff = (StaffDTO) staffService.getUserById(staffid).orElseThrow(()-> new IdNotFoundException("Staff status not changed"));
-		staff.setStatus(EStatus.DISABLED);
+		System.out.println("stat: " + staff.getStatus().equals(EStatus.DISABLED));
+		if(staff.getStatus().equals(EStatus.DISABLED)) {
+			staff.setStatus(EStatus.ENABLE);
+		} else {
+			staff.setStatus(EStatus.DISABLED);	
+		}
+		System.out.println(staff);
 		adminService.updateStaffStatus(staff);
 		Map<String, String> response = new LinkedHashMap<>();
 		response.put("staffId", " : " + staffid);
-		response.put("status", " : " + EStatus.DISABLED.name());
+		response.put("status", " : " + staff.getStatus());
 		return ResponseEntity.status(200).body(response);
 	}
 }
