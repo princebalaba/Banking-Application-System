@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -132,9 +133,9 @@ public class CustomerController {
 		return ResponseEntity.status(201).body(response);
 
 	}
-
+	
 	@PostMapping("/authenticate")
-	public ResponseEntity<?>  signin(@Valid @RequestBody SigninRequest signinRequest) {
+	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
 	
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
@@ -149,15 +150,13 @@ public class CustomerController {
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
 				.collect(Collectors.toList());
 		// return new token
-		System.out.println("authhh");
-		
-		HashMap map = new HashMap<>();
-		
-		map.put("token", ""+ new JwtResponse(jwt).getToken());
-		return ResponseEntity.status(200).body(map);
-		
-	}
+	
+		Map<String ,String > token = new HashMap();
+		token.put("token", new JwtResponse(jwt).getToken());
+		return ResponseEntity.status(200).body(token);
 
+	}
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@PostMapping("/{customerId}/account")
 	public ResponseEntity<?> createAccount(@PathVariable("customerId") long customerId,
 			@RequestBody AccountRequest request) {
@@ -235,7 +234,7 @@ public class CustomerController {
 
 		return ResponseEntity.status(200).body(response);
 	}
-
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}/account")
 	public ResponseEntity<?> getAccounts(@PathVariable("customerId") long customerId) {
 		Optional<UserDTO> data = userService.getUserById(customerId);
@@ -260,7 +259,7 @@ public class CustomerController {
 
 		return ResponseEntity.status(200).body(responses);
 	}
-
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@PutMapping("/{customerId}")
 	public ResponseEntity<?> updateCustomer(@PathVariable("customerId") long customerId,
 			@Valid @ModelAttribute UpdateRequest request) {
@@ -304,7 +303,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 
 	}
-	
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}")
 	public ResponseEntity<?> getCustomer(@PathVariable("customerId") long customerId) {
 		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry Customer With " + customerId+ " not found"));
@@ -315,12 +314,9 @@ public class CustomerController {
 		response.setPhone(user.getPhone());
 		response.setUsername(user.getUsername());
 		
-		HashMap<String, GetCustomerResponse> map= new HashMap<>();
-		
-		map.put("token", response);
-		return ResponseEntity.status(200).body(map);
+		return ResponseEntity.status(200).body(response);
 	}
-
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}/account/{accountid}")
 	public ResponseEntity<?> getAccountFromId(@PathVariable("customerId") long customerId,
 			@PathVariable("accountid") long accountid) {
@@ -345,7 +341,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 	}
 
-	
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
 		List<CustomerGetBeneficiaries> response = userService.getCustomerBeneficiaries(customerId);
@@ -353,6 +349,7 @@ public class CustomerController {
 
 	}
 	//Make sure user has an account before adding beneficiary. or errors
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@PostMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
 		System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getActive());

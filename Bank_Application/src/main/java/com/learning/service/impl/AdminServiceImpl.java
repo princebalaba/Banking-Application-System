@@ -64,7 +64,7 @@ public class AdminServiceImpl implements AdminService {
 		// TODO Auto-generated method stub
 		StaffDTO prev = staffRepo.findById(staff.getId())
 				.orElseThrow(() -> new NoDataFoundException("Staff Not Found"));
-		prev.setStatus(EStatus.DISABLED);
+		prev.setStatus(staff.getStatus());
 		staffRepo.save(prev);
 	return  prev;
 	}

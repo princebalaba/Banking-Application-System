@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.learning.jwt.AuthEntryPointJwt;
 import com.learning.jwt.AuthTokenFilter;
 import com.learning.security.service.UserDetailsServiceImpl;
-import com.learning.utils.CORSFilter;
 
 /**
  * @author : Ki Beom Lee
@@ -50,10 +49,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-//	
-//	@Bean
-//	CORSFilter corsFilter() {}
-	
 
 	@Bean
 	@Override
@@ -76,32 +71,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
-		.authorizeRequests().antMatchers("/api/**")
-		
-		
-		.permitAll();
-//		.authorizeRequests().antMatchers("/api/customer/register").permitAll()
-//		.antMatchers("/api/customer/authenticate").permitAll()
-//		.antMatchers("/api/customer/{username}/forgot/**").permitAll()	
-//		.antMatchers("/api/customer/{username}/forgot").permitAll()	
-//		.antMatchers("/api/customer/{username}/forgot/question/answer").permitAll()	
-//		.antMatchers("/api/admin/authenticate").permitAll()
-//		.antMatchers("/api/staff/authenticate").permitAll()
-//		.antMatchers("/api/customer/**").authenticated()
-//		.antMatchers("/api/staff/**").authenticated()
-//		.antMatchers("/api/admin/**").authenticated()
-//		.anyRequest().permitAll();
+		.authorizeRequests().antMatchers("/api/customer/register").permitAll()
+		.antMatchers("/api/customer/authenticate").permitAll()
+		.antMatchers("/api/customer/{username}/forgot/**").permitAll()	
+		.antMatchers("/api/customer/{username}/forgot").permitAll()	
+		.antMatchers("/api/customer/{username}/forgot/question/answer").permitAll()	
+		.antMatchers("/api/admin/**").permitAll()
+		.antMatchers("/api/staff/authenticate").permitAll()
+		.antMatchers("/api/customer/**").authenticated()
+		.antMatchers("/api/staff/**").authenticated()
+		.antMatchers("/api/admin/**").authenticated()
+		.anyRequest().permitAll();
 
 		
 
 		
 
-//		http.addFilter(CORSFilter.class);
+		
 		
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 		
 		
 	
 	}
+	
+	
 
 }
