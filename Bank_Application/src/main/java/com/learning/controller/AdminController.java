@@ -110,7 +110,7 @@ public class AdminController {
 
 	//@PreAuthorize("hasRole('SUPER_ADMIN')")
 
-	@PostMapping("/staff")
+	@PostMapping("/staff/create")
 	public ResponseEntity<?> createStaff(@Valid @RequestBody CreateStaffRequest request) {
 
 		StaffDTO staff = new StaffDTO();
