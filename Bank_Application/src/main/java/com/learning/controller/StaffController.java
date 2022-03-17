@@ -262,6 +262,7 @@ public class StaffController {
 	}
 
 // not sure how to pick enabled or disabled - Ki 
+	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/{customerId}")
 	public ResponseEntity<?> setCustomerEnabledDisabled(@PathVariable("customerId") Long customerId) {
 		UserDTO user = userService.getUser(customerId);

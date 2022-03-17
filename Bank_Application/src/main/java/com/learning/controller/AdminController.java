@@ -53,6 +53,7 @@ import com.learning.service.impl.StaffServiceImpl;
  * @time : 2022. 3. 11.-오후 4:43:52
  * 
  */
+
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 @RequestMapping("/api/admin")
@@ -149,14 +150,27 @@ public class AdminController {
 	//@PreAuthorize("hasRole('SUPER_ADMIN')")
 
 	@PutMapping("/{staffid}")
-	public ResponseEntity<?> setStaffEnabled(@PathVariable("staffid") long staffid) {
+
+	/*public ResponseEntity<?> setStaffEnabled(@PathVariable("staffid") long staffid) {
 		StaffDTO staff = (StaffDTO) staffService.getUserById(staffid)
 				.orElseThrow(() -> new IdNotFoundException("Staff status not changed"));
-		staff.setStatus(EStatus.DISABLED);
+		staff.setStatus(EStatus.DISABLED);*/
+
+	public ResponseEntity<?> setStaffEnabled(@PathVariable ("staffid") long staffid){
+	
+		StaffDTO staff = (StaffDTO) staffService.getUserById(staffid).orElseThrow(()-> new IdNotFoundException("Staff status not changed"));
+		System.out.println("stat: " + staff.getStatus().equals(EStatus.DISABLED));
+		if(staff.getStatus().equals(EStatus.DISABLED)) {
+			staff.setStatus(EStatus.ENABLE);
+		} else {
+			staff.setStatus(EStatus.DISABLED);	
+		}
+		System.out.println(staff);
+
 		adminService.updateStaffStatus(staff);
 		Map<String, String> response = new LinkedHashMap<>();
 		response.put("staffId", " : " + staffid);
-		response.put("status", " : " + EStatus.DISABLED.name());
+		response.put("status", " : " + staff.getStatus());
 		return ResponseEntity.status(200).body(response);
 	}
 }
