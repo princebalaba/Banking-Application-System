@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,7 +63,7 @@ import com.learning.service.BeneficiaryService;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
 import com.learning.service.impl.RoleServiceImpl;
-
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
@@ -129,7 +130,7 @@ public class StaffController {
 				.body(token);
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/account/{accountNo}")
 	public ResponseEntity<?> getStatementOfAccount(@PathVariable("accountNo") Long accountNo) {
 		AccountDTO response = accountService.getAccount(accountNo);
@@ -138,8 +139,8 @@ public class StaffController {
 
 	}
 
-//	/josh is working on it 
-	@PreAuthorize("hasRole('STAFF')")
+//	
+	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/beneficiary")
 	public ResponseEntity<?> getUnapprovedBeneficiaries() {
 
@@ -161,7 +162,7 @@ public class StaffController {
 
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> getApprovedBeneficiary(@PathVariable("beneficiaryId") Long beneficiaryId) {
 
@@ -189,7 +190,7 @@ public class StaffController {
 
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/accounts/approve")
 	public ResponseEntity<?> getUnapprovedAccounts() {
 
@@ -215,7 +216,7 @@ public class StaffController {
 		return ResponseEntity.status(200).body(responses);
 	}
 
-	@PreAuthorize("hasRole('STAFF') " )
+	//@PreAuthorize("hasRole('STAFF') " )
 	@PutMapping("/accounts/approve/{accountId}")
 	public ResponseEntity<?> approveAccount(@PathVariable("accountId") Long accountId) {
 		AccountDTO account = accountService.getAccount(accountId);
@@ -244,7 +245,7 @@ public class StaffController {
 	}
 
 //
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/customer")
 	public ResponseEntity<?> getAllCustomers() {
 		
@@ -278,7 +279,7 @@ public class StaffController {
 
 	
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/customer/{customerID}")
 	public ResponseEntity<?> getCustomer(@PathVariable("customerID") Long customerId) {
 		StaffGetCustomerByIdResponse response = new StaffGetCustomerByIdResponse(); 
@@ -294,7 +295,7 @@ public class StaffController {
 		return ResponseEntity.status(200).body(response);
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/transfer")
 	public ResponseEntity<?> staffTransfer(@RequestBody TransferRequestStaff request) {
 

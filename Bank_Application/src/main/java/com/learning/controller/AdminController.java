@@ -20,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,7 @@ import com.learning.service.impl.StaffServiceImpl;
  * @time : 2022. 3. 11.-오후 4:43:52
  * 
  */
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -105,7 +107,7 @@ public class AdminController {
 
 	}
 
-	@PreAuthorize("hasRole('SUPER_ADMIN')")
+	//@PreAuthorize("hasRole('SUPER_ADMIN')")
 
 	@PostMapping("/staff")
 	public ResponseEntity<?> createStaff(@Valid @RequestBody CreateStaffRequest request) {
@@ -126,7 +128,7 @@ public class AdminController {
 
 	}
 
-	@PreAuthorize("hasRole('SUPER_ADMIN')")
+	//@PreAuthorize("hasRole('SUPER_ADMIN')")
 
 	@GetMapping("/staff")
 	public ResponseEntity<?> getAllStaff() {
@@ -144,7 +146,7 @@ public class AdminController {
 
 	}
 
-	@PreAuthorize("hasRole('SUPER_ADMIN')")
+	//@PreAuthorize("hasRole('SUPER_ADMIN')")
 
 	@PutMapping("/{staffid}")
 	public ResponseEntity<?> setStaffEnabled(@PathVariable("staffid") long staffid) {
