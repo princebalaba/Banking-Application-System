@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -133,7 +134,7 @@ public class CustomerController {
 	}
 
 	@PostMapping("/authenticate")
-	public ResponseEntity<?> signin(@Valid @RequestBody SigninRequest signinRequest) {
+	public ResponseEntity<?>  signin(@Valid @RequestBody SigninRequest signinRequest) {
 	
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
@@ -149,9 +150,12 @@ public class CustomerController {
 				.collect(Collectors.toList());
 		// return new token
 		System.out.println("authhh");
-		return ResponseEntity.status(200)
-				.body("token: " + new JwtResponse(jwt).getToken());
-
+		
+		HashMap map = new HashMap<>();
+		
+		map.put("token", ""+ new JwtResponse(jwt).getToken());
+		return ResponseEntity.status(200).body(map);
+		
 	}
 
 	@PostMapping("/{customerId}/account")
@@ -311,7 +315,10 @@ public class CustomerController {
 		response.setPhone(user.getPhone());
 		response.setUsername(user.getUsername());
 		
-		return ResponseEntity.status(200).body(response);
+		HashMap<String, GetCustomerResponse> map= new HashMap<>();
+		
+		map.put("token", response);
+		return ResponseEntity.status(200).body(map);
 	}
 
 	@GetMapping("{customerId}/account/{accountid}")

@@ -124,7 +124,7 @@ public class StaffController {
 		return ResponseEntity.status(200).body("Token: " + new JwtResponse(jwt).getToken());
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/account/{accountNo}")
 	public ResponseEntity<?> getStatementOfAccount(@PathVariable("accountNo") Long accountNo) {
 		AccountDTO response = accountService.getAccount(accountNo);
@@ -134,7 +134,7 @@ public class StaffController {
 	}
 
 //	/josh is working on it 
-	@PreAuthorize("hasRole('STAFF')")
+//	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/beneficiary")
 	public ResponseEntity<?> getUnapprovedBeneficiaries() {
 
@@ -156,7 +156,7 @@ public class StaffController {
 
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> getApprovedBeneficiary(@PathVariable("beneficiaryId") Long beneficiaryId) {
 
@@ -184,7 +184,7 @@ public class StaffController {
 
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/accounts/approve")
 	public ResponseEntity<?> getUnapprovedAccounts() {
 
@@ -210,7 +210,7 @@ public class StaffController {
 		return ResponseEntity.status(200).body(responses);
 	}
 
-	@PreAuthorize("hasRole('STAFF') " )
+	//@PreAuthorize("hasRole('STAFF') " )
 	@PutMapping("/accounts/approve/{accountId}")
 	public ResponseEntity<?> approveAccount(@PathVariable("accountId") Long accountId) {
 		AccountDTO account = accountService.getAccount(accountId);
@@ -239,7 +239,7 @@ public class StaffController {
 	}
 
 //
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/customer")
 	public ResponseEntity<?> getAllCustomers() {
 		
@@ -273,7 +273,7 @@ public class StaffController {
 
 	
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/customer/{customerID}")
 	public ResponseEntity<?> getCustomer(@PathVariable("customerID") Long customerId) {
 		StaffGetCustomerByIdResponse response = new StaffGetCustomerByIdResponse(); 
@@ -289,7 +289,7 @@ public class StaffController {
 		return ResponseEntity.status(200).body(response);
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/transfer")
 	public ResponseEntity<?> staffTransfer(@RequestBody TransferRequestStaff request) {
 
