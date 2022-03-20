@@ -115,6 +115,7 @@ public class UserServiceImpl implements UserService{
 public List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId) {
 	// TODO Auto-generated method stub
 	Optional<UserDTO> user1 =userRepo.findById(userId);
+	System.out.println(user1.get());
 	if(user1.isEmpty()) {
 		return new ArrayList<CustomerGetBeneficiaries>(); 
 	}

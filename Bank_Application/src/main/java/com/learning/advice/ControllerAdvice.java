@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.apierrors.ApiError;
 import com.learning.exceptions.AccountAlreadyExistsException;
 import com.learning.exceptions.AccountDisabledException;
+import com.learning.exceptions.AccountNotApprovedException;
 import com.learning.exceptions.BalanceNonPositiveException;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.NoDataFoundException;
@@ -206,7 +207,19 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler implements 
 		return buildResponseEntity(apiError);
 	}
 	
-
+	
+	
+	@ExceptionHandler(AccountNotApprovedException.class)
+	public ResponseEntity<?> accountNotApprovedException(AccountNotApprovedException e) {
+		Map<String, String> map = new HashMap<>();
+		
+		
+		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+		apiError.setDebugMessage("check your account");
+		
+		
+		return buildResponseEntity(apiError);
+	}
 	
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,

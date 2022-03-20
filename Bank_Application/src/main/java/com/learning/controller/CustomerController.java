@@ -52,11 +52,13 @@ import com.learning.enums.Approved;
 import com.learning.enums.CreditDebit;
 import com.learning.enums.ERole;
 import com.learning.enums.EStatus;
+import com.learning.exceptions.AccountNotApprovedException;
 import com.learning.exceptions.BalanceNonPositiveException;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.RoleNotFoundException;
 import com.learning.exceptions.SecretDetailsDoNotMatchException;
 import com.learning.exceptions.TransactionInvalidException;
+import com.learning.exceptions.UnauthrorizedException;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.AccountRequest;
 import com.learning.payload.requset.BeneficiaryPayload;
@@ -81,7 +83,7 @@ import com.learning.service.UserService;
 import com.learning.service.impl.BeneficiaryServiceImpl;
 import com.learning.service.impl.RoleServiceImpl;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin()
 @RestController
 @RequestMapping("/api/customer")
 public class CustomerController {
@@ -150,13 +152,16 @@ public class CustomerController {
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
 				.collect(Collectors.toList());
 		// return new token
+
 	
 		Map<String ,String > token = new HashMap();
 		token.put("token", new JwtResponse(jwt).getToken());
 //		return ResponseEntity.status(200).body(token);
 		return ResponseEntity.status(200).body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
+
+
 	}
-	//@PreAuthorize("hasRole('CUSTOMER')")
+
 	@PostMapping("/{customerId}/account")
 	public ResponseEntity<?> createAccount(@PathVariable("customerId") long customerId,
 			@RequestBody AccountRequest request) {
@@ -234,7 +239,7 @@ public class CustomerController {
 
 		return ResponseEntity.status(200).body(response);
 	}
-	//@PreAuthorize("hasRole('CUSTOMER')")
+
 	@GetMapping("{customerId}/account")
 	public ResponseEntity<?> getAccounts(@PathVariable("customerId") long customerId) {
 		Optional<UserDTO> data = userService.getUserById(customerId);
@@ -316,7 +321,7 @@ public class CustomerController {
 		
 		return ResponseEntity.status(200).body(response);
 	}
-	//@PreAuthorize("hasRole('CUSTOMER')")
+
 	@GetMapping("{customerId}/account/{accountid}")
 	public ResponseEntity<?> getAccountFromId(@PathVariable("customerId") long customerId,
 			@PathVariable("accountid") long accountid) {
@@ -344,6 +349,7 @@ public class CustomerController {
 	//@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
+		System.out.println(customerId);
 		List<CustomerGetBeneficiaries> response = userService.getCustomerBeneficiaries(customerId);
 		return ResponseEntity.status(200).body(response);
 
@@ -352,8 +358,7 @@ public class CustomerController {
 //	@PreAuthorize("hasRole('CUSTOMER')")
 	@PostMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
-		System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getActive());
-		Boolean userExists = userService.userExistsById(customerId);
+			Boolean userExists = userService.userExistsById(customerId);
 		Boolean accountExists= accountService.accountExists(payload.getAccountNumber());
 		if(!userExists ||!accountExists ) {
 			throw new IdNotFoundException("Sorry Beneficiary With "+customerId +" not added");
@@ -439,8 +444,13 @@ public class CustomerController {
 						+ request.getToAccNumber() + " Account Number Not Valid"));
 		AccountDTO accountFrom = accountService.getAccount(request.getFromAccNumber());
 		AccountDTO toAccount = accountService.getAccount(request.getToAccNumber());
+		if(accountFrom.getApproved()== Approved.NO || toAccount.getApproved() == Approved.NO) {
+			throw new AccountNotApprovedException("from " + request.getFromAccNumber() + " to "
+						+ request.getToAccNumber() + " Account Number Not Valid");
+		}
 		Double amount = request.getAmount();
 		String reason = request.getReason();
+		
 		if(accountFrom.getCustomerId() != request.getCustomer()) {
 			throw new TransactionInvalidException("from " + request.getFromAccNumber() + " to "
 					+ request.getToAccNumber() + " Account Number Not Valid");
@@ -477,6 +487,8 @@ public class CustomerController {
 		transactions2.add(transaction2);
 		temp2.setTransactions(transactions2);
 		accountService.updateAccount(toAccount.getAccountNumber(), temp2);
+		
+		
 		return ResponseEntity.status(200).body("transaction Scuccessfully");
 
 	}
