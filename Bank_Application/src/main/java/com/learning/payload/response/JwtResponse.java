@@ -12,20 +12,20 @@ public class JwtResponse {
 	private String token;
 	private String type = "Bearer";
 	private Long customerId;
-	private Long accountNumber;
-	private CreditDebit accountType;
-	private EStatus accountStatus;
+//	private Long accountNumber;
+//	private CreditDebit accountType;
+//	private EStatus accountStatus;
 	// Ki added 
 	private List<String> roles;
 	private String userName;
-	public JwtResponse(String accessToken, Long customerId, Long accountNumber,  
-			CreditDebit accountType, EStatus accountStatus) {
-		this.token = accessToken;
-		this.accountNumber = accountNumber;
-		this.customerId = customerId;
-		this.accountType = accountType;
-		this.accountStatus = accountStatus;
-	}
+//	public JwtResponse(String accessToken, Long customerId, Long accountNumber,  
+//			CreditDebit accountType, EStatus accountStatus) {
+//		this.token = accessToken;
+//		this.accountNumber = accountNumber;
+//		this.customerId = customerId;
+//		this.accountType = accountType;
+//		this.accountStatus = accountStatus;
+//	}
 	
 	public JwtResponse(String accessToken, Long customerId, String userName,  List<String> roles) {
 		this.token = accessToken;

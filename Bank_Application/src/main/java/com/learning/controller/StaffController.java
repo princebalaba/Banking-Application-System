@@ -125,8 +125,8 @@ public class StaffController {
 		}
 		Map<String ,String > token = new HashMap();
 		token.put("token", new JwtResponse(jwt).getToken());
-		return ResponseEntity.status(200)
-				.body(token);
+		return ResponseEntity.status(200).body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
+
 	}
 
 	@PreAuthorize("hasRole('STAFF')")
