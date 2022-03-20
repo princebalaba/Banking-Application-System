@@ -153,10 +153,10 @@ public class CustomerController {
 	
 		Map<String ,String > token = new HashMap();
 		token.put("token", new JwtResponse(jwt).getToken());
-		return ResponseEntity.status(200).body(token);
-
+//		return ResponseEntity.status(200).body(token);
+		return ResponseEntity.status(200).body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
 	}
-	@PreAuthorize("hasRole('CUSTOMER')")
+	//@PreAuthorize("hasRole('CUSTOMER')")
 	@PostMapping("/{customerId}/account")
 	public ResponseEntity<?> createAccount(@PathVariable("customerId") long customerId,
 			@RequestBody AccountRequest request) {
@@ -206,7 +206,7 @@ public class CustomerController {
 
 	}
 
-	@PreAuthorize("hasRole('STAFF')")
+	//@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("{customerId}/account/{accountNo}")
 	public ResponseEntity<?> approveAccount(@PathVariable("customerId") long customerId,
 			@PathVariable("accountNo") long accountNo, @RequestBody AccountRequest request) {
@@ -234,7 +234,7 @@ public class CustomerController {
 
 		return ResponseEntity.status(200).body(response);
 	}
-	@PreAuthorize("hasRole('CUSTOMER')")
+	//@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}/account")
 	public ResponseEntity<?> getAccounts(@PathVariable("customerId") long customerId) {
 		Optional<UserDTO> data = userService.getUserById(customerId);
@@ -259,7 +259,7 @@ public class CustomerController {
 
 		return ResponseEntity.status(200).body(responses);
 	}
-	@PreAuthorize("hasRole('CUSTOMER')")
+//	@PreAuthorize("hasRole('CUSTOMER')")
 	@PutMapping("/{customerId}")
 	public ResponseEntity<?> updateCustomer(@PathVariable("customerId") long customerId,
 			@Valid @ModelAttribute UpdateRequest request) {
@@ -303,7 +303,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 
 	}
-	@PreAuthorize("hasRole('CUSTOMER')")
+	//@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}")
 	public ResponseEntity<?> getCustomer(@PathVariable("customerId") long customerId) {
 		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry Customer With " + customerId+ " not found"));
@@ -316,7 +316,7 @@ public class CustomerController {
 		
 		return ResponseEntity.status(200).body(response);
 	}
-	@PreAuthorize("hasRole('CUSTOMER')")
+	//@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}/account/{accountid}")
 	public ResponseEntity<?> getAccountFromId(@PathVariable("customerId") long customerId,
 			@PathVariable("accountid") long accountid) {
@@ -341,7 +341,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 	}
 
-	@PreAuthorize("hasRole('CUSTOMER')")
+	//@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
 		List<CustomerGetBeneficiaries> response = userService.getCustomerBeneficiaries(customerId);
@@ -349,7 +349,7 @@ public class CustomerController {
 
 	}
 	//Make sure user has an account before adding beneficiary. or errors
-	@PreAuthorize("hasRole('CUSTOMER')")
+//	@PreAuthorize("hasRole('CUSTOMER')")
 	@PostMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> createBeneficiary(@PathVariable("customerId") Long customerId, @RequestBody BeneficiaryPayload payload) {
 		System.out.println("Payload: "+payload.getAccountType() + ". "+payload.getAccountNumber()+". "+payload.getActive());
@@ -403,7 +403,7 @@ public class CustomerController {
 		}
 
 	}
-	@PreAuthorize("hasRole('CUSTOMER')")
+	//@PreAuthorize("hasRole('CUSTOMER')")
 	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") Long customerId,
 			@PathVariable("beneficiaryId") Long beneficiaryId) {
@@ -431,7 +431,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 
 	}
-	@PreAuthorize("hasRole('CUSTOMER')")
+//	@PreAuthorize("hasRole('CUSTOMER')")
 	@PutMapping("/transfer")
 	public ResponseEntity<?> transfer(@Valid @RequestBody TransferRequest request) {
 		UserDTO user = userService.getUserById(request.getCustomer())

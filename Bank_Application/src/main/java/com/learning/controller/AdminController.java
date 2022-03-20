@@ -102,7 +102,7 @@ public class AdminController {
 				.body(token);
 
 	}
-	@PreAuthorize("hasRole('SUPER_ADMIN')")
+//	@PreAuthorize("hasRole('SUPER_ADMIN')")
 	@PostMapping("/staff")
 	public ResponseEntity<?> createStaff(@Valid @RequestBody CreateStaffRequest request) {
 		
@@ -121,7 +121,7 @@ public class AdminController {
 		return ResponseEntity.status(200).body("staff added");
 
 	}
-	@PreAuthorize("hasRole('SUPER_ADMIN')")
+//	@PreAuthorize("hasRole('SUPER_ADMIN')")
 	@GetMapping("/staff")
 	public ResponseEntity<?> getAllStaff() {
 		List<StaffDTO> staffs = new ArrayList<>();
@@ -137,7 +137,7 @@ public class AdminController {
 		return ResponseEntity.status(200).body(response);
 
 	}
-	@PreAuthorize("hasRole('SUPER_ADMIN')")
+//	@PreAuthorize("hasRole('SUPER_ADMIN')")
 	@PutMapping("/{staffid}")
 	public ResponseEntity<?> setStaffEnabled(@PathVariable ("staffid") long staffid){
 	
