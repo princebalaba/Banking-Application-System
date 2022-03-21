@@ -153,9 +153,16 @@ public class CustomerController {
 				.collect(Collectors.toList());
 		// return new token
 
+		UserDTO user = userService.getUserById(userDetailsImpl.getId()).orElseThrow(() -> new IdNotFoundException("Id not found"));
+		if(user.getStatus().equals(EStatus.DISABLED)) {
+			throw new UnauthrorizedException("account is disabled");
+		}
+		
+
 	
 		Map<String ,String > token = new HashMap();
 		token.put("token", new JwtResponse(jwt).getToken());
+
 
 		return ResponseEntity.status(200).body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
 
@@ -287,15 +294,15 @@ public class CustomerController {
 		user.setAadhar(request.getAadhar());
 		user.setSecretQuestion(request.getSecretQuestion());
 		user.setSecretAnswer(request.getSecretAnswer());
-		 BufferedImage bImage;
+		
 		try {
 		
-		      byte [] data = request.getAadhar().getBytes();
+		      byte [] data = request.getAarchar().getBytes();
 		    		  System.out.println(data);
 			user.setPanimage(data);
 			
 		      byte [] data2 = request.getPanimage().getBytes();
-		     
+//		     
 			user.setAarchar(data2);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -361,7 +368,11 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 	}
 
+
+//	@PreAuthorize("hasRole('CUSTOMER')")
+
 	//@PreAuthorize("hasRole('CUSTOMER')")
+
 	@GetMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
 		System.out.println(customerId);
@@ -426,6 +437,7 @@ public class CustomerController {
 		}
 
 	}
+
 	//@PreAuthorize("hasRole('CUSTOMER')")
 	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") Long customerId,
