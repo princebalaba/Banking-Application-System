@@ -9,4 +9,5 @@ public class CustomerGetBeneficiaries {
 	Long  beneficiaryAccountNo;
 	 String   beneficiaryName;
 	  Active active;
+	  Long beneficiaryId;
 }
