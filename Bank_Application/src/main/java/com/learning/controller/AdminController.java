@@ -105,15 +105,14 @@ public class AdminController {
 		return ResponseEntity.status(200).body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
 
 	}
-<<<<<<< HEAD
 
-	//@PreAuthorize("hasRole('SUPER_ADMIN')")
 
-	@PostMapping("/staff/create")
-=======
+	
+
+
 //	@PreAuthorize("hasRole('SUPER_ADMIN')")
 	@PostMapping("/staff")
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
 	public ResponseEntity<?> createStaff(@Valid @RequestBody CreateStaffRequest request) {
 
 		StaffDTO staff = new StaffDTO();
@@ -131,13 +130,9 @@ public class AdminController {
 		return ResponseEntity.status(200).body("staff added");
 
 	}
-<<<<<<< HEAD
 
-	//@PreAuthorize("hasRole('SUPER_ADMIN')")
-
-=======
 //	@PreAuthorize("hasRole('SUPER_ADMIN')")
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
 	@GetMapping("/staff")
 	public ResponseEntity<?> getAllStaff() {
 		List<StaffDTO> staffs = new ArrayList<>();
@@ -153,13 +148,13 @@ public class AdminController {
 		return ResponseEntity.status(200).body(response);
 
 	}
-<<<<<<< HEAD
 
-	//@PreAuthorize("hasRole('SUPER_ADMIN')")
 
-=======
+
+
+
 //	@PreAuthorize("hasRole('SUPER_ADMIN')")
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
 	@PutMapping("/{staffid}")
 
 	/*public ResponseEntity<?> setStaffEnabled(@PathVariable("staffid") long staffid) {
