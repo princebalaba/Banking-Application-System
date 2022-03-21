@@ -12,17 +12,17 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.apache.catalina.valves.rewrite.InternalRewriteMap.Escape;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+<<<<<<< HEAD
 import org.springframework.stereotype.Component;
+=======
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,24 +34,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.entity.AccountDTO;
 import com.learning.entity.BeneficiaryDTO;
-import com.learning.entity.StaffDTO;
 import com.learning.entity.Transaction;
 import com.learning.entity.UserDTO;
+import com.learning.enums.Active;
+import com.learning.enums.Approved;
+import com.learning.enums.CreditDebit;
 import com.learning.enums.ERole;
 import com.learning.enums.EStatus;
 import com.learning.exceptions.IdNotFoundException;
 import com.learning.exceptions.TransactionInvalidException;
 import com.learning.exceptions.UnauthrorizedException;
-
-import com.learning.enums.Active;
-import com.learning.enums.Approved;
-import com.learning.enums.CreditDebit;
 import com.learning.jwt.JwtUtils;
 import com.learning.payload.requset.SigninRequest;
+import com.learning.payload.requset.StaffApproveBeneficiaryRequest;
 import com.learning.payload.requset.TransferRequestStaff;
 import com.learning.payload.response.JwtResponse;
 import com.learning.payload.response.StaffAccountApproveResponse;
-import com.learning.payload.response.StaffGetAccountResponse;
 import com.learning.payload.response.StaffGetBeneficiaryResponse;
 import com.learning.payload.response.StaffGetCustomerByIdResponse;
 import com.learning.payload.response.StaffGetCustomerResponse;
@@ -64,8 +62,12 @@ import com.learning.service.BeneficiaryService;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
 import com.learning.service.impl.RoleServiceImpl;
+<<<<<<< HEAD
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
+=======
+@CrossOrigin(origins = "*", maxAge = 3600)
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
@@ -128,8 +130,8 @@ public class StaffController {
 		}
 		Map<String ,String > token = new HashMap();
 		token.put("token", new JwtResponse(jwt).getToken());
-		return ResponseEntity.status(200)
-				.body(token);
+		return ResponseEntity.status(200).body(new JwtResponse(jwt, userDetailsImpl.getId(), userDetailsImpl.getUsername(), roles));
+
 	}
 
 	//@PreAuthorize("hasRole('STAFF')")
@@ -141,8 +143,13 @@ public class StaffController {
 
 	}
 
+<<<<<<< HEAD
 //	
 	//@PreAuthorize("hasRole('STAFF')")
+=======
+//	/josh is working on it 
+//	@PreAuthorize("hasRole('STAFF')")
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 	@GetMapping("/beneficiary")
 	public ResponseEntity<?> getUnapprovedBeneficiaries() {
 
@@ -153,8 +160,8 @@ public class StaffController {
 			if(toBeApproved.get(i).getActive().equals(Active.NO)) {
 				StaffGetBeneficiaryResponse bene = new StaffGetBeneficiaryResponse();
 				bene.setApproved(toBeApproved.get(i).getActive());
-				bene.setBeneficiaryAcNo(toBeApproved.get(i).getBeneficiaryId());
-				bene.setFromCustomer(toBeApproved.get(i).getAccountNumber());
+				bene.setBeneficiaryAcNo(toBeApproved.get(i).getAccountNumber());
+				bene.setFromCustomer(toBeApproved.get(i).getUserId());
 				bene.setBeneficiaryAddedDate(toBeApproved.get(i).getAddedDate());
 				response.add(bene);
 			}
@@ -168,10 +175,10 @@ public class StaffController {
 	@PutMapping("/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> getApprovedBeneficiary(@PathVariable("beneficiaryId") Long beneficiaryId) {
 
-		Boolean benefiBoolean = beneficiaryRepo.existsById(beneficiaryId);
-		if (!benefiBoolean) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sorry beneficiary not approved");
-		}
+//		Boolean benefiBoolean = beneficiaryRepo.existsById(beneficiaryId);
+//		if (!benefiBoolean) {
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sorry beneficiary not approved");
+//		}
 
 		BeneficiaryDTO beneficiaryToBeApproved = beneficiaryService.getBeneficiaryById(beneficiaryId);
 
@@ -191,32 +198,103 @@ public class StaffController {
 		return ResponseEntity.status(200).body(response);
 
 	}
+	@PutMapping("/beneficiary")
+	public ResponseEntity<?> putApprovedBeneficiary(@RequestBody StaffApproveBeneficiaryRequest request) {
+		
+//		Boolean benefiBoolean = beneficiaryRepo.existsById(beneficiaryId);
+//		if (!benefiBoolean) {
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sorry beneficiary not approved");
+//		}
+		System.out.println(request.toString());
+		StaffGetBeneficiaryResponse response = new StaffGetBeneficiaryResponse();
+		UserDTO customer = userService.getUser(request.getFromCustomer());
+		
+		Set <BeneficiaryDTO> customerBens = customer.getBeneficiaries();
+		
+		customerBens.stream().forEach(
+				ben -> {
+					if(ben.getAccountNumber().equals(request.getBeneficiaryAcNo())) {
+						
+						if (ben.getActive().equals(Active.NO)) {
+							ben.setActive(Active.YES);
+						} else {
+							ben.setActive(Active.NO);
+						}
+						response.setApproved(ben.getActive());
+						response.setBeneficiaryAcNo(ben.getAccountNumber());
+						response.setBeneficiaryAddedDate(ben.getAddedDate());
+						response.setFromCustomer(ben.getUserId());
+						
+					}
+				}
+				);
+		
+//		(b -> b.getAccountNumber().equals(request.getBeneficiaryAcNo()));
 
+<<<<<<< HEAD
+=======
+		customer.setBeneficiaries(customerBens);
+		
+		userService.updateUser(customer);
+		
+//		
+//		for(BeneficiaryDTO ben : customerBens) {
+//			if(ben.getAccountNumber().equals(request.getBeneficiaryAcNo())) {
+//				
+//			}
+//		}
+//		
+//		BeneficiaryDTO beneficiaryToBeApproved = beneficiaryService.getBeneficiaryById(beneficiaryId);
+//		
+//		if (beneficiaryToBeApproved.getActive().equals(Active.NO)) {
+//			beneficiaryToBeApproved.setActive(Active.YES);
+//		} else {
+//			beneficiaryToBeApproved.setActive(Active.NO);
+//		}
+		
+//		BeneficiaryDTO updated = beneficiaryService.updateBeneficiary(beneficiaryToBeApproved);
+	
+	
+		
+		return ResponseEntity.status(200).body(response);
+		
+	}
+
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/accounts/approve")
 	public ResponseEntity<?> getUnapprovedAccounts() {
 
-		List<UnapprovedBeneficiariesResponse> responses = new ArrayList<>() ;
-		List<BeneficiaryDTO> beneficiaries = beneficiaryService.getAllUnapprovedBeneficiaries();
-		System.out.println(beneficiaries);
-		for(int i = 0 ; i < beneficiaries.size() ; i++) {
-			if(beneficiaries.get(i).getActive().equals(Active.NO)) {
-				UnapprovedBeneficiariesResponse response = new UnapprovedBeneficiariesResponse();
-				response.setAccNo(beneficiaries.get(i).getAccountNumber());
-				response.setAccType(beneficiaries.get(i).getAccountType());
-				response.setApproved(beneficiaries.get(i).getActive());
-				response.setCustomerName(beneficiaries.get(i).getName());
-				response.setDateCreated(beneficiaries.get(i).getAddedDate());
-				responses.add(response);
-				
-			}
-			
-		}
-		
-		
-		
-		return ResponseEntity.status(200).body(responses);
+		// no impl yet
+		return ResponseEntity.ok(accountService.getToBeApproved());
 	}
+//	@GetMapping("/accounts")
+//	public ResponseEntity<?> getAllAccounts() {
+//		
+//		
+//	
+//				List<AccountDTO> accounts = accountService.getAllAcounts();
+//				List<StaffGetAllAccountsResponse> response = new ArrayList<>();
+//				
+//				for(AccountDTO acc : accounts) {
+//					
+//					
+//				}
+//				response.setAccNo(beneficiaries.get(i).getAccountNumber());
+//				response.setAccType(beneficiaries.get(i).getAccountType());
+//				response.setApproved(beneficiaries.get(i).getActive());
+//				response.setCustomerName(beneficiaries.get(i).getName());
+//				response.setDateCreated(beneficiaries.get(i).getAddedDate());
+//				responses.add(response);
+//				
+//			
+//			
+//		}
+//		
+//		
+//		
+//		return ResponseEntity.status(200).body(responses);
+//	}
 
 	//@PreAuthorize("hasRole('STAFF') " )
 	@PutMapping("/accounts/approve/{accountId}")
@@ -264,7 +342,11 @@ public class StaffController {
 	}
 
 // not sure how to pick enabled or disabled - Ki 
+<<<<<<< HEAD
 	//@PreAuthorize("hasRole('STAFF')")
+=======
+//	@PreAuthorize("hasRole('STAFF')")
+>>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 	@PutMapping("/{customerId}")
 	public ResponseEntity<?> setCustomerEnabledDisabled(@PathVariable("customerId") Long customerId) {
 		UserDTO user = userService.getUser(customerId);

@@ -1,5 +1,6 @@
 package com.learning.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,17 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.learning.entity.AccountDTO;
-import com.learning.entity.BeneficiaryDTO;
+import com.learning.entity.UserDTO;
 import com.learning.enums.Approved;
 import com.learning.exceptions.IdNotFoundException;
+import com.learning.payload.requset.ApproveAccountRequest;
 import com.learning.repo.AccountRepo;
 import com.learning.service.AccountService;
+import com.learning.service.UserService;
 
 @Service
 public class AccountServiceImpl implements AccountService{
 
 	@Autowired
 	AccountRepo repo;
+	
+	@Autowired
+	UserService userService;
 	@Override
 	public AccountDTO getAccountById(Long id) {
 		// TODO Auto-generated method stub
@@ -48,7 +54,7 @@ public class AccountServiceImpl implements AccountService{
 	public List<AccountDTO> getAllApprovedAcounts() {
 		// TODO Auto-generated method stub
 		List<AccountDTO> accounts = repo.findAll();
-		accounts.removeIf(m->m.getApproved().equals(Approved.YES));
+		accounts.removeIf(m->m.getApproved().equals(Approved.NO));
 		return accounts;
 	}
 
@@ -56,9 +62,11 @@ public class AccountServiceImpl implements AccountService{
 	public List<AccountDTO> getAllUnapprovedAcounts() {
 		// TODO Auto-generated method stub
 		List<AccountDTO> accounts = repo.findAll();
-		accounts.removeIf(m->m.getApproved().equals(Approved.NO));
+		accounts.removeIf(m->m.getApproved().equals(Approved.YES));
 		return accounts;
 	}
+	
+	
 
 	@Override
 	public Boolean removeAccountById(Long id) {
@@ -128,6 +136,29 @@ if(repo.existsById(newAccount.getAccountNumber())) {
 	public Optional<AccountDTO> findAccountById(long id) {
 		// TODO Auto-generated method stub
 		return repo.findById(id);
+	}
+
+	@Override
+	public List<ApproveAccountRequest> getToBeApproved() {
+		// TODO Auto-generated method stub
+		List<ApproveAccountRequest> responseList =  new ArrayList<>();
+		List<AccountDTO> accs= getAllUnapprovedAcounts();
+		
+		for(AccountDTO a : accs) {
+			
+			ApproveAccountRequest response = new ApproveAccountRequest();
+			
+			response.setAccountNumber(a.getAccountNumber());
+			response.setAccountType(a.getAccountType());
+			response.setCustomerId(a.getCustomerId());
+			response.setApproved(a.getApproved());
+			response.setDateCreated(a.getDateOfCreation());
+			UserDTO user = userService.getUserById(a.getCustomerId()).get();
+			response.setCustomerName(user.getFullname());
+			
+			responseList.add(response);
+		}
+		return responseList;
 	}
 	
 	
