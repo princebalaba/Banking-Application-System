@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.learning.entity.AccountDTO;
+import com.learning.payload.requset.ApproveAccountRequest;
 
 public interface AccountService {
 	
@@ -19,6 +20,7 @@ public interface AccountService {
 	AccountDTO createAccount(AccountDTO account);
 	Boolean accountExists(Long id);
 	
+	List<ApproveAccountRequest> getToBeApproved();
 
 	public AccountDTO updateAccount(long id, AccountDTO account);
 	public Optional<AccountDTO> findAccountById(long id);

@@ -67,7 +67,7 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 	public BeneficiaryDTO updateBeneficiary( BeneficiaryDTO newBeneficiary) {
 		// TODO Auto-generated method stub
 		
-		if(repo.existsById(newBeneficiary.getAccountNumber())) {
+		if(repo.existsById(newBeneficiary.getBeneficiaryId())) {
 			
 			return repo.save(newBeneficiary);
 		}
@@ -89,7 +89,12 @@ public class BeneficiaryServiceImpl  implements BeneficiaryService{
 	@Override
 	public BeneficiaryDTO getBeneficiaryById(Long beneficiaryId) {
 		// TODO Auto-generated method stub
-		 return repo.findById(beneficiaryId).orElseThrow( () ->new IdNotFoundException("Beneficiary id is invalid"));
+		System.out.println("id enter"+beneficiaryId);
+		BeneficiaryDTO b=repo.findById(beneficiaryId).orElseThrow( () ->new IdNotFoundException("Beneficiary id is invalid"));
+		
+		System.out.println("Ben = Status" +b.getActive() +" benId:"+b.getBeneficiaryId() +" Ben acc num: "+ b.getAccountNumber());
+		
+		return repo.findById(beneficiaryId).orElseThrow( () ->new IdNotFoundException("Beneficiary id is invalid"));
 	}
 	
 }

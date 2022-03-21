@@ -1,13 +1,22 @@
 package com.learning.payload.requset;
 
+import java.time.LocalDateTime;
+
+import com.learning.enums.AccountType;
+import com.learning.enums.Approved;
+
+import lombok.Data;
+
+@Data
 public class ApproveAccountRequest {
 	
-//   private String  accType;
-//   private String customerName: String, 
-//   private  accNo: Number, 
-//   private  dateCreated: date, 
-//   private  approved:String (Yes), 
-//   private  staffUserName:String 
+   private AccountType  accountType;
+   private String customerName;
+   private  Long accountNumber;
+   private LocalDateTime dateCreated; 
+   private Approved approved;
+   private Long customerId;
+   //private  String staffUserName;
 
 
 }
