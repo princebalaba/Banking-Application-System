@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
-<<<<<<< HEAD
+
 		.authorizeRequests()
 		.antMatchers("/api/**").permitAll();
 //		.antMatchers("/api/customer/register").permitAll();
@@ -89,9 +89,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/api/admin/**").authenticated()
 		.anyRequest().permitAll();
 */
-=======
 
-		.authorizeRequests().antMatchers("/api/**").permitAll();
+
+		//.authorizeRequests().antMatchers("/api/**").permitAll();
 //		.authorizeRequests().antMatchers("/api/customer/register").permitAll()
 //		.antMatchers("/api/customer/authenticate").permitAll()
 //		.antMatchers("/api/customer/{username}/forgot/**").permitAll()	
@@ -112,7 +112,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //		.anyRequest().permitAll();
 
 		
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
 
 		
 

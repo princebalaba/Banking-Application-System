@@ -19,10 +19,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-<<<<<<< HEAD
+
 import org.springframework.stereotype.Component;
-=======
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,12 +61,12 @@ import com.learning.service.BeneficiaryService;
 import com.learning.service.StaffService;
 import com.learning.service.UserService;
 import com.learning.service.impl.RoleServiceImpl;
-<<<<<<< HEAD
+
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
-=======
-@CrossOrigin(origins = "*", maxAge = 3600)
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
+//@CrossOrigin(origins = "*", maxAge = 3600)
+
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
@@ -143,13 +142,10 @@ public class StaffController {
 
 	}
 
-<<<<<<< HEAD
-//	
-	//@PreAuthorize("hasRole('STAFF')")
-=======
-//	/josh is working on it 
+
+
 //	@PreAuthorize("hasRole('STAFF')")
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
 	@GetMapping("/beneficiary")
 	public ResponseEntity<?> getUnapprovedBeneficiaries() {
 
@@ -231,8 +227,7 @@ public class StaffController {
 		
 //		(b -> b.getAccountNumber().equals(request.getBeneficiaryAcNo()));
 
-<<<<<<< HEAD
-=======
+
 		customer.setBeneficiaries(customerBens);
 		
 		userService.updateUser(customer);
@@ -260,7 +255,6 @@ public class StaffController {
 		
 	}
 
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
 	//@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/accounts/approve")
 	public ResponseEntity<?> getUnapprovedAccounts() {
@@ -342,11 +336,11 @@ public class StaffController {
 	}
 
 // not sure how to pick enabled or disabled - Ki 
-<<<<<<< HEAD
-	//@PreAuthorize("hasRole('STAFF')")
-=======
+
+	
+
 //	@PreAuthorize("hasRole('STAFF')")
->>>>>>> branch 'master' of https://github.com/KiLee16/bankApplication.git
+
 	@PutMapping("/{customerId}")
 	public ResponseEntity<?> setCustomerEnabledDisabled(@PathVariable("customerId") Long customerId) {
 		UserDTO user = userService.getUser(customerId);
