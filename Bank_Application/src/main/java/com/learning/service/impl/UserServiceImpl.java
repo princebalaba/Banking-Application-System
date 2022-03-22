@@ -136,6 +136,7 @@ public List<CustomerGetBeneficiaries> getCustomerBeneficiaries(Long userId) {
 		benSave.setActive(beneficiary.getActive());
 		benSave.setBeneficiaryAccountNo(beneficiary.getBeneficiaryId());
 		benSave.setBeneficiaryName(beneficiary.getName());
+		benSave.setBeneficiaryId(beneficiary.getBeneficiaryId());
 		
 		response.add(benSave);
 	};
