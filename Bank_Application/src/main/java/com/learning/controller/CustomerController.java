@@ -152,7 +152,7 @@ public class CustomerController {
 		List<String> roles = userDetailsImpl.getAuthorities().stream().map(e -> e.getAuthority())
 				.collect(Collectors.toList());
 		// return new token
-
+System.out.println(signinRequest);
 		UserDTO user = userService.getUserById(userDetailsImpl.getId()).orElseThrow(() -> new IdNotFoundException("Id not found"));
 		if(user.getStatus().equals(EStatus.DISABLED)) {
 			throw new UnauthrorizedException("account is disabled");
@@ -168,7 +168,7 @@ public class CustomerController {
 
 
 	}
-
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@PostMapping("/{customerId}/account")
 	public ResponseEntity<?> createAccount(@PathVariable("customerId") long customerId,
 			@RequestBody AccountRequest request) {
@@ -218,7 +218,7 @@ public class CustomerController {
 
 	}
 
-	//@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("{customerId}/account/{accountNo}")
 	public ResponseEntity<?> approveAccount(@PathVariable("customerId") long customerId,
 			@PathVariable("accountNo") long accountNo, @RequestBody AccountRequest request) {
@@ -246,7 +246,7 @@ public class CustomerController {
 
 		return ResponseEntity.status(200).body(response);
 	}
-
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}/account")
 	public ResponseEntity<?> getAccounts(@PathVariable("customerId") long customerId) {
 		Optional<UserDTO> data = userService.getUserById(customerId);
@@ -271,7 +271,7 @@ public class CustomerController {
 
 		return ResponseEntity.status(200).body(responses);
 	}
-//	@PreAuthorize("hasRole('CUSTOMER')")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@PutMapping("/{customerId}")
 	public ResponseEntity<?> updateCustomer(@PathVariable("customerId") long customerId,
 			@Valid @ModelAttribute UpdateRequest request) {
@@ -315,7 +315,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body(response);
 
 	}
-	//@PreAuthorize("hasRole('CUSTOMER')")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("{customerId}")
 	public ResponseEntity<?> getCustomer(@PathVariable("customerId") long customerId) {
 		UserDTO user = userService.getUserById(customerId).orElseThrow(() -> new IdNotFoundException("Sorry Customer With " + customerId+ " not found"));
@@ -356,7 +356,7 @@ public class CustomerController {
 
 //	@PreAuthorize("hasRole('CUSTOMER')")
 
-	//@PreAuthorize("hasRole('CUSTOMER')")
+	@PreAuthorize("hasRole('CUSTOMER')")
 
 	@GetMapping("{customerId}/beneficiary")
 	public ResponseEntity<?> getBeneficiary(@PathVariable("customerId") long customerId) {
@@ -420,7 +420,7 @@ public class CustomerController {
 
 	}
 
-	//@PreAuthorize("hasRole('CUSTOMER')")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@DeleteMapping("{customerId}/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> deleteBeneficiary(@PathVariable("customerId") Long customerId,
 			@PathVariable("beneficiaryId") Long beneficiaryId) {
@@ -448,7 +448,7 @@ public class CustomerController {
 		return ResponseEntity.status(200).body("Beneficiary Deleted Scuccessfully");
 
 	}
-//	@PreAuthorize("hasRole('CUSTOMER')")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@PutMapping("/transfer")
 	public ResponseEntity<?> transfer(@Valid @RequestBody TransferRequest request) {
 		UserDTO user = userService.getUserById(request.getCustomer())

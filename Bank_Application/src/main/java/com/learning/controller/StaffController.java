@@ -13,6 +13,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -78,13 +79,10 @@ public class StaffController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+
 
 	@Autowired
 	private JwtUtils jwtUtils;
-	@Autowired
-	private RoleServiceImpl roleService;
 
 	@PostMapping("/authenticate")
 	public ResponseEntity<?> signinStaff(@Valid @RequestBody SigninRequest signinRequest) {
@@ -124,7 +122,7 @@ public class StaffController {
 
 	}
 
-	//@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/account/{accountNo}")
 	public ResponseEntity<?> getStatementOfAccount(@PathVariable("accountNo") Long accountNo) {
 		AccountDTO response = accountService.getAccount(accountNo);
@@ -134,7 +132,7 @@ public class StaffController {
 	}
 
 //	/josh is working on it 
-//	@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/beneficiary")
 	public ResponseEntity<?> getUnapprovedBeneficiaries() {
 
@@ -156,7 +154,7 @@ public class StaffController {
 
 	}
 
-	//@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/beneficiary/{beneficiaryId}")
 	public ResponseEntity<?> getApprovedBeneficiary(@PathVariable("beneficiaryId") Long beneficiaryId) {
 
@@ -183,6 +181,7 @@ public class StaffController {
 		return ResponseEntity.status(200).body(response);
 
 	}
+	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/beneficiary")
 	public ResponseEntity<?> putApprovedBeneficiary(@RequestBody StaffApproveBeneficiaryRequest request) {
 		
@@ -243,7 +242,7 @@ public class StaffController {
 		
 	}
 
-	//@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/accounts/approve")
 	public ResponseEntity<?> getUnapprovedAccounts() {
 
@@ -278,7 +277,7 @@ public class StaffController {
 //		return ResponseEntity.status(200).body(responses);
 //	}
 
-	//@PreAuthorize("hasRole('STAFF') " )
+	@PreAuthorize("hasRole('STAFF') " )
 	@PutMapping("/accounts/approve/{accountId}")
 	public ResponseEntity<?> approveAccount(@PathVariable("accountId") Long accountId) {
 		AccountDTO account = accountService.getAccount(accountId);
@@ -307,7 +306,7 @@ public class StaffController {
 	}
 
 //
-	//@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/customer")
 	public ResponseEntity<?> getAllCustomers() {
 		
@@ -324,7 +323,7 @@ public class StaffController {
 	}
 
 // not sure how to pick enabled or disabled - Ki 
-//	@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF')")
 	@PutMapping("/{customerId}")
 	public ResponseEntity<?> setCustomerEnabledDisabled(@PathVariable("customerId") Long customerId) {
 		UserDTO user = userService.getUser(customerId);
@@ -342,7 +341,7 @@ public class StaffController {
 
 	
 
-	//@PreAuthorize("hasRole('STAFF')")
+	@PreAuthorize("hasRole('STAFF')")
 	@GetMapping("/customer/{customerID}")
 	public ResponseEntity<?> getCustomer(@PathVariable("customerID") Long customerId) {
 		StaffGetCustomerByIdResponse response = new StaffGetCustomerByIdResponse(); 
